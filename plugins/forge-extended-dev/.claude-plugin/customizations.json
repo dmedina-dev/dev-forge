@@ -1,0 +1,94 @@
+{
+  "origins": [
+    {
+      "type": "github",
+      "repo": "anthropics/claude-code",
+      "path": "plugins/feature-dev",
+      "ref": "main",
+      "fetched_at": "2026-03-29",
+      "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev"
+    },
+    {
+      "type": "github",
+      "repo": "anthropics/claude-code",
+      "path": "plugins/pr-review-toolkit",
+      "ref": "main",
+      "fetched_at": "2026-03-29",
+      "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
+    }
+  ],
+  "customizations": [
+    {
+      "id": "custom-01",
+      "type": "excluded",
+      "origin": "feature-dev",
+      "target": "agents/code-reviewer.md",
+      "summary": "Excluded feature-dev code-reviewer agent",
+      "reason": "Superpowers provides intermediate code reviews via requesting-code-review skill. No need for duplicate general reviewer."
+    },
+    {
+      "id": "custom-02",
+      "type": "excluded",
+      "origin": "feature-dev",
+      "target": "README.md",
+      "summary": "Excluded upstream README",
+      "reason": "Plugin has its own workflow documentation in extended-dev-workflow skill."
+    },
+    {
+      "id": "custom-03",
+      "type": "modified",
+      "origin": "feature-dev",
+      "target": "commands/feature-dev.md",
+      "summary": "Replaced phases 5-7 with superpowers handoff",
+      "reason": "Original phase 5 (implementation) replaced with superpowers:writing-plans → subagent-driven-dev TDD execution. Original phase 6 (quality review) replaced with /deep-review. Phase 7 simplified to use superpowers:finishing-a-development-branch."
+    },
+    {
+      "id": "custom-04",
+      "type": "excluded",
+      "origin": "pr-review-toolkit",
+      "target": "agents/code-reviewer.md",
+      "summary": "Excluded pr-review-toolkit code-reviewer agent",
+      "reason": "Superpowers provides intermediate code reviews. Deep-review focuses on specialized agents only."
+    },
+    {
+      "id": "custom-05",
+      "type": "excluded",
+      "origin": "pr-review-toolkit",
+      "target": "README.md",
+      "summary": "Excluded upstream README",
+      "reason": "Plugin has its own workflow documentation."
+    },
+    {
+      "id": "custom-06",
+      "type": "modified",
+      "origin": "pr-review-toolkit",
+      "target": "commands/deep-review.md",
+      "summary": "Renamed review-pr to deep-review, removed code-reviewer from available agents",
+      "reason": "Renamed for clarity in extended workflow. Reduced from 6 to 5 agents — code-reviewer excluded (custom-04). Added integration docs showing how deep-review fits as Phase C."
+    },
+    {
+      "id": "custom-07",
+      "type": "modified",
+      "origin": "pr-review-toolkit",
+      "target": "agents/silent-failure-hunter.md",
+      "summary": "Removed Anthropic-internal tooling references",
+      "reason": "Original referenced logForDebugging, logError, logEvent, Statsig, Sentry, constants/errorIds.ts. Generalized to work with any project's logging/monitoring conventions via CLAUDE.md."
+    },
+    {
+      "id": "custom-08",
+      "type": "modified",
+      "origin": "pr-review-toolkit",
+      "target": "agents/code-simplifier.md",
+      "summary": "Removed hardcoded Anthropic project conventions",
+      "reason": "Original hardcoded ES modules, function keyword preference, React patterns, explicit return types. Now defers to project's own CLAUDE.md standards."
+    },
+    {
+      "id": "custom-09",
+      "type": "added",
+      "origin": "forge",
+      "target": "skills/extended-dev-workflow/SKILL.md",
+      "summary": "Added master workflow documentation skill",
+      "reason": "New skill that documents how feature-dev discovery, superpowers execution, and deep-review validation connect into a unified flow."
+    }
+  ]
+}

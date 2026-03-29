@@ -58,6 +58,28 @@
         "ref": "main",
         "url": "https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev"
       }
+    },
+    {
+      "name": "forge-extended-dev",
+      "description": "Extended development workflow: feature discovery + architecture design (feature-dev) → TDD execution (superpowers) → specialized deep review (pr-review-toolkit). Companion to forge-superpowers.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-extended-dev"
+      },
+      "version": "1.0.0",
+      "upstream": [
+        {
+          "repo": "anthropics/claude-code",
+          "ref": "main",
+          "url": "https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev"
+        },
+        {
+          "repo": "anthropics/claude-code",
+          "ref": "main",
+          "url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
+        }
+      ]
     }
   ]
 }

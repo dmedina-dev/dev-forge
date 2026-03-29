@@ -34,15 +34,25 @@ Which plugins depend on or complement each other.
 - 1 command: /create-plugin (8-phase guided workflow)
 - Install when developing plugins, uninstall when done (heavy context footprint)
 
+### forge-extended-dev
+- **Requires forge-superpowers** — provides TDD execution, verification, debugging, git worktrees, finishing workflow
+- Curated from anthropics/claude-code: feature-dev (discovery/design) + pr-review-toolkit (specialized review)
+- 2 commands: /feature-dev (discovery → architecture → handoff), /deep-review (5 specialized agents)
+- 7 agents: code-explorer, code-architect, comment-analyzer, pr-test-analyzer, silent-failure-hunter, type-design-analyzer, code-simplifier
+- 1 skill: extended-dev-workflow (master flow documentation)
+- Customizations: removed duplicate code-reviewers, generalized Anthropic internals
+- Complements forge-keeper (context maintenance during extended workflows)
+
 ## Current plugin matrix
 
 ```
-Plugin              Requires        Complements         Independent of
-─────────────────────────────────────────────────────────────────────
-forge-init          -               forge-keeper        everything else
-forge-keeper        -               forge-init          everything else
-forge-superpowers   -               forge-keeper        everything else
-forge-plugin-dev    -               -                   everything else
+Plugin              Requires            Complements         Independent of
+──────────────────────────────────────────────────────────────────────────
+forge-init          -                   forge-keeper        everything else
+forge-keeper        -                   forge-init          everything else
+forge-superpowers   -                   forge-keeper        everything else
+forge-plugin-dev    -                   -                   everything else
+forge-extended-dev  forge-superpowers   forge-keeper        everything else
 ```
 
 ## Rules for dependencies

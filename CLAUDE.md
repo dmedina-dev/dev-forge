@@ -14,6 +14,7 @@ dev-forge/
 │   ├── forge-keeper/                  ← context maintenance
 │   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
 │   ├── forge-plugin-dev/              ← plugin development toolkit (curated from anthropics/claude-code)
+│   ├── forge-extended-dev/            ← extended workflow: discovery + design + deep review (requires forge-superpowers)
 │   └── ...                            ← each plugin independent
 └── docs/
     ├── dependencies.md                ← dependency map between plugins

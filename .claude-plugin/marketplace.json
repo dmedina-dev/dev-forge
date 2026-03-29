@@ -1,0 +1,33 @@
+{
+  "name": "dev-forge",
+  "owner": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "metadata": {
+    "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "forge-init",
+      "description": "Two-step project bootstrapper: runs native /init, then layers conventions.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-init"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "session-keeper",
+      "description": "Keeps CLAUDE.md, docs and memories in sync across sessions.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/session-keeper"
+      },
+      "version": "1.0.0"
+    }
+  ]
+}

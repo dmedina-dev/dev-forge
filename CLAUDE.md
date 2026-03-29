@@ -15,6 +15,10 @@ dev-forge/
 │   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
 │   ├── forge-plugin-dev/              ← plugin development toolkit (curated from anthropics/claude-code)
 │   ├── forge-extended-dev/            ← extended workflow: discovery + design + deep review (requires forge-superpowers)
+│   ├── forge-hookify/                 ← custom hook rules engine (curated from anthropics/claude-code)
+│   ├── forge-security/                ← security reminder hooks (curated from anthropics/claude-code)
+│   ├── forge-commit/                  ← commit/PR commands (curated from anthropics/claude-code)
+│   ├── forge-ralph/                   ← persistent loop technique (curated from anthropics/claude-code)
 │   └── ...                            ← each plugin independent
 └── docs/
     ├── dependencies.md                ← dependency map between plugins

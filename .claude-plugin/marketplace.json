@@ -80,6 +80,66 @@
           "url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
         }
       ]
+    },
+    {
+      "name": "forge-hookify",
+      "description": "Custom hook rules engine: create .local.md rules with regex patterns to warn or block on bash commands, file edits, prompts, and stop events. Curated from anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-hookify"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-code",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/hookify"
+      }
+    },
+    {
+      "name": "forge-security",
+      "description": "Security reminder hooks: checks for 9 common vulnerability patterns (XSS, injection, eval, pickle, etc.) on file edits. Curated from anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-security"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-code",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance"
+      }
+    },
+    {
+      "name": "forge-commit",
+      "description": "Commit and PR commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup). Curated from anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-commit"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-code",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/commit-commands"
+      }
+    },
+    {
+      "name": "forge-ralph",
+      "description": "Persistent loop technique: keeps Claude working on a task across multiple stop events using self-referential prompts. Curated from anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-ralph"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-code",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum"
+      }
     }
   ]
 }

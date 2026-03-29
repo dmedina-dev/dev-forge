@@ -1,5 +1,5 @@
 {
-  "name": "forge-security-guidance",
+  "name": "forge-security",
   "description": "Security reminder hook: warns about potential security issues (command injection, XSS, eval, pickle, etc.) when editing files. Passive, low overhead.",
   "version": "1.0.0",
   "author": {

@@ -43,6 +43,31 @@ Which plugins depend on or complement each other.
 - Customizations: removed duplicate code-reviewers, generalized Anthropic internals
 - Complements forge-keeper (context maintenance during extended workflows)
 
+### forge-hookify
+- **Independent** — custom hook rules engine, works standalone
+- Curated from anthropics/claude-code (plugins/hookify) with import customizations
+- 4 hook events: PreToolUse, PostToolUse, Stop, UserPromptSubmit
+- 4 commands: /hookify (create rules), /list, /configure, /help
+- 1 agent: conversation-analyzer
+- 1 skill: writing-rules (rule format reference)
+
+### forge-security
+- **Independent** — security reminder hooks, works standalone
+- Curated from anthropics/claude-code (plugins/security-guidance) with customizations
+- PreToolUse hook checking 9 vulnerability patterns on Edit/Write/MultiEdit
+- Session-scoped state to avoid repeat warnings
+
+### forge-commit
+- **Independent** — commit and PR commands, works standalone
+- Curated from anthropics/claude-code (plugins/commit-commands) with customizations
+- 3 commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup)
+
+### forge-ralph
+- **Independent** — persistent loop technique, works standalone
+- Curated from anthropics/claude-code (plugins/ralph-wiggum) with customizations
+- Stop hook + setup script for self-referential loop
+- 3 commands: /ralph-loop (start), /cancel-ralph (stop), /help
+
 ## Current plugin matrix
 
 ```
@@ -53,6 +78,10 @@ forge-keeper        -                   forge-init          everything else
 forge-superpowers   -                   forge-keeper        everything else
 forge-plugin-dev    -                   -                   everything else
 forge-extended-dev  forge-superpowers   forge-keeper        everything else
+forge-hookify       -                   -                   everything else
+forge-security      -                   -                   everything else
+forge-commit        -                   -                   everything else
+forge-ralph         -                   -                   everything else
 ```
 
 ## Rules for dependencies

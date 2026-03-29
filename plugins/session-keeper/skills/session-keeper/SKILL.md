@@ -24,105 +24,38 @@ Keeps project context synchronized across Claude Code sessions.
 - At the end of long sessions or before `/compact`
 - After significant architectural decisions
 
-## Synchronization process
+## Execution model
 
-### Step 1: Analyze session changes
+**Run sync as a subagent or teammate** to avoid polluting the user's working
+context. The analysis happens in an isolated context. Only the structured
+proposal returns to the main conversation for review.
 
-Run `git diff --name-only HEAD~5` (or appropriate range based on session length)
-to identify changed files. Also check `git diff --name-only` for uncommitted work.
-Classify by top-level directory (monorepo zone).
+- **Subagent** (default) — dispatch via Agent tool with the sync steps
+- **Teammate** — if configured, dispatch as named teammate for parallel execution
 
-### Step 2: Update CLAUDE.md per zone
+The user sees only: brief announcement → structured proposal → confirmation.
 
-For each zone with significant changes, read the existing CLAUDE.md and
-identify new information this session contributes:
-- New conventions discovered or established
-- Build/test commands that changed
-- Architectural decisions made
-- Gotchas or bugs found and resolved
-- Dependencies added or removed
+## Sync process (7 steps)
 
-Constraints:
-- Maximum ~200 lines root, ~100 lines children
-- Don't duplicate linter/formatter rules
-- Don't describe individual files
-- Specific, verifiable instructions only
-- Prune oldest/most obvious if over limit
+For detailed criteria on each step, read the corresponding references.
 
-Refer to `references/claudemd-guide.md` for detailed rules.
+1. **Analyze changes** — `git diff --name-only` to identify files, classify by zone
+2. **Propose CLAUDE.md updates** — per zone, respecting limits.
+   See `references/claudemd-guide.md`
+3. **Propose .claude/rules/** — if new cross-cutting conventions emerged
+4. **Evaluate code exemplars** — if `docs/exemplars.md` exists, check if
+   exemplars are still the best reference. See `references/exemplar-evaluation.md`
+5. **Check project docs** — `docs/`, `README.md`, `docs/adr/`
+6. **Generate session summary** — `docs/sessions/YYYY-MM-DD-title.md`
+7. **Present structured proposal** — categorized by action type.
+   See `references/proposal-format.md`
 
-### Step 3: Update .claude/rules/ if needed
+**DO NOT apply changes without explicit human confirmation.**
+After approval, run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh`.
 
-If new cross-cutting conventions emerged (testing patterns, security rules,
-style decisions), propose additions to `.claude/rules/` with path frontmatter.
+## References
 
-### Step 4: Update project documentation
-
-Check if session changes affect:
-- `docs/` → existing technical documentation
-- `README.md` → if setup or commands changed
-- `docs/adr/` → if significant architectural decisions were made
-
-### Step 5: Generate session summary
-
-Save to `docs/sessions/YYYY-MM-DD-title.md`:
-
-```
-## Session: [date] — [descriptive title]
-
-### Changes made
-- [List of main changes]
-
-### Decisions taken
-- [Decision]: [short rationale]
-
-### Current status
-- Completed: [what was finished]
-- In progress: [what's half-done]
-- Pending: [what was identified but not started]
-
-### Context for next session
-- [What the next Claude needs to know]
-```
-
-### Step 6: Present structured proposal
-
-Present all proposed changes grouped by action type. For each change,
-explain WHAT will change and WHY.
-
-```
-## Context Sync Proposal
-
-### Update (refresh stale content)
-- `CLAUDE.md` — Add new testing convention discovered in this session
-  (integration tests use real DB, not mocks)
-- `apps/api/CLAUDE.md` — Update deploy command (migrated from npm to pnpm)
-
-### Create (new knowledge worth capturing)
-- `docs/adr/0003-saga-pattern.md` — Architectural decision: payments use
-  saga pattern instead of direct service calls
-- `.claude/rules/api-errors.md` — New cross-cutting rule for error responses
-  (scope: apps/api/**)
-
-### Archive (remove outdated content)
-- `CLAUDE.md` line 45-48 — Old npm commands replaced by pnpm equivalents
-
-### Session summary
-- `docs/sessions/YYYY-MM-DD-title.md` — [preview of summary]
-
-### No changes needed
-- `shared/CLAUDE.md` — still accurate ✓
-- `.claude/rules/testing.md` — still accurate ✓
-```
-
-**DO NOT apply any changes without explicit human confirmation.**
-
-After the human reviews:
-- They may approve all, approve selectively, or request modifications
-- Apply only what was approved
-- Run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh` to reset the watcher
-
-## Reference files
-
-For CLAUDE.md maintenance rules → `references/claudemd-guide.md`
-For monorepo patterns → `references/monorepo-patterns.md`
+- CLAUDE.md maintenance → `references/claudemd-guide.md`
+- Monorepo patterns → `references/monorepo-patterns.md`
+- Exemplar evaluation → `references/exemplar-evaluation.md`
+- Proposal format → `references/proposal-format.md`

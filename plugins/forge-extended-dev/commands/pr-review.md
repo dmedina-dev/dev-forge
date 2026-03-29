@@ -1,15 +1,15 @@
 ---
 # Curated from: anthropics/claude-code (plugins/code-review) — Author: Boris Cherny (Anthropic)
 # Customized: renamed to pr-review, integrated as Phase D of extended-dev workflow,
-#   removed hardcoded anthropics/claude-code link format, generalized repo references
-description: "Automated PR review — bugs + CLAUDE.md compliance with inline GitHub comments"
+#   terminal-only by default, inline comments require github_inline_comment MCP server
+description: "Automated PR review — bugs + CLAUDE.md compliance, terminal output"
 argument-hint: "[PR-number-or-url] [--comment]"
 allowed-tools: ["Bash(gh issue view:*)", "Bash(gh search:*)", "Bash(gh issue list:*)", "Bash(gh pr comment:*)", "Bash(gh pr diff:*)", "Bash(gh pr view:*)", "Bash(gh pr list:*)", "mcp__github_inline_comment__create_inline_comment"]
 ---
 
 # PR Review — Automated Pull Request Analysis
 
-Automated code review for pull requests using multiple specialized agents with confidence-based scoring. Posts inline GitHub comments with actionable findings.
+Automated code review for pull requests using multiple specialized agents with confidence-based scoring. Results are shown in the terminal. Optionally posts inline GitHub comments if `--comment` is passed and the `github_inline_comment` MCP server is configured.
 
 Use this AFTER `/deep-review` (Phase C) when the PR is pushed and ready for final automated validation.
 
@@ -85,17 +85,20 @@ Output a summary of review findings to the terminal:
 - If issues found: list each with a brief description
 - If no issues found: "No issues found. Checked for bugs and CLAUDE.md compliance."
 
-If `--comment` argument was NOT provided, stop here.
+If `--comment` argument was NOT provided, stop here. This is the default mode.
 
-If `--comment` argument IS provided and NO issues found, post a summary comment using `gh pr comment` and stop.
+If `--comment` argument IS provided, continue to step 8.
 
-If `--comment` argument IS provided and issues found, continue to step 8.
+### 8. Post Summary Comment
 
-### 8. Plan Comments
+If NO issues were found, post a summary comment using `gh pr comment` and stop.
 
-Create an internal list of all comments you plan to leave. Do not post this list anywhere.
+If issues were found, continue to step 9.
 
-### 9. Post Inline Comments
+### 9. Post Inline Comments (requires MCP server)
+
+> **Prerequisite:** The `github_inline_comment` MCP server must be configured.
+> If it is not available, fall back to posting all issues as a single `gh pr comment` with a formatted list instead.
 
 Post inline comments using `mcp__github_inline_comment__create_inline_comment` with `confirmed: true`. For each comment:
 - Provide a brief description of the issue
@@ -104,6 +107,8 @@ Post inline comments using `mcp__github_inline_comment__create_inline_comment` w
 - Never post a committable suggestion UNLESS committing it fixes the issue entirely
 
 **Only ONE comment per unique issue. No duplicates.**
+
+**Fallback (no MCP server):** Post a single PR comment via `gh pr comment` with all issues formatted as a list, including file paths and line numbers.
 
 ## False Positive Exclusion List
 
@@ -141,9 +146,15 @@ This command is **Phase D** of the extended development workflow:
 - `/deep-review` is pre-push, runs locally, covers 5 quality dimensions
 - `/pr-review` is post-push, posts to GitHub, focuses on bugs + CLAUDE.md compliance
 
+## MCP Server (optional)
+
+Inline GitHub comments require the `github_inline_comment` MCP server. Without it:
+- Terminal output works fully (steps 1-7)
+- `--comment` falls back to a single `gh pr comment` with all findings
+
 ## Notes
 
 - Use `gh` CLI to interact with GitHub. Do not use web fetch.
-- Cite and link each issue in inline comments (include link to CLAUDE.md if referencing a rule)
+- Cite and link each issue in comments (include link to CLAUDE.md if referencing a rule)
 - When linking to code, use full SHA format: `https://github.com/owner/repo/blob/<full-sha>/path#L<start>-L<end>`
 - Provide at least 1 line of context before and after in code links

@@ -1,63 +1,66 @@
 # Dev Forge
 
-Plugin marketplace for Claude Code. Plugins provide procedures, projects provide knowledge.
+Personal unified plugin for Claude Code. Single point of control for all skills, agents, hooks, and commands across all projects.
+
+## Why this exists
+
+Instead of installing multiple plugins (superpowers, skill-creator, custom skills) in each project, dev-forge curates everything in one place. Install once, get everything. Update here, all projects benefit.
 
 ## Architecture
 
-Monorepo with two plugins embedded via `git-subdir` source:
-- `plugins/forge-init/` — disposable bootstrapper (use once, uninstall)
-- `plugins/forge-keeper/` — permanent context maintenance
+Two-layer system:
 
-Each plugin is self-contained: `.claude-plugin/plugin.json`, `skills/`, `commands/`, and optionally `hooks/` + `scripts/`.
+**Marketplace** (`.claude-plugin/marketplace.json`) — distributes plugins via `git-subdir`:
+- `plugins/forge-init/` — disposable bootstrapper for OTHER projects (install, bootstrap, uninstall)
+- `plugins/forge-keeper/` — permanent plugin with curated skills, context maintenance, hooks
 
-## Plugin anatomy
+**Curation sources:**
+- Superpowers (obra/superpowers) — workflow skills, adapted and personalized
+- Anthropic official (skill-creator) — kept as-is or lightly adapted
+- Custom — forge-keeper, forge-init, project-specific skills
 
-```
-plugins/<name>/
-├── .claude-plugin/plugin.json    ← manifest (name, version, description, author)
-├── skills/<name>/
-│   ├── SKILL.md                  ← main skill (YAML frontmatter: name, description)
-│   └── references/               ← guides Claude reads on demand
-├── commands/                     ← slash commands (YAML frontmatter: description)
-├── hooks/hooks.json              ← optional: event hooks
-└── scripts/                      ← optional: hook scripts
-```
+## What goes where
+
+- `plugins/forge-keeper/skills/` — all permanent skills (curated + custom)
+- `plugins/forge-keeper/commands/` — slash commands
+- `plugins/forge-keeper/hooks/` — event hooks
+- `plugins/forge-keeper/agents/` — agent definitions
+- `plugins/forge-init/` — bootstrapper only, separate lifecycle
+
+## Workflow for curating skills
+
+1. Identify a skill from superpowers, anthropic, or create new
+2. Adapt to personal preferences (e.g., less strict brainstorming trigger)
+3. Add to `plugins/forge-keeper/skills/<name>/`
+4. Test with `claude --plugin-dir plugins/forge-keeper`
+5. Commit and push — all projects get the update
+
+## Conventions
+
+- SKILL.md frontmatter: `name` and `description` required
+- Command .md frontmatter: `description` required
+- Reference files: plain markdown, no frontmatter
+- Hook scripts: `${CLAUDE_PLUGIN_ROOT}` for paths, always exit 0
+- JSON: validate with `python3 -m json.tool`
+- Skills from external sources: note origin in a comment at top of SKILL.md
 
 ## Commands
 
 ```bash
-# Test a plugin locally
-claude --plugin-dir plugins/forge-init
+# Test forge-keeper (the main plugin)
 claude --plugin-dir plugins/forge-keeper
 
-# Test both
+# Test forge-init (the bootstrapper)
+claude --plugin-dir plugins/forge-init
+
+# Test both together
 claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 ```
-
-## Conventions
-
-- SKILL.md frontmatter MUST have `name` and `description` — description includes trigger phrases
-- Command .md frontmatter MUST have `description`
-- Reference files are plain markdown (no frontmatter) — read by the skill on demand
-- Hook scripts use `${CLAUDE_PLUGIN_ROOT}` for path resolution
-- Hook scripts must never block Claude Code — always exit 0
-- All JSON validated with `python3 -m json.tool`
-- marketplace.json uses `git-subdir` source pointing to `plugins/<name>`
-
-## Adding a new plugin
-
-1. Create `plugins/<name>/.claude-plugin/plugin.json`
-2. Create `plugins/<name>/skills/<name>/SKILL.md` with triggers in description
-3. Add references under `skills/<name>/references/` if needed
-4. Add commands under `commands/` if needed
-5. Add entry to `.claude-plugin/marketplace.json` plugins array
-6. Update README.md
-7. Test with `claude --plugin-dir plugins/<name>`
 
 ## Gotchas
 
 - marketplace.json `source.url` must use https (not git@) for public access
-- Plugin directories need `.claude-plugin/plugin.json` to be recognized
-- Skills trigger based on description text — vague descriptions = unreliable triggers
-- forge-keeper's semantic trigger will be refined with skill-creator evals
-- context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
+- forge-keeper is the main plugin — all curated skills go here, not in separate plugins
+- forge-init is intentionally separate because it's disposable (uninstall after use)
+- When updating from upstream (superpowers, anthropic), diff against your customizations
+- context-watch.sh uses `trap 'exit 0' ERR` for safety

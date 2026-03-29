@@ -12,3 +12,5 @@ globs: plugins/**
 - Hook scripts must guarantee exit 0 — use `trap 'exit 0' ERR` or equivalent
 - JSON files must validate with `python3 -m json.tool`
 - When modifying marketplace.json, keep source URLs as https (not git@ssh)
+- Skills curated from external sources (superpowers, anthropic) must note origin at top of SKILL.md
+- When updating from upstream, diff against local customizations before overwriting

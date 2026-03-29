@@ -1,19 +1,21 @@
-# 2. Unified plugin architecture
+# 2. Independent plugins, not monolithic bundle
 
 **Date:** 2026-03-29
-**Status:** accepted
+**Status:** accepted (supersedes earlier "unified plugin" approach)
 
 ## Context
-Initially dev-forge was designed as a marketplace with two plugins (forge-init + forge-keeper). In practice, the goal is a single curated plugin that aggregates skills from multiple sources (superpowers, anthropic official, custom) so the user only needs one plugin installed across all projects.
+First iteration bundled everything into forge-keeper as one big plugin. This prevented testing individual skills in isolation and forced an all-or-nothing installation. The real need is a marketplace of independent plugins where each can be installed, tested, and removed individually.
 
 ## Decision
-Dev-forge becomes a personal unified plugin collection:
-- forge-keeper is the main permanent plugin containing all curated skills, agents, hooks
-- forge-init stays separate because it's disposable (install → bootstrap → uninstall)
-- Skills from external sources are curated into forge-keeper, adapted to personal preferences
-- No need to install superpowers, skill-creator, etc. separately
+Each skill/agent/hook set is an **independent plugin** in `plugins/<name>/`:
+- Default is full independence — every plugin works standalone
+- Only unify when components are tightly coupled (e.g., forge-keeper's hook + sync skill)
+- The marketplace catalog (`marketplace.json`) lists all available plugins
+- Users install what they need, remove what they don't
+- Dependency map in `docs/dependencies.md` documents relationships
 
 ## Consequences
-- Easier: one plugin to manage, one place to customize, updates propagate everywhere
-- Harder: must manually track upstream changes in superpowers/anthropic skills
-- Trade-off: forge-keeper's context footprint grows with more skills (mitigate with progressive disclosure)
+- Easier: test with/without any plugin, gradual adoption, no bloated context
+- Easier: clear ownership per plugin, simpler updates from upstream
+- Harder: more plugins to manage in marketplace.json
+- Trade-off: some duplication of reference files across plugins (acceptable — independence > DRY at plugin level)

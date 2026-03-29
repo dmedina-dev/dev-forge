@@ -1,39 +1,45 @@
 # Dev Forge
 
-Personal unified plugin for Claude Code. Single point of control for all skills, agents, hooks, and commands across all projects.
-
-## Why this exists
-
-Instead of installing multiple plugins (superpowers, skill-creator, custom skills) in each project, dev-forge curates everything in one place. Install once, get everything. Update here, all projects benefit.
+Personal plugin marketplace for Claude Code. Curated collection of independent plugins that can be installed individually or all at once.
 
 ## Architecture
 
-Two-layer system:
+Each plugin is **independent** — install, test, remove any plugin without affecting others. The marketplace is the catalog, not a bundle.
 
-**Marketplace** (`.claude-plugin/marketplace.json`) — distributes plugins via `git-subdir`:
-- `plugins/forge-init/` — disposable bootstrapper for OTHER projects (install, bootstrap, uninstall)
-- `plugins/forge-keeper/` — permanent plugin with curated skills, context maintenance, hooks
+```
+dev-forge/
+├── .claude-plugin/marketplace.json    ← catalog of all available plugins
+├── plugins/
+│   ├── forge-init/                    ← bootstrapper (disposable)
+│   ├── forge-keeper/                  ← context maintenance
+│   ├── forge-agents/                  ← work agents with model config (example)
+│   ├── forge-tdd/                     ← TDD workflow (curated from superpowers)
+│   └── ...                            ← each plugin independent
+└── docs/
+    └── dependencies.md                ← dependency map between plugins
+```
 
-**Curation sources:**
-- Superpowers (obra/superpowers) — workflow skills, adapted and personalized
-- Anthropic official (skill-creator) — kept as-is or lightly adapted
-- Custom — forge-keeper, forge-init, project-specific skills
+## Plugin independence
 
-## What goes where
+- Every plugin works standalone — no implicit dependencies
+- If a plugin REQUIRES another, document it in `dependencies.md`
+- Testing with/without a plugin: `claude --plugin-dir plugins/<name>`
+- Install all: install every plugin from the marketplace
+- Install subset: pick only what you need
 
-- `plugins/forge-keeper/skills/` — all permanent skills (curated + custom)
-- `plugins/forge-keeper/commands/` — slash commands
-- `plugins/forge-keeper/hooks/` — event hooks
-- `plugins/forge-keeper/agents/` — agent definitions
-- `plugins/forge-init/` — bootstrapper only, separate lifecycle
+## When to unify vs separate
 
-## Workflow for curating skills
+**Separate** (default): skills, agents, commands that make sense alone
+**Unified** (exception): when a hook + skill + agent form a cohesive unit that breaks without each other (e.g., forge-keeper's context-watch hook + sync skill)
 
-1. Identify a skill from superpowers, anthropic, or create new
-2. Adapt to personal preferences (e.g., less strict brainstorming trigger)
-3. Add to `plugins/forge-keeper/skills/<name>/`
-4. Test with `claude --plugin-dir plugins/forge-keeper`
-5. Commit and push — all projects get the update
+## Curation workflow
+
+1. Find useful skill/agent/hook (superpowers, anthropic, custom)
+2. Create independent plugin in `plugins/<name>/`
+3. Note origin in SKILL.md if curated from external source
+4. Add to marketplace.json
+5. Test independently: `claude --plugin-dir plugins/<name>`
+6. Push — available for installation
 
 ## Conventions
 
@@ -42,25 +48,4 @@ Two-layer system:
 - Reference files: plain markdown, no frontmatter
 - Hook scripts: `${CLAUDE_PLUGIN_ROOT}` for paths, always exit 0
 - JSON: validate with `python3 -m json.tool`
-- Skills from external sources: note origin in a comment at top of SKILL.md
-
-## Commands
-
-```bash
-# Test forge-keeper (the main plugin)
-claude --plugin-dir plugins/forge-keeper
-
-# Test forge-init (the bootstrapper)
-claude --plugin-dir plugins/forge-init
-
-# Test both together
-claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
-```
-
-## Gotchas
-
-- marketplace.json `source.url` must use https (not git@) for public access
-- forge-keeper is the main plugin — all curated skills go here, not in separate plugins
-- forge-init is intentionally separate because it's disposable (uninstall after use)
-- When updating from upstream (superpowers, anthropic), diff against your customizations
-- context-watch.sh uses `trap 'exit 0' ERR` for safety
+- Skills from external sources: note origin at top of SKILL.md

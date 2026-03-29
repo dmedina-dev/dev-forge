@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Safety net: this hook must NEVER block Claude Code — always exit 0
+trap 'exit 0' ERR
+set -uo pipefail
 
 STATE_DIR="/tmp/session-keeper"
 STATE_FILE="$STATE_DIR/state.json"

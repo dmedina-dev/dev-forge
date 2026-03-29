@@ -54,8 +54,8 @@ After approval:
 To uninstall forge-init (no longer needed):
   /plugin → Manage and uninstall plugins → forge-init → Uninstall
 
-session-keeper is active for ongoing maintenance.
-Run /session-keeper:status to check context health anytime.
+forge-keeper is active for ongoing maintenance.
+Run /forge-keeper:status to check context health anytime.
 ```
 
 ## References

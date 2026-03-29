@@ -1,6 +1,6 @@
 # CLAUDE.md Maintenance Guide
 
-Reference for session-keeper's sync process. Use this when updating CLAUDE.md
+Reference for forge-keeper's sync process. Use this when updating CLAUDE.md
 files after development sessions.
 
 ## When to Update CLAUDE.md

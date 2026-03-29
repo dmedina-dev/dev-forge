@@ -1,6 +1,6 @@
 # Structured Proposal Format
 
-Reference for session-keeper step 7. Use this format to present sync results
+Reference for forge-keeper step 7. Use this format to present sync results
 to the user for approval.
 
 ## Format

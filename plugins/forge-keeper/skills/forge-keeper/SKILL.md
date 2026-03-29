@@ -1,5 +1,5 @@
 ---
-name: session-keeper
+name: forge-keeper
 description: >
   Keeps CLAUDE.md, project documentation and memories in sync after development
   sessions. This skill should activate when detecting semantic context shifts:
@@ -7,12 +7,12 @@ description: >
   payments), shifts from frontend to backend or across monorepo zones, makes
   significant architectural decisions, or accumulates substantial changes that
   haven't been captured in project context. Also activates with explicit
-  /session-keeper:sync. Use when the user mentions "update context", "sync docs",
+  /forge-keeper:sync. Use when the user mentions "update context", "sync docs",
   "refresh CLAUDE.md", "session handoff", "save progress", or when you detect
   the conversation has drifted across multiple concerns without a sync.
 ---
 
-# Session Keeper
+# Forge Keeper
 
 Keeps project context synchronized across Claude Code sessions.
 
@@ -53,9 +53,17 @@ For detailed criteria on each step, read the corresponding references.
 **DO NOT apply changes without explicit human confirmation.**
 After approval, run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh`.
 
+## Optimize (deep restructuring)
+
+`/forge-keeper:optimize` — full audit of project fuel against current engine
+capabilities. Use after plugin updates or when project config feels outdated.
+Unlike sync (incremental, session-based), optimize does a deep restructuring.
+See `references/optimize-process.md` for the full procedure.
+
 ## References
 
 - CLAUDE.md maintenance → `references/claudemd-guide.md`
 - Monorepo patterns → `references/monorepo-patterns.md`
 - Exemplar evaluation → `references/exemplar-evaluation.md`
 - Proposal format → `references/proposal-format.md`
+- Optimize process → `references/optimize-process.md`

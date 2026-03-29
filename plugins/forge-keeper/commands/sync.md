@@ -2,7 +2,7 @@
 description: Syncs CLAUDE.md, rules, docs and memories with the current session's changes. Analyzes git diff, classifies by zone, proposes updates for human review.
 ---
 
-Run the session-keeper skill to synchronize project context.
+Run the forge-keeper skill to synchronize project context.
 
 Steps:
 1. Analyze session changes via git diff

@@ -17,7 +17,7 @@ of the plugins.
 | Plugin | Purpose | Lifecycle |
 |--------|---------|-----------|
 | **forge-init** | Two-step bootstrapper: runs native `/init`, then layers conventions | Disposable — uninstall after use |
-| **session-keeper** | Keeps CLAUDE.md, docs, and memories in sync across sessions | Permanent |
+| **forge-keeper** | Keeps CLAUDE.md, docs, and memories in sync across sessions | Permanent |
 
 ## Installation
 
@@ -27,7 +27,7 @@ of the plugins.
 
 # New project setup
 /plugin install forge-init
-/plugin install session-keeper
+/plugin install forge-keeper
 
 # Bootstrap the project
 /forge-init:init
@@ -52,28 +52,29 @@ Run `/forge-init:init` in a new or existing project. It will:
 
 All changes require your approval. After bootstrap, uninstall forge-init.
 
-### session-keeper
+### forge-keeper
 
 Stays installed permanently. Three ways it activates:
 
 - **Semantic detection** — Claude detects you've shifted context (e.g., from auth
-  to payments) and suggests running `/session-keeper:sync`
-- **Explicit command** — Run `/session-keeper:sync` anytime to capture session changes
+  to payments) and suggests running `/forge-keeper:sync`
+- **Explicit command** — Run `/forge-keeper:sync` anytime to capture session changes
 - **Safety net hook** — Monitors git activity and reminds when thresholds are exceeded
 
 Commands:
-- `/session-keeper:sync` — Analyze changes, propose CLAUDE.md updates, generate session summary
-- `/session-keeper:status` — Context health report with drift detection
+- `/forge-keeper:sync` — Analyze changes, propose CLAUDE.md updates, generate session summary
+- `/forge-keeper:status` — Context health report with drift detection
+- `/forge-keeper:optimize` — Deep restructuring after plugin updates — audits project config against current engine capabilities
 
 ## Configuration
 
-### Environment variables (session-keeper hook thresholds)
+### Environment variables (forge-keeper hook thresholds)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SK_MIN_FILES` | 20 | Minimum changed files to trigger reminder |
-| `SK_MIN_ZONES` | 3 | Minimum zones touched to trigger reminder |
-| `SK_COOLDOWN` | 15 | Minimum prompts between reminders |
+| `FK_MIN_FILES` | 20 | Minimum changed files to trigger reminder |
+| `FK_MIN_ZONES` | 3 | Minimum zones touched to trigger reminder |
+| `FK_COOLDOWN` | 15 | Minimum prompts between reminders |
 
 ### Team auto-install
 

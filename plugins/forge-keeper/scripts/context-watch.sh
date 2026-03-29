@@ -3,11 +3,11 @@
 trap 'exit 0' ERR
 set -uo pipefail
 
-STATE_DIR="/tmp/session-keeper"
+STATE_DIR="/tmp/forge-keeper"
 STATE_FILE="$STATE_DIR/state.json"
-MIN_FILES="${SK_MIN_FILES:-20}"
-MIN_ZONES="${SK_MIN_ZONES:-3}"
-COOLDOWN="${SK_COOLDOWN:-15}"
+MIN_FILES="${FK_MIN_FILES:-20}"
+MIN_ZONES="${FK_MIN_ZONES:-3}"
+COOLDOWN="${FK_COOLDOWN:-15}"
 
 mkdir -p "$STATE_DIR"
 
@@ -61,6 +61,6 @@ STATEJSON
 # Emit
 if [ "$SHOULD_REMIND" = true ]; then
   cat << EOF
-{"message":"Context checkpoint — ${FILE_COUNT} files changed across ${ZONE_COUNT} zones:\n$(echo -e "$ZONE_DETAIL")\nConsider running /session-keeper:sync to capture these changes. (Ignore if you're in the middle of something.)"}
+{"message":"Context checkpoint — ${FILE_COUNT} files changed across ${ZONE_COUNT} zones:\n$(echo -e "$ZONE_DETAIL")\nConsider running /forge-keeper:sync to capture these changes. (Ignore if you're in the middle of something.)"}
 EOF
 fi

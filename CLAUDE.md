@@ -6,7 +6,7 @@ Plugin marketplace for Claude Code. Plugins provide procedures, projects provide
 
 Monorepo with two plugins embedded via `git-subdir` source:
 - `plugins/forge-init/` — disposable bootstrapper (use once, uninstall)
-- `plugins/session-keeper/` — permanent context maintenance
+- `plugins/forge-keeper/` — permanent context maintenance
 
 Each plugin is self-contained: `.claude-plugin/plugin.json`, `skills/`, `commands/`, and optionally `hooks/` + `scripts/`.
 
@@ -28,10 +28,10 @@ plugins/<name>/
 ```bash
 # Test a plugin locally
 claude --plugin-dir plugins/forge-init
-claude --plugin-dir plugins/session-keeper
+claude --plugin-dir plugins/forge-keeper
 
 # Test both
-claude --plugin-dir plugins/forge-init --plugin-dir plugins/session-keeper
+claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 ```
 
 ## Conventions
@@ -59,5 +59,5 @@ claude --plugin-dir plugins/forge-init --plugin-dir plugins/session-keeper
 - marketplace.json `source.url` must use https (not git@) for public access
 - Plugin directories need `.claude-plugin/plugin.json` to be recognized
 - Skills trigger based on description text — vague descriptions = unreliable triggers
-- session-keeper's semantic trigger will be refined with skill-creator evals
+- forge-keeper's semantic trigger will be refined with skill-creator evals
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety

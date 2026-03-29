@@ -2,7 +2,7 @@
 
 > **Date:** 2026-03-29
 > **Status:** approved
-> **Scope:** Full marketplace with two plugins (forge-init + session-keeper)
+> **Scope:** Full marketplace with two plugins (forge-init + forge-keeper)
 
 ---
 
@@ -32,16 +32,16 @@ dev-forge/                              ← marketplace repo (dmedina-dev/dev-fo
 │   │   │       └── manual-discovery.md      ← fallback without /init
 │   │   └── commands/
 │   │       └── init.md                 ← /forge-init:init entry point
-│   └── session-keeper/                 ← permanent plugin (maintenance)
+│   └── forge-keeper/                 ← permanent plugin (maintenance)
 │       ├── .claude-plugin/plugin.json
-│       ├── skills/session-keeper/
+│       ├── skills/forge-keeper/
 │       │   ├── SKILL.md               ← main skill (semantic trigger)
 │       │   └── references/
 │       │       ├── claudemd-guide.md        ← CLAUDE.md maintenance guide
 │       │       └── monorepo-patterns.md     ← monorepo patterns
 │       ├── commands/
-│       │   ├── sync.md                 ← /session-keeper:sync
-│       │   └── status.md              ← /session-keeper:status
+│       │   ├── sync.md                 ← /forge-keeper:sync
+│       │   └── status.md              ← /forge-keeper:status
 │       ├── hooks/hooks.json            ← UserPromptSubmit → context watcher
 │       └── scripts/
 │           ├── context-watch.sh        ← monitors git activity (safety net)
@@ -79,12 +79,12 @@ Monorepo approach using `git-subdir` source type. Both plugins embedded in the s
       "version": "1.0.0"
     },
     {
-      "name": "session-keeper",
+      "name": "forge-keeper",
       "description": "Keeps CLAUDE.md, docs and memories in sync across sessions.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/session-keeper"
+        "path": "plugins/forge-keeper"
       },
       "version": "1.0.0"
     }
@@ -159,7 +159,7 @@ After initialization is approved, reminds user to uninstall forge-init via `/plu
 
 ---
 
-## Plugin 2: session-keeper (permanent)
+## Plugin 2: forge-keeper (permanent)
 
 ### Purpose
 
@@ -175,21 +175,21 @@ The skill description is written so Claude detects semantic context shifts:
 - Jump from frontend to backend or across monorepo zones
 - Significant architectural decisions being made
 
-Claude proactively suggests `/session-keeper:sync` when detecting drift. The description will be refined iteratively using skill-creator with evals against real conversations.
+Claude proactively suggests `/forge-keeper:sync` when detecting drift. The description will be refined iteratively using skill-creator with evals against real conversations.
 
 **Secondary — Hook safety net (context-watch.sh)**
 
 Shell script hook on `UserPromptSubmit` with relaxed thresholds:
-- `SK_MIN_FILES=20` — minimum changed files
-- `SK_MIN_ZONES=3` — minimum zones touched
-- `SK_COOLDOWN=15` — minimum prompts since last reminder
+- `FK_MIN_FILES=20` — minimum changed files
+- `FK_MIN_ZONES=3` — minimum zones touched
+- `FK_COOLDOWN=15` — minimum prompts since last reminder
 - Must have new activity since last check
 
-State persisted in `/tmp/session-keeper/state.json`. Non-blocking, always exit 0.
+State persisted in `/tmp/forge-keeper/state.json`. Non-blocking, always exit 0.
 
 Hook command uses `bash ${CLAUDE_PLUGIN_ROOT}/scripts/context-watch.sh` for correct path resolution.
 
-### `/session-keeper:sync` — On-demand synchronization
+### `/forge-keeper:sync` — On-demand synchronization
 
 Six-step procedure:
 
@@ -200,7 +200,7 @@ Six-step procedure:
 5. **Generate session summary** — `docs/sessions/YYYY-MM-DD-title.md` with changes, decisions, status, context for next session
 6. **Present and confirm** — show all proposed changes, wait for human approval. After applying, run `reset-watch.sh`
 
-### `/session-keeper:status` — Health check
+### `/forge-keeper:status` — Health check
 
 Generates context health report:
 - All CLAUDE.md files with last modification date
@@ -232,11 +232,11 @@ Last session: 2026-03-25 — "Refactor auth module"
 | File | Purpose |
 |------|---------|
 | `.claude-plugin/plugin.json` | Plugin manifest |
-| `skills/session-keeper/SKILL.md` | Main skill with semantic trigger and sync procedure |
-| `skills/session-keeper/references/claudemd-guide.md` | Guide for maintaining CLAUDE.md — incremental updates, when to prune, when to update, conflict resolution between root and children |
-| `skills/session-keeper/references/monorepo-patterns.md` | Root vs child scope, path-scoped rules, lazy loading, claudeMdExcludes, conflict resolution |
-| `commands/sync.md` | `/session-keeper:sync` entry point |
-| `commands/status.md` | `/session-keeper:status` entry point |
+| `skills/forge-keeper/SKILL.md` | Main skill with semantic trigger and sync procedure |
+| `skills/forge-keeper/references/claudemd-guide.md` | Guide for maintaining CLAUDE.md — incremental updates, when to prune, when to update, conflict resolution between root and children |
+| `skills/forge-keeper/references/monorepo-patterns.md` | Root vs child scope, path-scoped rules, lazy loading, claudeMdExcludes, conflict resolution |
+| `commands/sync.md` | `/forge-keeper:sync` entry point |
+| `commands/status.md` | `/forge-keeper:status` entry point |
 | `hooks/hooks.json` | UserPromptSubmit → context-watch.sh |
 | `scripts/context-watch.sh` | Git activity monitor with relaxed thresholds |
 | `scripts/reset-watch.sh` | Resets watcher state |
@@ -253,17 +253,17 @@ Last session: 2026-03-25 — "Refactor auth module"
 
 # New project setup
 /plugin install forge-init
-/plugin install session-keeper
+/plugin install forge-keeper
 /forge-init:init          # Step 1: /init interview → Step 2: conventions
 # Uninstall forge-init after
 
 # Ongoing work
-# Semantic trigger detects context shift → suggests /session-keeper:sync
+# Semantic trigger detects context shift → suggests /forge-keeper:sync
 # Safety net hook reminds at high thresholds
-# Human runs /session-keeper:sync → approve changes
+# Human runs /forge-keeper:sync → approve changes
 
 # Health check
-/session-keeper:status
+/forge-keeper:status
 ```
 
 ### Team auto-install
@@ -293,25 +293,25 @@ Add to project's `.claude/settings.json`:
 # Test forge-init
 claude --plugin-dir /path/to/dev-forge/plugins/forge-init
 
-# Test session-keeper
-claude --plugin-dir /path/to/dev-forge/plugins/session-keeper
+# Test forge-keeper
+claude --plugin-dir /path/to/dev-forge/plugins/forge-keeper
 
 # Test both
 claude --plugin-dir /path/to/dev-forge/plugins/forge-init \
-       --plugin-dir /path/to/dev-forge/plugins/session-keeper
+       --plugin-dir /path/to/dev-forge/plugins/forge-keeper
 ```
 
 ### Verification checklist
 
 1. `/forge-init:init` → executes `/init` or manual fallback, then conventions layer
-2. `/session-keeper:status` → lists CLAUDE.md, drift, rules
-3. `/session-keeper:sync` → analyzes diff, proposes changes, waits for confirmation
+2. `/forge-keeper:status` → lists CLAUDE.md, drift, rules
+3. `/forge-keeper:sync` → analyzes diff, proposes changes, waits for confirmation
 4. Semantic trigger → shift topics in conversation, verify sync suggestion
 5. Hook safety net → accumulate activity, verify reminder at high thresholds
 
 ### Iteration plan
 
-Use skill-creator to run evals on session-keeper's semantic trigger, refining the SKILL.md description with tests across real project branches.
+Use skill-creator to run evals on forge-keeper's semantic trigger, refining the SKILL.md description with tests across real project branches.
 
 ---
 
@@ -323,13 +323,60 @@ Use skill-creator to run evals on session-keeper's semantic trigger, refining th
 
 **Why forge-init is disposable:** Its skill description occupies context window space every session. After bootstrapping, that's waste. The conventions it created live in the project.
 
-**Why two-tier trigger for session-keeper:** Claude can detect semantic context shifts (domain changes, concept jumps) that file counts cannot. The hook acts as safety net with relaxed thresholds, not the primary trigger. Semantic detection will be refined iteratively with skill-creator evals.
+**Why two-tier trigger for forge-keeper:** Claude can detect semantic context shifts (domain changes, concept jumps) that file counts cannot. The hook acts as safety net with relaxed thresholds, not the primary trigger. Semantic detection will be refined iteratively with skill-creator evals.
 
 **Why the hook uses git diff, not prompt count:** Activity-based thresholds are more useful than time-based ones. 20 questions about one file ≠ context drift. 5 prompts across 3 packages = needs sync.
 
-**Why reference files are separate per plugin:** forge-init focuses on CLAUDE.md creation, session-keeper on maintenance. Different angles, some shared concepts, but each plugin is self-contained and independently installable.
+**Why reference files are separate per plugin:** forge-init focuses on CLAUDE.md creation, forge-keeper on maintenance. Different angles, some shared concepts, but each plugin is self-contained and independently installable.
 
-**Why session-keeper references are generic:** Best practices for CLAUDE.md and monorepo patterns apply to any project. They belong in the engine so improvements propagate everywhere. Project-specific rules go in `.claude/rules/` (fuel).
+**Why forge-keeper references are generic:** Best practices for CLAUDE.md and monorepo patterns apply to any project. They belong in the engine so improvements propagate everywhere. Project-specific rules go in `.claude/rules/` (fuel).
+
+---
+
+## forge-keeper:optimize — Deep restructuring
+
+### Purpose
+
+When the engine (dev-forge plugins) gets updated, the fuel (project's CLAUDE.md, rules, exemplars) might not take advantage of new capabilities. `/forge-keeper:optimize` does a full audit of project configuration against current engine features and proposes upgrades.
+
+### How it differs from sync
+
+| | forge-keeper:sync | forge-keeper:optimize |
+|---|---|---|
+| Trigger | Session changes / semantic drift | Plugin update / manual |
+| Scope | Incremental — what this session added | Deep — full audit against current engine |
+| Frequency | Per session | Per plugin update (~monthly) |
+| Compares | Code changes vs existing CLAUDE.md | Project fuel vs engine capabilities |
+
+### What it does
+
+1. Detects current engine capabilities from forge-init's references
+2. Audits project fuel: missing features, outdated patterns, deprecated config
+3. Checks structural quality (line limits, frontmatter format, @imports)
+4. Presents structured Upgrade/Restructure/Migrate proposal
+5. Applies only what the user approves
+
+### Proposal format
+
+```
+## Optimize Proposal
+
+### Upgrade (adopt new capabilities)
+- Create `docs/exemplars.md` — feature now available
+
+### Restructure (improve existing configuration)
+- `CLAUDE.md` — reorganize into WHY/WHAT/HOW structure
+
+### Migrate (fix deprecated patterns)
+- Update env vars: SK_ → FK_
+
+### No changes needed
+- `apps/api/CLAUDE.md` — follows current conventions ✓
+```
+
+### Design decision
+
+Lives as `/forge-keeper:optimize` command (not a separate plugin) because forge-keeper is already permanently installed. Adding a command doesn't increase context footprint, and the deep restructuring is infrequent but shouldn't require install/uninstall ceremony.
 
 ---
 

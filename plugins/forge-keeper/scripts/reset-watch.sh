@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-rm -f /tmp/session-keeper/state.json
+rm -f /tmp/forge-keeper/state.json
 echo '{"reset":true,"message":"Context watcher reset."}'

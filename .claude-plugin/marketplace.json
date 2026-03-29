@@ -20,12 +20,12 @@
       "version": "1.0.0"
     },
     {
-      "name": "session-keeper",
+      "name": "forge-keeper",
       "description": "Keeps CLAUDE.md, docs and memories in sync across sessions.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/session-keeper"
+        "path": "plugins/forge-keeper"
       },
       "version": "1.0.0"
     }

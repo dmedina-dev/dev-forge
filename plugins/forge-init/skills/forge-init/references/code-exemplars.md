@@ -63,7 +63,7 @@ For code exemplars see @docs/exemplars.md
 
 ## Key principles
 
-- Exemplars are living documents — session-keeper evaluates them after changes
+- Exemplars are living documents — forge-keeper evaluates them after changes
 - Fewer exemplars is better than many — only the truly clean ones
 - Exemplars should represent the target direction, not legacy patterns
 - If the whole project is transitioning, pick from the new-pattern code

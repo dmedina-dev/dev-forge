@@ -1,6 +1,6 @@
 # Exemplar Evaluation
 
-Reference for session-keeper step 4. Use this when evaluating whether code
+Reference for forge-keeper step 4. Use this when evaluating whether code
 exemplars are still the best reference after session changes.
 
 ## When to evaluate

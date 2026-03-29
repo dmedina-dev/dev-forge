@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a Claude Code plugin marketplace with two plugins — forge-init (disposable bootstrapper) and session-keeper (permanent context maintenance).
+**Goal:** Build a Claude Code plugin marketplace with two plugins — forge-init (disposable bootstrapper) and forge-keeper (permanent context maintenance).
 
-**Architecture:** Monorepo with `git-subdir` source type. Marketplace manifest at root, both plugins in `plugins/` subdirectories. Each plugin is self-contained with skills, commands, references, and (for session-keeper) hooks and scripts.
+**Architecture:** Monorepo with `git-subdir` source type. Marketplace manifest at root, both plugins in `plugins/` subdirectories. Each plugin is self-contained with skills, commands, references, and (for forge-keeper) hooks and scripts.
 
 **Tech Stack:** Markdown (skills, commands, references), JSON (manifests, hooks), Bash (context watcher scripts)
 
@@ -30,18 +30,18 @@ dev-forge/
 │   │   │           └── manual-discovery.md      ← NEW: fallback procedure
 │   │   └── commands/
 │   │       └── init.md                 ← NEW: /forge-init:init
-│   └── session-keeper/
+│   └── forge-keeper/
 │       ├── .claude-plugin/
 │       │   └── plugin.json             ← NEW: plugin manifest
 │       ├── skills/
-│       │   └── session-keeper/
+│       │   └── forge-keeper/
 │       │       ├── SKILL.md            ← NEW: main skill (semantic trigger)
 │       │       └── references/
 │       │           ├── claudemd-guide.md        ← NEW: maintenance guide
 │       │           └── monorepo-patterns.md     ← NEW: monorepo patterns
 │       ├── commands/
-│       │   ├── sync.md                 ← NEW: /session-keeper:sync
-│       │   └── status.md              ← NEW: /session-keeper:status
+│       │   ├── sync.md                 ← NEW: /forge-keeper:sync
+│       │   └── status.md              ← NEW: /forge-keeper:status
 │       ├── hooks/
 │       │   └── hooks.json              ← NEW: UserPromptSubmit hook
 │       └── scripts/
@@ -65,11 +65,11 @@ mkdir -p .claude-plugin
 mkdir -p plugins/forge-init/.claude-plugin
 mkdir -p plugins/forge-init/skills/forge-init/references
 mkdir -p plugins/forge-init/commands
-mkdir -p plugins/session-keeper/.claude-plugin
-mkdir -p plugins/session-keeper/skills/session-keeper/references
-mkdir -p plugins/session-keeper/commands
-mkdir -p plugins/session-keeper/hooks
-mkdir -p plugins/session-keeper/scripts
+mkdir -p plugins/forge-keeper/.claude-plugin
+mkdir -p plugins/forge-keeper/skills/forge-keeper/references
+mkdir -p plugins/forge-keeper/commands
+mkdir -p plugins/forge-keeper/hooks
+mkdir -p plugins/forge-keeper/scripts
 ```
 
 - [ ] **Step 2: Create marketplace.json**
@@ -99,12 +99,12 @@ Create `.claude-plugin/marketplace.json`:
       "version": "1.0.0"
     },
     {
-      "name": "session-keeper",
+      "name": "forge-keeper",
       "description": "Keeps CLAUDE.md, docs and memories in sync across sessions.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/session-keeper"
+        "path": "plugins/forge-keeper"
       },
       "version": "1.0.0"
     }
@@ -121,7 +121,7 @@ Expected: `VALID`
 
 ```bash
 git add .claude-plugin/marketplace.json
-git commit -m "feat: add marketplace manifest with forge-init and session-keeper plugins"
+git commit -m "feat: add marketplace manifest with forge-init and forge-keeper plugins"
 ```
 
 ---
@@ -324,8 +324,8 @@ After initialization is approved and applied:
 To uninstall forge-init (no longer needed):
   /plugin → Manage and uninstall plugins → forge-init → Uninstall
 
-session-keeper is active for ongoing maintenance.
-Run /session-keeper:status to check context health anytime.
+forge-keeper is active for ongoing maintenance.
+Run /forge-keeper:status to check context health anytime.
 ```
 
 ## Reference files
@@ -703,18 +703,18 @@ git commit -m "feat(forge-init): add /forge-init:init command entry point"
 
 ---
 
-## Task 7: session-keeper plugin manifest
+## Task 7: forge-keeper plugin manifest
 
 **Files:**
-- Create: `plugins/session-keeper/.claude-plugin/plugin.json`
+- Create: `plugins/forge-keeper/.claude-plugin/plugin.json`
 
 - [ ] **Step 1: Create plugin.json**
 
-Create `plugins/session-keeper/.claude-plugin/plugin.json`:
+Create `plugins/forge-keeper/.claude-plugin/plugin.json`:
 
 ```json
 {
-  "name": "session-keeper",
+  "name": "forge-keeper",
   "version": "1.0.0",
   "description": "Keeps CLAUDE.md, project docs and memories in sync after development sessions. Context-aware semantic detection plus explicit /sync command for human-driven updates. Safety-net git-based hook at relaxed thresholds.",
   "author": {
@@ -729,30 +729,30 @@ Create `plugins/session-keeper/.claude-plugin/plugin.json`:
 
 - [ ] **Step 2: Validate JSON syntax**
 
-Run: `cat plugins/session-keeper/.claude-plugin/plugin.json | python3 -m json.tool > /dev/null && echo "VALID" || echo "INVALID"`
+Run: `cat plugins/forge-keeper/.claude-plugin/plugin.json | python3 -m json.tool > /dev/null && echo "VALID" || echo "INVALID"`
 Expected: `VALID`
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/session-keeper/.claude-plugin/plugin.json
-git commit -m "feat(session-keeper): add plugin manifest"
+git add plugins/forge-keeper/.claude-plugin/plugin.json
+git commit -m "feat(forge-keeper): add plugin manifest"
 ```
 
 ---
 
-## Task 8: session-keeper SKILL.md
+## Task 8: forge-keeper SKILL.md
 
 **Files:**
-- Create: `plugins/session-keeper/skills/session-keeper/SKILL.md`
+- Create: `plugins/forge-keeper/skills/forge-keeper/SKILL.md`
 
 - [ ] **Step 1: Create SKILL.md**
 
-Create `plugins/session-keeper/skills/session-keeper/SKILL.md`:
+Create `plugins/forge-keeper/skills/forge-keeper/SKILL.md`:
 
 ````markdown
 ---
-name: session-keeper
+name: forge-keeper
 description: >
   Keeps CLAUDE.md, project documentation and memories in sync after development
   sessions. This skill should activate when detecting semantic context shifts:
@@ -760,12 +760,12 @@ description: >
   payments), shifts from frontend to backend or across monorepo zones, makes
   significant architectural decisions, or accumulates substantial changes that
   haven't been captured in project context. Also activates with explicit
-  /session-keeper:sync. Use when the user mentions "update context", "sync docs",
+  /forge-keeper:sync. Use when the user mentions "update context", "sync docs",
   "refresh CLAUDE.md", "session handoff", "save progress", or when you detect
   the conversation has drifted across multiple concerns without a sync.
 ---
 
-# Session Keeper
+# Forge Keeper
 
 Keeps project context synchronized across Claude Code sessions.
 
@@ -852,31 +852,31 @@ For monorepo patterns → `references/monorepo-patterns.md`
 
 - [ ] **Step 2: Verify frontmatter structure**
 
-Run: `head -12 plugins/session-keeper/skills/session-keeper/SKILL.md`
+Run: `head -12 plugins/forge-keeper/skills/forge-keeper/SKILL.md`
 Expected: YAML frontmatter with `name` and `description` fields. Description should contain semantic trigger phrases.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/session-keeper/skills/session-keeper/SKILL.md
-git commit -m "feat(session-keeper): add main skill with semantic trigger description"
+git add plugins/forge-keeper/skills/forge-keeper/SKILL.md
+git commit -m "feat(forge-keeper): add main skill with semantic trigger description"
 ```
 
 ---
 
-## Task 9: session-keeper reference — claudemd-guide.md
+## Task 9: forge-keeper reference — claudemd-guide.md
 
 **Files:**
-- Create: `plugins/session-keeper/skills/session-keeper/references/claudemd-guide.md`
+- Create: `plugins/forge-keeper/skills/forge-keeper/references/claudemd-guide.md`
 
 - [ ] **Step 1: Create claudemd-guide.md**
 
-Create `plugins/session-keeper/skills/session-keeper/references/claudemd-guide.md`:
+Create `plugins/forge-keeper/skills/forge-keeper/references/claudemd-guide.md`:
 
 ```markdown
 # CLAUDE.md Maintenance Guide
 
-Reference for session-keeper's sync process. Use this when updating CLAUDE.md
+Reference for forge-keeper's sync process. Use this when updating CLAUDE.md
 files after development sessions.
 
 ## When to Update CLAUDE.md
@@ -1006,26 +1006,26 @@ for cross-cutting patterns that span the project.
 
 - [ ] **Step 2: Verify file exists and has content**
 
-Run: `wc -l plugins/session-keeper/skills/session-keeper/references/claudemd-guide.md`
+Run: `wc -l plugins/forge-keeper/skills/forge-keeper/references/claudemd-guide.md`
 Expected: ~120 lines
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/session-keeper/skills/session-keeper/references/claudemd-guide.md
-git commit -m "feat(session-keeper): add CLAUDE.md maintenance reference guide"
+git add plugins/forge-keeper/skills/forge-keeper/references/claudemd-guide.md
+git commit -m "feat(forge-keeper): add CLAUDE.md maintenance reference guide"
 ```
 
 ---
 
-## Task 10: session-keeper reference — monorepo-patterns.md
+## Task 10: forge-keeper reference — monorepo-patterns.md
 
 **Files:**
-- Create: `plugins/session-keeper/skills/session-keeper/references/monorepo-patterns.md`
+- Create: `plugins/forge-keeper/skills/forge-keeper/references/monorepo-patterns.md`
 
 - [ ] **Step 1: Create monorepo-patterns.md**
 
-Create `plugins/session-keeper/skills/session-keeper/references/monorepo-patterns.md`:
+Create `plugins/forge-keeper/skills/forge-keeper/references/monorepo-patterns.md`:
 
 ```markdown
 # Monorepo Patterns for CLAUDE.md
@@ -1173,34 +1173,34 @@ Example of justified override:
 
 - [ ] **Step 2: Verify file exists and has content**
 
-Run: `wc -l plugins/session-keeper/skills/session-keeper/references/monorepo-patterns.md`
+Run: `wc -l plugins/forge-keeper/skills/forge-keeper/references/monorepo-patterns.md`
 Expected: ~130 lines
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add plugins/session-keeper/skills/session-keeper/references/monorepo-patterns.md
-git commit -m "feat(session-keeper): add monorepo patterns reference guide"
+git add plugins/forge-keeper/skills/forge-keeper/references/monorepo-patterns.md
+git commit -m "feat(forge-keeper): add monorepo patterns reference guide"
 ```
 
 ---
 
-## Task 11: session-keeper commands
+## Task 11: forge-keeper commands
 
 **Files:**
-- Create: `plugins/session-keeper/commands/sync.md`
-- Create: `plugins/session-keeper/commands/status.md`
+- Create: `plugins/forge-keeper/commands/sync.md`
+- Create: `plugins/forge-keeper/commands/status.md`
 
 - [ ] **Step 1: Create sync.md**
 
-Create `plugins/session-keeper/commands/sync.md`:
+Create `plugins/forge-keeper/commands/sync.md`:
 
 ```markdown
 ---
 description: Syncs CLAUDE.md, rules, docs and memories with the current session's changes. Analyzes git diff, classifies by zone, proposes updates for human review.
 ---
 
-Run the session-keeper skill to synchronize project context.
+Run the forge-keeper skill to synchronize project context.
 
 Steps:
 1. Analyze session changes via git diff
@@ -1215,7 +1215,7 @@ DO NOT apply changes without explicit human confirmation.
 
 - [ ] **Step 2: Create status.md**
 
-Create `plugins/session-keeper/commands/status.md`:
+Create `plugins/forge-keeper/commands/status.md`:
 
 ```markdown
 ---
@@ -1252,28 +1252,28 @@ Last session: YYYY-MM-DD — "Session title"
 
 - [ ] **Step 3: Verify frontmatter on both files**
 
-Run: `head -3 plugins/session-keeper/commands/sync.md && echo "---" && head -3 plugins/session-keeper/commands/status.md`
+Run: `head -3 plugins/forge-keeper/commands/sync.md && echo "---" && head -3 plugins/forge-keeper/commands/status.md`
 Expected: Both files start with `---` / `description:` / `---`
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add plugins/session-keeper/commands/sync.md plugins/session-keeper/commands/status.md
-git commit -m "feat(session-keeper): add /sync and /status commands"
+git add plugins/forge-keeper/commands/sync.md plugins/forge-keeper/commands/status.md
+git commit -m "feat(forge-keeper): add /sync and /status commands"
 ```
 
 ---
 
-## Task 12: session-keeper hooks and scripts
+## Task 12: forge-keeper hooks and scripts
 
 **Files:**
-- Create: `plugins/session-keeper/hooks/hooks.json`
-- Create: `plugins/session-keeper/scripts/context-watch.sh`
-- Create: `plugins/session-keeper/scripts/reset-watch.sh`
+- Create: `plugins/forge-keeper/hooks/hooks.json`
+- Create: `plugins/forge-keeper/scripts/context-watch.sh`
+- Create: `plugins/forge-keeper/scripts/reset-watch.sh`
 
 - [ ] **Step 1: Create hooks.json**
 
-Create `plugins/session-keeper/hooks/hooks.json`:
+Create `plugins/forge-keeper/hooks/hooks.json`:
 
 ```json
 {
@@ -1297,22 +1297,22 @@ Create `plugins/session-keeper/hooks/hooks.json`:
 
 - [ ] **Step 2: Validate JSON syntax**
 
-Run: `cat plugins/session-keeper/hooks/hooks.json | python3 -m json.tool > /dev/null && echo "VALID" || echo "INVALID"`
+Run: `cat plugins/forge-keeper/hooks/hooks.json | python3 -m json.tool > /dev/null && echo "VALID" || echo "INVALID"`
 Expected: `VALID`
 
 - [ ] **Step 3: Create context-watch.sh**
 
-Create `plugins/session-keeper/scripts/context-watch.sh`:
+Create `plugins/forge-keeper/scripts/context-watch.sh`:
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
-STATE_DIR="/tmp/session-keeper"
+STATE_DIR="/tmp/forge-keeper"
 STATE_FILE="$STATE_DIR/state.json"
-MIN_FILES="${SK_MIN_FILES:-20}"
-MIN_ZONES="${SK_MIN_ZONES:-3}"
-COOLDOWN="${SK_COOLDOWN:-15}"
+MIN_FILES="${FK_MIN_FILES:-20}"
+MIN_ZONES="${FK_MIN_ZONES:-3}"
+COOLDOWN="${FK_COOLDOWN:-15}"
 
 mkdir -p "$STATE_DIR"
 
@@ -1363,46 +1363,46 @@ STATEJSON
 # Emit
 if [ "$SHOULD_REMIND" = true ]; then
   cat << EOF
-{"message":"Context checkpoint — ${FILE_COUNT} files changed across ${ZONE_COUNT} zones:\n$(echo -e "$ZONE_DETAIL")\nConsider running /session-keeper:sync to capture these changes. (Ignore if you're in the middle of something.)"}
+{"message":"Context checkpoint — ${FILE_COUNT} files changed across ${ZONE_COUNT} zones:\n$(echo -e "$ZONE_DETAIL")\nConsider running /forge-keeper:sync to capture these changes. (Ignore if you're in the middle of something.)"}
 EOF
 fi
 ```
 
 - [ ] **Step 4: Create reset-watch.sh**
 
-Create `plugins/session-keeper/scripts/reset-watch.sh`:
+Create `plugins/forge-keeper/scripts/reset-watch.sh`:
 
 ```bash
 #!/usr/bin/env bash
-rm -f /tmp/session-keeper/state.json
+rm -f /tmp/forge-keeper/state.json
 echo '{"reset":true,"message":"Context watcher reset."}'
 ```
 
 - [ ] **Step 5: Make scripts executable**
 
-Run: `chmod +x plugins/session-keeper/scripts/context-watch.sh plugins/session-keeper/scripts/reset-watch.sh`
+Run: `chmod +x plugins/forge-keeper/scripts/context-watch.sh plugins/forge-keeper/scripts/reset-watch.sh`
 
 - [ ] **Step 6: Test context-watch.sh in a clean state**
 
-Run: `rm -f /tmp/session-keeper/state.json && cd /Users/dmedina/Factory/dev-forge && bash plugins/session-keeper/scripts/context-watch.sh`
+Run: `rm -f /tmp/forge-keeper/state.json && cd /Users/dmedina/Factory/dev-forge && bash plugins/forge-keeper/scripts/context-watch.sh`
 Expected: No output (thresholds not met). Exit code 0.
 
-Run: `cat /tmp/session-keeper/state.json`
+Run: `cat /tmp/forge-keeper/state.json`
 Expected: JSON with `prompt_count`, `last_reminder`, `last_file_count`, `zone_count` fields.
 
 - [ ] **Step 7: Test reset-watch.sh**
 
-Run: `bash plugins/session-keeper/scripts/reset-watch.sh`
+Run: `bash plugins/forge-keeper/scripts/reset-watch.sh`
 Expected: `{"reset":true,"message":"Context watcher reset."}`
 
-Run: `[ ! -f /tmp/session-keeper/state.json ] && echo "CLEANED" || echo "STILL EXISTS"`
+Run: `[ ! -f /tmp/forge-keeper/state.json ] && echo "CLEANED" || echo "STILL EXISTS"`
 Expected: `CLEANED`
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add plugins/session-keeper/hooks/hooks.json plugins/session-keeper/scripts/context-watch.sh plugins/session-keeper/scripts/reset-watch.sh
-git commit -m "feat(session-keeper): add context watcher hook and scripts"
+git add plugins/forge-keeper/hooks/hooks.json plugins/forge-keeper/scripts/context-watch.sh plugins/forge-keeper/scripts/reset-watch.sh
+git commit -m "feat(forge-keeper): add context watcher hook and scripts"
 ```
 
 ---
@@ -1436,7 +1436,7 @@ of the plugins.
 | Plugin | Purpose | Lifecycle |
 |--------|---------|-----------|
 | **forge-init** | Two-step bootstrapper: runs native `/init`, then layers conventions | Disposable — uninstall after use |
-| **session-keeper** | Keeps CLAUDE.md, docs, and memories in sync across sessions | Permanent |
+| **forge-keeper** | Keeps CLAUDE.md, docs, and memories in sync across sessions | Permanent |
 
 ## Installation
 
@@ -1446,7 +1446,7 @@ of the plugins.
 
 # New project setup
 /plugin install forge-init
-/plugin install session-keeper
+/plugin install forge-keeper
 
 # Bootstrap the project
 /forge-init:init
@@ -1471,28 +1471,28 @@ Run `/forge-init:init` in a new or existing project. It will:
 
 All changes require your approval. After bootstrap, uninstall forge-init.
 
-### session-keeper
+### forge-keeper
 
 Stays installed permanently. Three ways it activates:
 
 - **Semantic detection** — Claude detects you've shifted context (e.g., from auth
-  to payments) and suggests running `/session-keeper:sync`
-- **Explicit command** — Run `/session-keeper:sync` anytime to capture session changes
+  to payments) and suggests running `/forge-keeper:sync`
+- **Explicit command** — Run `/forge-keeper:sync` anytime to capture session changes
 - **Safety net hook** — Monitors git activity and reminds when thresholds are exceeded
 
 Commands:
-- `/session-keeper:sync` — Analyze changes, propose CLAUDE.md updates, generate session summary
-- `/session-keeper:status` — Context health report with drift detection
+- `/forge-keeper:sync` — Analyze changes, propose CLAUDE.md updates, generate session summary
+- `/forge-keeper:status` — Context health report with drift detection
 
 ## Configuration
 
-### Environment variables (session-keeper hook thresholds)
+### Environment variables (forge-keeper hook thresholds)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SK_MIN_FILES` | 20 | Minimum changed files to trigger reminder |
-| `SK_MIN_ZONES` | 3 | Minimum zones touched to trigger reminder |
-| `SK_COOLDOWN` | 15 | Minimum prompts between reminders |
+| `FK_MIN_FILES` | 20 | Minimum changed files to trigger reminder |
+| `FK_MIN_ZONES` | 3 | Minimum zones touched to trigger reminder |
+| `FK_COOLDOWN` | 15 | Minimum prompts between reminders |
 
 ### Team auto-install
 
@@ -1532,25 +1532,25 @@ plugins/forge-init/commands/init.md
 plugins/forge-init/skills/forge-init/SKILL.md
 plugins/forge-init/skills/forge-init/references/claudemd-conventions.md
 plugins/forge-init/skills/forge-init/references/manual-discovery.md
-plugins/session-keeper/.claude-plugin/plugin.json
-plugins/session-keeper/commands/status.md
-plugins/session-keeper/commands/sync.md
-plugins/session-keeper/hooks/hooks.json
-plugins/session-keeper/scripts/context-watch.sh
-plugins/session-keeper/scripts/reset-watch.sh
-plugins/session-keeper/skills/session-keeper/SKILL.md
-plugins/session-keeper/skills/session-keeper/references/claudemd-guide.md
-plugins/session-keeper/skills/session-keeper/references/monorepo-patterns.md
+plugins/forge-keeper/.claude-plugin/plugin.json
+plugins/forge-keeper/commands/status.md
+plugins/forge-keeper/commands/sync.md
+plugins/forge-keeper/hooks/hooks.json
+plugins/forge-keeper/scripts/context-watch.sh
+plugins/forge-keeper/scripts/reset-watch.sh
+plugins/forge-keeper/skills/forge-keeper/SKILL.md
+plugins/forge-keeper/skills/forge-keeper/references/claudemd-guide.md
+plugins/forge-keeper/skills/forge-keeper/references/monorepo-patterns.md
 ```
 
 - [ ] **Step 3: Validate all JSON files**
 
-Run: `for f in .claude-plugin/marketplace.json plugins/forge-init/.claude-plugin/plugin.json plugins/session-keeper/.claude-plugin/plugin.json plugins/session-keeper/hooks/hooks.json; do echo -n "$f: "; python3 -m json.tool "$f" > /dev/null 2>&1 && echo "VALID" || echo "INVALID"; done`
+Run: `for f in .claude-plugin/marketplace.json plugins/forge-init/.claude-plugin/plugin.json plugins/forge-keeper/.claude-plugin/plugin.json plugins/forge-keeper/hooks/hooks.json; do echo -n "$f: "; python3 -m json.tool "$f" > /dev/null 2>&1 && echo "VALID" || echo "INVALID"; done`
 Expected: All `VALID`
 
 - [ ] **Step 4: Validate all markdown files have frontmatter where expected**
 
-Run: `for f in plugins/forge-init/skills/forge-init/SKILL.md plugins/forge-init/commands/init.md plugins/session-keeper/skills/session-keeper/SKILL.md plugins/session-keeper/commands/sync.md plugins/session-keeper/commands/status.md; do echo -n "$f: "; head -1 "$f" | grep -q '^---' && echo "HAS FRONTMATTER" || echo "MISSING FRONTMATTER"; done`
+Run: `for f in plugins/forge-init/skills/forge-init/SKILL.md plugins/forge-init/commands/init.md plugins/forge-keeper/skills/forge-keeper/SKILL.md plugins/forge-keeper/commands/sync.md plugins/forge-keeper/commands/status.md; do echo -n "$f: "; head -1 "$f" | grep -q '^---' && echo "HAS FRONTMATTER" || echo "MISSING FRONTMATTER"; done`
 Expected: All `HAS FRONTMATTER`
 
 - [ ] **Step 5: Commit**
@@ -1577,15 +1577,15 @@ claude --plugin-dir plugins/forge-init -p "List your available skills and comman
 ```
 Expected: Response mentioning forge-init skill and /forge-init:init command.
 
-- [ ] **Step 2: Test session-keeper plugin loads**
+- [ ] **Step 2: Test forge-keeper plugin loads**
 
-Run: `claude --plugin-dir plugins/session-keeper -p "List your available skills and commands that contain 'session' or 'keeper' in the name" --max-turns 1`
-Expected: Response mentioning session-keeper skill, /session-keeper:sync, and /session-keeper:status commands.
+Run: `claude --plugin-dir plugins/forge-keeper -p "List your available skills and commands that contain 'session' or 'keeper' in the name" --max-turns 1`
+Expected: Response mentioning forge-keeper skill, /forge-keeper:sync, and /forge-keeper:status commands.
 
 - [ ] **Step 3: Test both plugins together**
 
-Run: `claude --plugin-dir plugins/forge-init --plugin-dir plugins/session-keeper -p "List all skills and slash commands available from forge-init and session-keeper plugins" --max-turns 1`
-Expected: Response listing forge-init skill, session-keeper skill, /forge-init:init, /session-keeper:sync, /session-keeper:status.
+Run: `claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper -p "List all skills and slash commands available from forge-init and forge-keeper plugins" --max-turns 1`
+Expected: Response listing forge-init skill, forge-keeper skill, /forge-init:init, /forge-keeper:sync, /forge-keeper:status.
 
 - [ ] **Step 4: Final commit with all validated**
 
@@ -1593,5 +1593,5 @@ Expected: Response listing forge-init skill, session-keeper skill, /forge-init:i
 git add -A
 git status
 # If there are any remaining untracked files, review and add them
-git commit -m "feat: dev-forge v1.0.0 — marketplace with forge-init and session-keeper plugins" --allow-empty
+git commit -m "feat: dev-forge v1.0.0 — marketplace with forge-init and forge-keeper plugins" --allow-empty
 ```

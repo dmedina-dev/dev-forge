@@ -85,11 +85,42 @@ Save to `docs/sessions/YYYY-MM-DD-title.md`:
 - [What the next Claude needs to know]
 ```
 
-### Step 6: Present to the human
+### Step 6: Present structured proposal
 
-Show diff of all proposed changes. **DO NOT apply without confirmation.**
-After applying, run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh` to reset
-the watcher.
+Present all proposed changes grouped by action type. For each change,
+explain WHAT will change and WHY.
+
+```
+## Context Sync Proposal
+
+### Update (refresh stale content)
+- `CLAUDE.md` — Add new testing convention discovered in this session
+  (integration tests use real DB, not mocks)
+- `apps/api/CLAUDE.md` — Update deploy command (migrated from npm to pnpm)
+
+### Create (new knowledge worth capturing)
+- `docs/adr/0003-saga-pattern.md` — Architectural decision: payments use
+  saga pattern instead of direct service calls
+- `.claude/rules/api-errors.md` — New cross-cutting rule for error responses
+  (scope: apps/api/**)
+
+### Archive (remove outdated content)
+- `CLAUDE.md` line 45-48 — Old npm commands replaced by pnpm equivalents
+
+### Session summary
+- `docs/sessions/YYYY-MM-DD-title.md` — [preview of summary]
+
+### No changes needed
+- `shared/CLAUDE.md` — still accurate ✓
+- `.claude/rules/testing.md` — still accurate ✓
+```
+
+**DO NOT apply any changes without explicit human confirmation.**
+
+After the human reviews:
+- They may approve all, approve selectively, or request modifications
+- Apply only what was approved
+- Run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh` to reset the watcher
 
 ## Reference files
 

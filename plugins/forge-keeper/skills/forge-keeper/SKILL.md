@@ -67,3 +67,4 @@ See `references/optimize-process.md` for the full procedure.
 - Exemplar evaluation → `references/exemplar-evaluation.md`
 - Proposal format → `references/proposal-format.md`
 - Optimize process → `references/optimize-process.md`
+- Knowledge layer principles → `references/knowledge-principles.md`

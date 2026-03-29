@@ -63,3 +63,4 @@ Run /forge-keeper:status to check context health anytime.
 - CLAUDE.md conventions → `references/claudemd-conventions.md`
 - Manual discovery fallback → `references/manual-discovery.md`
 - Code exemplars process → `references/code-exemplars.md`
+- Knowledge layer principles → `references/knowledge-principles.md`

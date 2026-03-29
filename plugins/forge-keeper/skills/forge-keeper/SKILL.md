@@ -1,15 +1,20 @@
 ---
 name: forge-keeper
 description: >
-  Keeps CLAUDE.md, project documentation and memories in sync after development
-  sessions. This skill should activate when detecting semantic context shifts:
-  the conversation moves between different domain areas (e.g., from auth to
-  payments), shifts from frontend to backend or across monorepo zones, makes
-  significant architectural decisions, or accumulates substantial changes that
-  haven't been captured in project context. Also activates with explicit
-  /forge-keeper:sync. Use when the user mentions "update context", "sync docs",
-  "refresh CLAUDE.md", "session handoff", "save progress", or when you detect
-  the conversation has drifted across multiple concerns without a sync.
+  Keeps CLAUDE.md and project documentation in sync. Suggest /forge-keeper:sync
+  ONLY when the conversation crosses a clear boundary between unrelated concerns
+  — for example the user was working on authentication and now asks about a
+  payments bug, or finished backend API work and jumps to frontend UI, or shifts
+  from infrastructure/DevOps to application code. Also suggest sync after major
+  architectural decisions that affect project-wide conventions (e.g., changing
+  testing strategy from mocks to testcontainers).
+  DO NOT suggest sync when: the user continues the same task across multiple
+  files (adding a field to model + DTO + migration is ONE feature), applies the
+  same pattern to a different service (refactoring Strategy in PaymentService
+  then NotificationService), does deep work within a single domain, verifies
+  or tests work just completed, or makes trivial fixes like typos.
+  Activates explicitly with /forge-keeper:sync, or when the user says "update
+  context", "sync docs", "session handoff", or "save progress".
 ---
 
 # Forge Keeper

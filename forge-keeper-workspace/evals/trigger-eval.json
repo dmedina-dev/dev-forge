@@ -1,0 +1,163 @@
+[
+  {
+    "id": 1,
+    "type": "composed",
+    "messages": [
+      "implementa el endpoint POST /auth/login con bcrypt para hashear el password y genera un JWT con el userId en el payload. El modelo User está en domains/users/entities/user.ts",
+      "el botón de 'Añadir al carrito' en la página de producto no responde en mobile. Mira apps/web/src/components/ProductPage.tsx, creo que es un problema con el onClick handler en pantallas táctiles"
+    ],
+    "should_trigger": true,
+    "category": "composed-backend-to-frontend",
+    "notes": "Two independent messages: backend auth endpoint → frontend UI bug. No bridge language."
+  },
+  {
+    "id": 2,
+    "type": "composed",
+    "messages": [
+      "añade validación al DTO CreateOrderDto para que el campo total sea positivo y que items tenga al menos un elemento. Usa class-validator",
+      "necesito configurar el pipeline de CI para que corra los tests en paralelo con github actions matrix. El workflow está en .github/workflows/ci.yml"
+    ],
+    "should_trigger": true,
+    "category": "composed-domain-to-devops",
+    "notes": "Domain logic validation → CI/CD pipeline config. Completely different zones."
+  },
+  {
+    "id": 3,
+    "type": "composed",
+    "messages": [
+      "refactoriza el PaymentService para usar el patrón Strategy en vez del switch gigante que tiene para los diferentes payment providers",
+      "ahora haz lo mismo con el NotificationService, que tiene el mismo problema con el switch para email/sms/push"
+    ],
+    "should_trigger": false,
+    "category": "composed-same-pattern-different-service",
+    "notes": "Same refactor pattern applied to different services. Conceptually identical work."
+  },
+  {
+    "id": 4,
+    "type": "composed",
+    "messages": [
+      "el test de integración del endpoint /orders falla con timeout. Revisa tests/integration/orders.test.ts y mira si el beforeAll está limpiando la base de datos correctamente",
+      "hazme un dashboard en apps/web/src/pages/admin/Dashboard.tsx con gráficos de ventas por mes usando recharts. Los datos vienen de GET /api/analytics/sales"
+    ],
+    "should_trigger": true,
+    "category": "composed-testing-to-frontend-feature",
+    "notes": "Debugging integration tests → building admin UI dashboard. Different concerns entirely."
+  },
+  {
+    "id": 5,
+    "type": "composed",
+    "messages": [
+      "crea la migración para añadir la tabla 'subscriptions' con campos: id, user_id, plan_id, status, started_at, expires_at",
+      "ahora crea la entidad Subscription en domains/billing/entities/ con los value objects SubscriptionStatus y SubscriptionPeriod"
+    ],
+    "should_trigger": false,
+    "category": "composed-migration-then-entity-same-feature",
+    "notes": "Database migration → domain entity for the same feature (subscriptions). Natural progression."
+  },
+  {
+    "id": 6,
+    "type": "composed",
+    "messages": [
+      "actualiza el Dockerfile para usar node:20-alpine y añade un stage de build multi-stage para reducir el tamaño de la imagen",
+      "oye que acabo de ver que el formulario de registro tiene un bug: cuando el usuario pone un email que ya existe, la app se crashea en vez de mostrar un error. Mira apps/web/src/pages/Register.tsx"
+    ],
+    "should_trigger": true,
+    "category": "composed-docker-to-frontend-bug",
+    "notes": "Docker optimization → frontend form bug. Abrupt topic change with 'oye que acabo de ver'."
+  },
+  {
+    "id": 7,
+    "type": "single",
+    "query": "ok acabamos de terminar de migrar el modulo de auth a JWT con refresh tokens, ahora necesito que miremos el sistema de pagos porque hay un bug en la pasarela de stripe que esta duplicando los cargos en produccion",
+    "should_trigger": true,
+    "category": "single-explicit-domain-shift",
+    "notes": "Explicit shift within one message. Auth → payments with urgency."
+  },
+  {
+    "id": 8,
+    "type": "single",
+    "query": "llevamos un rato trabajando en los tests de integración del modulo de inventario. Hemos decidido cambiar de estrategia: en vez de mockear la base de datos vamos a usar testcontainers con postgres real. Esto afecta a TODOS los tests del proyecto, no solo inventario",
+    "should_trigger": true,
+    "category": "single-architectural-decision",
+    "notes": "Cross-cutting architectural decision about testing strategy."
+  },
+  {
+    "id": 9,
+    "type": "single",
+    "query": "estoy creando un nuevo bounded context para el sistema de notificaciones. Ya tengo la entidad Notification, el value object NotificationChannel, y el puerto NotificationSender. Ahora necesito el adaptador para SendGrid y los tests unitarios del dominio",
+    "should_trigger": false,
+    "category": "single-deep-domain-work",
+    "notes": "Deep work within one domain. No context shift."
+  },
+  {
+    "id": 10,
+    "type": "single",
+    "query": "sigue con el endpoint de users que estabamos haciendo. Falta el validador del DTO y el guard de autorizacion. Ah y tambien anade el test e2e que habiamos planeado",
+    "should_trigger": false,
+    "category": "single-continuation",
+    "notes": "Continuing the exact same task."
+  },
+  {
+    "id": 11,
+    "type": "composed",
+    "messages": [
+      "implementa el rate limiter para el API usando @nestjs/throttler. Configúralo a 100 requests por minuto por IP en apps/api/src/app.module.ts",
+      "quiero montar el sistema de búsqueda de productos. Necesitamos integrar Elasticsearch, crear el índice de productos, y un endpoint GET /search?q= con facets por categoría y precio"
+    ],
+    "should_trigger": true,
+    "category": "composed-config-to-new-subsystem",
+    "notes": "Quick API config → major new subsystem (search). Huge scope difference."
+  },
+  {
+    "id": 12,
+    "type": "composed",
+    "messages": [
+      "añade el campo phone_number al modelo User en domains/users/entities/user.ts",
+      "actualiza el DTO en apps/api/src/users/dto/create-user.dto.ts para incluir phone_number con validación de formato E.164"
+    ],
+    "should_trigger": false,
+    "category": "composed-multi-file-single-feature",
+    "notes": "Same feature (add phone field) across files. No conceptual shift."
+  },
+  {
+    "id": 13,
+    "type": "single",
+    "query": "arregla el typo en el README.md linea 45, donde dice 'aplication' deberia ser 'application'",
+    "should_trigger": false,
+    "category": "single-trivial-fix",
+    "notes": "Trivial fix. No context worth syncing."
+  },
+  {
+    "id": 14,
+    "type": "composed",
+    "messages": [
+      "optimiza la query SQL del endpoint GET /products que está haciendo N+1. Usa eager loading para las relaciones con categories y reviews",
+      "necesito que configuremos monitoring con Datadog. Añade el SDK en shared/monitoring/, crea un middleware para tracear cada request, y configura las métricas custom para latency por endpoint"
+    ],
+    "should_trigger": true,
+    "category": "composed-query-optimization-to-observability",
+    "notes": "SQL optimization → observability infrastructure. Different layers entirely."
+  },
+  {
+    "id": 15,
+    "type": "composed",
+    "messages": [
+      "haz el seed de la base de datos con datos de prueba para development. Crea 10 users, 50 products, y 100 orders con faker.js en shared/database/seeds/",
+      "vale ahora prueba que el listado de productos funciona bien con esos datos. Ve a apps/web/src/pages/Products.tsx y verifica que la paginación y los filtros cargan correctamente"
+    ],
+    "should_trigger": false,
+    "category": "composed-seed-then-verify-same-flow",
+    "notes": "Seed database → test the seeded data in UI. Same flow, natural sequence."
+  },
+  {
+    "id": 16,
+    "type": "composed",
+    "messages": [
+      "revisa los permisos del rol ADMIN en domains/auth/policies/. Asegúrate de que solo admin puede borrar usuarios y modificar roles",
+      "mira me acaba de llegar un ticket urgente: el servicio de envío de emails está caído desde hace 2 horas. Los logs están en CloudWatch, el servicio es shared/email/services/EmailService.ts"
+    ],
+    "should_trigger": true,
+    "category": "composed-permissions-to-incident",
+    "notes": "Planned auth work → urgent production incident. Abrupt priority shift."
+  }
+]

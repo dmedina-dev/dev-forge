@@ -1,0 +1,9 @@
+{
+  "name": "forge-commit",
+  "description": "Git workflow commands: /commit (smart commit with style-matching), /commit-push-pr (branch → commit → push → PR), /clean_gone (remove stale branches).",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  }
+}

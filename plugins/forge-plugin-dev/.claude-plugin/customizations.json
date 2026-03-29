@@ -1,0 +1,28 @@
+{
+  "origin": {
+    "type": "github",
+    "repo": "anthropics/claude-code",
+    "path": "plugins/plugin-dev",
+    "ref": "main",
+    "commit": "",
+    "fetched_at": "2026-03-29",
+    "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev"
+  },
+  "upstream_status": {
+    "last_checked": "2026-03-29",
+    "latest_ref": "main",
+    "latest_commit": "",
+    "has_updates": false,
+    "summary": "",
+    "changes": []
+  },
+  "customizations": [
+    {
+      "id": "custom-01",
+      "type": "excluded",
+      "target": "README.md",
+      "summary": "Excluded upstream README",
+      "reason": "Upstream plugin documentation, dev-forge has its own docs"
+    }
+  ]
+}

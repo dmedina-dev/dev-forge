@@ -43,6 +43,21 @@
         "ref": "v5.0.6",
         "url": "https://github.com/obra/superpowers"
       }
+    },
+    {
+      "name": "forge-plugin-dev",
+      "description": "Plugin development toolkit: 7 skills for creating Claude Code plugins, agents, commands, hooks, and MCP integrations. Curated from anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-plugin-dev"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-code",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev"
+      }
     }
   ]
 }

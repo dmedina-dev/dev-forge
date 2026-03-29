@@ -26,6 +26,14 @@ Which plugins depend on or complement each other.
 - Skills reference each other internally but each works independently
 - Complements forge-keeper (debugging/TDD workflows benefit from context maintenance)
 
+### forge-plugin-dev
+- **Independent** — plugin development toolkit, works standalone
+- Curated from anthropics/claude-code (plugins/plugin-dev) with minimal customizations
+- 7 skills: skill-development, agent-development, command-development, hook-development, mcp-integration, plugin-structure, plugin-settings
+- 3 agents: agent-creator, plugin-validator, skill-reviewer
+- 1 command: /create-plugin (8-phase guided workflow)
+- Install when developing plugins, uninstall when done (heavy context footprint)
+
 ## Current plugin matrix
 
 ```
@@ -34,6 +42,7 @@ Plugin              Requires        Complements         Independent of
 forge-init          -               forge-keeper        everything else
 forge-keeper        -               forge-init          everything else
 forge-superpowers   -               forge-keeper        everything else
+forge-plugin-dev    -               -                   everything else
 ```
 
 ## Rules for dependencies

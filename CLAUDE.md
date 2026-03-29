@@ -13,6 +13,7 @@ dev-forge/
 │   ├── forge-init/                    ← bootstrapper (disposable)
 │   ├── forge-keeper/                  ← context maintenance
 │   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
+│   ├── forge-plugin-dev/              ← plugin development toolkit (curated from anthropics/claude-code)
 │   └── ...                            ← each plugin independent
 └── docs/
     ├── dependencies.md                ← dependency map between plugins

@@ -1,92 +1,102 @@
 # Dev Forge
 
-A personal Claude Code plugin marketplace built around one principle: **plugins provide procedures, projects provide knowledge.**
+A personal GitHub plugin marketplace for Claude Code built around one principle:
+**the plugin provides procedures, the project provides knowledge.**
 
-## The problem
+## The Engine / Fuel Separation
 
-Claude Code is powerful but its context drifts. After long sessions, your CLAUDE.md files go stale, architectural decisions stay undocumented, and the next session starts with outdated context. Setting up a new project means manually configuring `.claude/`, writing CLAUDE.md files from scratch, and hoping you remember your own conventions.
+**Engine** (this marketplace): Generic, reusable plugins that know HOW to maintain
+context. Update the engine once, all projects benefit.
 
-## The solution
-
-Dev Forge packages two plugins that handle the full lifecycle of project context — from initial setup to ongoing maintenance — while keeping all project-specific knowledge in your repo under version control.
-
-### Engine / Fuel separation
-
-**Engine** (this marketplace) — Generic, reusable procedures that know HOW to manage context but carry no project-specific content. Update once, all projects benefit.
-
-**Fuel** (your project repo) — CLAUDE.md files, `.claude/rules/`, `docs/sessions/`, ADRs. Created during initialization, enriched with every development session. Lives in your repo, versioned with your code.
+**Fuel** (your project): CLAUDE.md files, `.claude/rules/`, `docs/sessions/`, ADRs.
+Created by the plugins, version-controlled in your repo. Survives independently
+of the plugins.
 
 ## Plugins
 
-### forge-init *(disposable — uninstall after use)*
+| Plugin | Purpose | Lifecycle |
+|--------|---------|-----------|
+| **forge-init** | Two-step bootstrapper: runs native `/init`, then layers conventions | Disposable — uninstall after use |
+| **session-keeper** | Keeps CLAUDE.md, docs, and memories in sync across sessions | Permanent |
 
-Two-step project bootstrapper:
-
-1. **Foundation** — Runs the native `/init` with `CLAUDE_CODE_NEW_INIT=1` to interview you about your project, workflows and preferences. Generates base configuration from intent, not just file inspection.
-2. **Conventions layer** — Audits and improves the `/init` output: enforces CLAUDE.md best practices (200-line limit, WHY/WHAT/HOW structure), fills per-directory context gaps, adds path-scoped `.claude/rules/`, scaffolds `docs/sessions/` and `docs/adr/`.
-
-All changes require your explicit approval. After setup, uninstall it — the conventions live in your project, not the plugin.
-
-### session-keeper *(permanent)*
-
-Ongoing context maintenance with three components:
-
-- **`/session-keeper:sync`** — Analyzes `git diff`, classifies changes by monorepo zone, proposes CLAUDE.md updates, generates session summaries. Every change needs your approval.
-- **`/session-keeper:status`** — Quick health report showing context drift, CLAUDE.md freshness and rules coverage.
-- **Context-aware hook** — Monitors git activity in the background. When enough real work accumulates (10+ files across 2+ zones), shows a reminder with a zone breakdown — not a blind timer, but an activity-based trigger.
-
-## Quick start
+## Installation
 
 ```bash
-# Add the marketplace (once per machine)
-/plugin marketplace add YOUR_USER/dev-forge
+# Add marketplace (once per machine)
+/plugin marketplace add dmedina-dev/dev-forge
 
 # New project setup
-/plugin install forge-init@YOUR_USER
-/plugin install session-keeper@YOUR_USER
+/plugin install forge-init
+/plugin install session-keeper
+
+# Bootstrap the project
 /forge-init:init
 
-# After setup completes, uninstall the bootstrapper
+# Uninstall forge-init after bootstrap
 # /plugin → Manage and uninstall plugins → forge-init → Uninstall
-
-# From here on, session-keeper handles everything:
-# • Work normally — the context watcher monitors in the background
-# • When reminded, run /session-keeper:sync
-# • Check health anytime with /session-keeper:status
 ```
 
-## What your project looks like after setup
+## Usage
 
-```
-your-project/
-├── CLAUDE.md                     # Project-wide context (~200 lines)
-├── CLAUDE.local.md               # Personal overrides (gitignored)
-├── apps/
-│   ├── api/CLAUDE.md             # Backend-specific context
-│   └── web/CLAUDE.md             # Frontend-specific context
-├── domains/CLAUDE.md             # DDD conventions
-├── shared/CLAUDE.md              # Cross-package impact rules
-├── .claude/
-│   ├── settings.json
-│   └── rules/                    # Path-scoped cross-cutting rules
-│       ├── testing.md
-│       └── security.md
-└── docs/
-    ├── sessions/                 # Session summaries from /sync
-    └── adr/                      # Architecture Decision Records
-```
+### forge-init
 
-Everything above is version-controlled in your project. The plugins just know how to create and maintain it.
+Run `/forge-init:init` in a new or existing project. It will:
+
+1. **Foundation** — Run the native `/init` interview to generate base config
+2. **Conventions** — Audit and improve with best practices:
+   - CLAUDE.md quality (200-line limit, WHY/WHAT/HOW structure)
+   - Per-directory CLAUDE.md for zones `/init` missed
+   - Path-scoped `.claude/rules/` for cross-cutting conventions
+   - Documentation scaffolding (`docs/sessions/`, `docs/adr/`)
+   - Personal overrides (`CLAUDE.local.md`)
+
+All changes require your approval. After bootstrap, uninstall forge-init.
+
+### session-keeper
+
+Stays installed permanently. Three ways it activates:
+
+- **Semantic detection** — Claude detects you've shifted context (e.g., from auth
+  to payments) and suggests running `/session-keeper:sync`
+- **Explicit command** — Run `/session-keeper:sync` anytime to capture session changes
+- **Safety net hook** — Monitors git activity and reminds when thresholds are exceeded
+
+Commands:
+- `/session-keeper:sync` — Analyze changes, propose CLAUDE.md updates, generate session summary
+- `/session-keeper:status` — Context health report with drift detection
 
 ## Configuration
 
-The context watcher thresholds are configurable via environment variables:
+### Environment variables (session-keeper hook thresholds)
 
-| Variable | Default | What it controls |
-|---|---|---|
-| `SK_MIN_FILES` | 10 | Minimum changed files before any reminder |
-| `SK_MIN_ZONES` | 2 | Minimum distinct top-level directories touched |
-| `SK_COOLDOWN` | 8 | Minimum prompts between reminders |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SK_MIN_FILES` | 20 | Minimum changed files to trigger reminder |
+| `SK_MIN_ZONES` | 3 | Minimum zones touched to trigger reminder |
+| `SK_COOLDOWN` | 15 | Minimum prompts between reminders |
+
+### Team auto-install
+
+Add to your project's `.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "dev-forge": {
+      "source": { "source": "github", "repo": "dmedina-dev/dev-forge" }
+    }
+  }
+}
+```
+
+## Future Plugins
+
+Each follows engine/fuel: procedures in the plugin, knowledge in the project.
+
+- **ddd-scaffold** — Domain/bounded context boilerplate generation
+- **nest-patterns** — NestJS module/service/controller conventions
+- **test-guardian** — TDD/BDD workflow enforcement via hooks
+- **deploy-checklist** — Pre-deployment verification skill
 
 ## License
 

@@ -48,4 +48,22 @@ dev-forge/
 - Reference files: plain markdown, no frontmatter
 - Hook scripts: `${CLAUDE_PLUGIN_ROOT}` for paths, always exit 0
 - JSON: validate with `python3 -m json.tool`
-- Skills from external sources: note origin at top of SKILL.md
+- Skills from external sources: note origin in a comment at top of SKILL.md
+
+## Commands
+
+```bash
+# Test any plugin independently
+claude --plugin-dir plugins/<name>
+
+# Test multiple together
+claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
+```
+
+## Gotchas
+
+- marketplace.json `source.url` must use https (not git@) for public access
+- Plugin directories need `.claude-plugin/plugin.json` to be recognized
+- Skills trigger based on description text — vague descriptions = unreliable triggers
+- When updating from upstream (superpowers, anthropic), diff against your customizations
+- context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety

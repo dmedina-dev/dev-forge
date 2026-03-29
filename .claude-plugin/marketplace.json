@@ -78,6 +78,11 @@
           "repo": "anthropics/claude-code",
           "ref": "main",
           "url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
+        },
+        {
+          "repo": "anthropics/claude-code",
+          "ref": "main",
+          "url": "https://github.com/anthropics/claude-code/tree/main/plugins/code-review"
         }
       ]
     },

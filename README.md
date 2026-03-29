@@ -46,7 +46,7 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | Plugin | Original plugin | Original author | Upstream ref |
 |--------|----------------|-----------------|-------------|
 | **forge-plugin-dev** | [plugin-dev](https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev) | Anthropic | main |
-| **forge-extended-dev** | [feature-dev](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev) + [pr-review-toolkit](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit) | Daisy Hollman (Anthropic) | main |
+| **forge-extended-dev** | [feature-dev](https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev) + [pr-review-toolkit](https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit) + [code-review](https://github.com/anthropics/claude-code/tree/main/plugins/code-review) | Daisy Hollman, Boris Cherny (Anthropic) | main |
 | **forge-hookify** | [hookify](https://github.com/anthropics/claude-code/tree/main/plugins/hookify) | Daisy Hollman (Anthropic) | main |
 | **forge-security** | [security-guidance](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance) | Anthropic | main |
 | **forge-commit** | [commit-commands](https://github.com/anthropics/claude-code/tree/main/plugins/commit-commands) | Anthropic | main |

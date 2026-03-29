@@ -110,7 +110,8 @@ This command is Phase C of the extended development workflow:
 
 1. **Phase A**: `/feature-dev` — Discovery, exploration, architecture design
 2. **Phase B**: superpowers — TDD planning and execution with intermediate code reviews
-3. **Phase C**: `/deep-review all` — Specialized final validation before merge
+3. **Phase C**: `/deep-review all` — Specialized quality review (tests, errors, types, comments, simplification)
+4. **Phase D**: `/pr-review <PR> --comment` — Automated PR review with inline GitHub comments
 
 The general code-reviewer from superpowers handles intermediate reviews during implementation.
 `/deep-review` adds specialized depth that general review can't provide:

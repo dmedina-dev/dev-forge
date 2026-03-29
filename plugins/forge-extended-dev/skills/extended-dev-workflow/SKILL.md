@@ -2,16 +2,17 @@
 name: extended-dev-workflow
 description: >
   Reference for the extended development workflow that combines feature-dev discovery,
-  superpowers TDD execution, and specialized deep review. Consult when planning how
-  phases connect or when deciding which tool to use at each stage.
+  superpowers TDD execution, specialized deep review, and automated PR review.
+  Consult when planning how phases connect or when deciding which tool to use at each stage.
 ---
 
 # Extended Development Workflow
 
-Combines three sources into one unified flow:
+Combines four sources into one unified flow:
 - **feature-dev** (Anthropic) → Discovery, exploration, architecture design
 - **superpowers** (obra) → TDD planning, execution, verification, debugging
 - **pr-review-toolkit** (Anthropic) → Specialized post-implementation review
+- **code-review** (Anthropic) → Automated PR review with inline GitHub comments
 
 ## The Full Flow
 
@@ -48,6 +49,17 @@ Combines three sources into one unified flow:
 │     - simplify — code simplification             │
 │     - all — run everything                       │
 │                                                  │
+├─────────────────────────────────────────────────┤
+│  PHASE D: PR REVIEW                             │
+│  Command: /pr-review [PR] [--comment]            │
+│                                                  │
+│  10. Gate check — skip draft/closed/trivial PRs  │
+│  11. CLAUDE.md discovery — find relevant rules   │
+│  12. 4 parallel agents: CLAUDE.md compliance x2  │
+│      + bug scan + security/logic scan            │
+│  13. Validation pass — verify each finding       │
+│  14. Post inline GitHub comments (if --comment)  │
+│                                                  │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -59,7 +71,9 @@ Combines three sources into one unified flow:
 
 **Phase C only** — When reviewing existing code or a PR after implementation (`/deep-review tests errors`).
 
-**Full flow (A → B → C)** — For new features that need exploration, design, implementation, and thorough review.
+**Phase D only** — When a PR is already pushed and you want automated GitHub review (`/pr-review 42 --comment`).
+
+**Full flow (A → B → C → D)** — For new features that need exploration, design, implementation, deep review, and automated PR validation.
 
 ## Key Handoff Points
 
@@ -68,6 +82,9 @@ The `/feature-dev` command produces an approved architecture. Phase B converts i
 
 ### B → C: Implementation to Review
 After `superpowers:finishing-a-development-branch`, run `/deep-review all` for specialized review. This catches issues the intermediate code reviews might miss: silent failures, type design flaws, test gaps, misleading comments.
+
+### C → D: Local Review to PR Review
+After `/deep-review` passes and the PR is pushed, run `/pr-review <PR> --comment` for automated GitHub validation. This is the final quality gate — catches bugs and CLAUDE.md violations with inline comments that other reviewers (or you) can act on.
 
 ## Agent Inventory
 

@@ -15,6 +15,14 @@
       "ref": "main",
       "fetched_at": "2026-03-29",
       "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
+    },
+    {
+      "type": "github",
+      "repo": "anthropics/claude-code",
+      "path": "plugins/code-review",
+      "ref": "main",
+      "fetched_at": "2026-03-29",
+      "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/code-review"
     }
   ],
   "customizations": [
@@ -88,7 +96,23 @@
       "origin": "forge",
       "target": "skills/extended-dev-workflow/SKILL.md",
       "summary": "Added master workflow documentation skill",
-      "reason": "New skill that documents how feature-dev discovery, superpowers execution, and deep-review validation connect into a unified flow."
+      "reason": "New skill that documents how feature-dev discovery, superpowers execution, deep-review validation, and pr-review automation connect into a unified flow."
+    },
+    {
+      "id": "custom-10",
+      "type": "modified",
+      "origin": "code-review",
+      "target": "commands/pr-review.md",
+      "summary": "Renamed code-review to pr-review, integrated as Phase D of extended-dev workflow",
+      "reason": "Original standalone plugin renamed to fit the 4-phase workflow naming. Removed hardcoded anthropics/claude-code link format. Added Phase D integration docs."
+    },
+    {
+      "id": "custom-11",
+      "type": "excluded",
+      "origin": "code-review",
+      "target": "README.md",
+      "summary": "Excluded upstream README",
+      "reason": "Plugin has its own workflow documentation in extended-dev-workflow skill."
     }
   ]
 }

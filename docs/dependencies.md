@@ -19,15 +19,21 @@ Which plugins depend on or complement each other.
 - The context-watch hook, sync/status/optimize commands, and references are tightly coupled
 - This is an example of justified unification: splitting hook from skill would break the workflow
 
-## Future plugins (to be populated as plugins are added)
+### forge-superpowers
+- **Independent** — core skills library, works standalone
+- Curated from obra/superpowers v5.0.6 with customizations (see `.claude-plugin/customizations.json`)
+- 12 skills: brainstorming, TDD, debugging, parallel agents, code review, worktrees, plans, etc.
+- Skills reference each other internally but each works independently
+- Complements forge-keeper (debugging/TDD workflows benefit from context maintenance)
+
+## Current plugin matrix
 
 ```
 Plugin              Requires        Complements         Independent of
 ─────────────────────────────────────────────────────────────────────
 forge-init          -               forge-keeper        everything else
 forge-keeper        -               forge-init          everything else
-forge-agents        -               -                   everything
-forge-tdd           -               forge-agents        everything else
+forge-superpowers   -               forge-keeper        everything else
 ```
 
 ## Rules for dependencies

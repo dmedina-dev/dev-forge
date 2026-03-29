@@ -12,11 +12,11 @@ dev-forge/
 ├── plugins/
 │   ├── forge-init/                    ← bootstrapper (disposable)
 │   ├── forge-keeper/                  ← context maintenance
-│   ├── forge-agents/                  ← work agents with model config (example)
-│   ├── forge-tdd/                     ← TDD workflow (curated from superpowers)
+│   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
 │   └── ...                            ← each plugin independent
 └── docs/
-    └── dependencies.md                ← dependency map between plugins
+    ├── dependencies.md                ← dependency map between plugins
+    └── customizations-pattern.md      ← vendor + customizations pattern for external plugins
 ```
 
 ## Plugin independence
@@ -37,9 +37,19 @@ dev-forge/
 1. Find useful skill/agent/hook (superpowers, anthropic, custom)
 2. Create independent plugin in `plugins/<name>/`
 3. Note origin in SKILL.md if curated from external source
-4. Add to marketplace.json
-5. Test independently: `claude --plugin-dir plugins/<name>`
-6. Push — available for installation
+4. For external plugins: create `customizations.json` (see `docs/customizations-pattern.md`)
+5. Add to marketplace.json
+6. Test independently: `claude --plugin-dir plugins/<name>`
+7. Push — available for installation
+
+## External plugin customizations
+
+External plugins follow a **vendor + customizations** pattern (see `docs/customizations-pattern.md`):
+
+- `customizations.json` in `.claude-plugin/` tracks origin, applied changes, and upstream status
+- Each customization has an id, type (`excluded`/`removed`/`modified`/`added`), and reason
+- Upstream updates can be checked, summarized, and merged respecting local customizations
+- Native plugins (forge-init, forge-keeper) don't need customizations.json
 
 ## Conventions
 

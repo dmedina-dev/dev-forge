@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Curated from: obra/superpowers v5.0.6
+# Customization custom-14: Removed multi-platform detection, Claude Code only
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# Check if legacy skills directory exists and build warning
+warning_message=""
+legacy_skills_dir="${HOME}/.config/superpowers/skills"
+if [ -d "$legacy_skills_dir" ]; then
+  warning_message="\n\n<important-reminder>IN YOUR FIRST REPLY AFTER SEEING THIS MESSAGE YOU MUST TELL THE USER:Warning: Superpowers now uses Claude Code's skills system. Custom skills in ~/.config/superpowers/skills will not be read. Move custom skills to ~/.claude/skills instead. To make this message go away, remove ~/.config/superpowers/skills</important-reminder>"
+fi
+
+# Escape string for JSON embedding
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
+
+warning_escaped=$(escape_for_json "$warning_message")
+session_context="<EXTREMELY_IMPORTANT>\nYou have superpowers skills available.\n\nUse the 'Skill' tool to access superpowers skills when appropriate.\n\n${warning_escaped}\n</EXTREMELY_IMPORTANT>"
+
+# Claude Code output format only
+printf '{\n "hookSpecificOutput": {\n "hookEventName": "SessionStart",\n "additionalContext": "%s"\n }\n}\n' "$session_context"
+
+exit 0

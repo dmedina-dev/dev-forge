@@ -1,0 +1,19 @@
+{
+  "name": "forge-superpowers",
+  "description": "Core skills library: TDD, debugging, collaboration patterns, and proven techniques. Curated from obra/superpowers.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "tdd",
+    "debugging",
+    "collaboration",
+    "best-practices",
+    "workflows"
+  ]
+}

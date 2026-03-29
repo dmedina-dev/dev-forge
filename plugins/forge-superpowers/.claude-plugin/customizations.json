@@ -1,0 +1,154 @@
+{
+  "origin": {
+    "type": "github",
+    "repo": "obra/superpowers",
+    "path": "",
+    "ref": "v5.0.6",
+    "commit": "",
+    "fetched_at": "2026-03-29",
+    "check_url": "https://github.com/obra/superpowers/releases"
+  },
+  "upstream_status": {
+    "last_checked": "2026-03-29",
+    "latest_ref": "v5.0.6",
+    "latest_commit": "",
+    "has_updates": false,
+    "summary": "",
+    "changes": []
+  },
+  "customizations": [
+    {
+      "id": "custom-01",
+      "type": "excluded",
+      "target": "tests/",
+      "summary": "Excluded upstream test infrastructure",
+      "reason": "Tests are for validating the upstream ecosystem, not relevant to our plugin usage"
+    },
+    {
+      "id": "custom-02",
+      "type": "excluded",
+      "target": ".github/",
+      "summary": "Excluded upstream CI/CD workflows",
+      "reason": "Upstream project CI, not applicable to dev-forge"
+    },
+    {
+      "id": "custom-03",
+      "type": "excluded",
+      "target": ".codex/",
+      "summary": "Excluded Codex platform integration",
+      "reason": "Only using Claude Code, no other AI platforms"
+    },
+    {
+      "id": "custom-04",
+      "type": "excluded",
+      "target": ".cursor-plugin/",
+      "summary": "Excluded Cursor editor plugin config",
+      "reason": "Only using Claude Code, no other AI platforms"
+    },
+    {
+      "id": "custom-05",
+      "type": "excluded",
+      "target": ".opencode/",
+      "summary": "Excluded OpenCode platform integration",
+      "reason": "Only using Claude Code, no other AI platforms"
+    },
+    {
+      "id": "custom-06",
+      "type": "excluded",
+      "target": "gemini-extension.json",
+      "summary": "Excluded Gemini CLI integration",
+      "reason": "Only using Claude Code, no other AI platforms"
+    },
+    {
+      "id": "custom-07",
+      "type": "excluded",
+      "target": "GEMINI.md",
+      "summary": "Excluded Gemini platform docs",
+      "reason": "Only using Claude Code, no other AI platforms"
+    },
+    {
+      "id": "custom-08",
+      "type": "excluded",
+      "target": "hooks/hooks-cursor.json",
+      "summary": "Excluded Cursor-specific hooks config",
+      "reason": "Only using Claude Code, no Cursor integration needed"
+    },
+    {
+      "id": "custom-09",
+      "type": "excluded",
+      "target": "hooks/run-hook.cmd",
+      "summary": "Excluded Windows hook runner",
+      "reason": "Linux/macOS only, no Windows support needed"
+    },
+    {
+      "id": "custom-10",
+      "type": "removed",
+      "target": "skills/writing-skills/",
+      "summary": "Removed writing-skills skill",
+      "reason": "Using Anthropic official skill-creator instead"
+    },
+    {
+      "id": "custom-11",
+      "type": "removed",
+      "target": "skills/using-superpowers/",
+      "summary": "Removed using-superpowers meta-skill",
+      "reason": "Meta-skill for the superpowers ecosystem, not applicable in dev-forge context"
+    },
+    {
+      "id": "custom-12",
+      "type": "modified",
+      "target": "skills/brainstorming/SKILL.md",
+      "summary": "Reduced trigger sensitivity to complex requirements only",
+      "reason": "Original trigger was too aggressive, activating brainstorming on simple requests. Changed to only trigger on complex, multi-faceted requirements"
+    },
+    {
+      "id": "custom-13",
+      "type": "modified",
+      "target": "hooks/hooks.json",
+      "summary": "Removed Cursor platform detection from session-start hook",
+      "reason": "Only using Claude Code, simplified hook command path"
+    },
+    {
+      "id": "custom-14",
+      "type": "modified",
+      "target": "hooks/session-start",
+      "summary": "Removed multi-platform detection, Claude Code only",
+      "reason": "Stripped Cursor/fallback platform branches, kept only Claude Code output format"
+    },
+    {
+      "id": "custom-15",
+      "type": "excluded",
+      "target": "package.json",
+      "summary": "Excluded npm package config",
+      "reason": "Upstream project packaging, not relevant to plugin usage"
+    },
+    {
+      "id": "custom-16",
+      "type": "excluded",
+      "target": "docs/",
+      "summary": "Excluded upstream documentation",
+      "reason": "Upstream project docs, dev-forge has its own documentation"
+    },
+    {
+      "id": "custom-17",
+      "type": "excluded",
+      "target": "CHANGELOG.md",
+      "summary": "Excluded upstream changelog",
+      "reason": "Change tracking handled by customizations.json upstream_status"
+    },
+    {
+      "id": "custom-18",
+      "type": "excluded",
+      "target": "RELEASE-NOTES.md",
+      "summary": "Excluded upstream release notes",
+      "reason": "Release info tracked via upstream_status in customizations.json"
+    },
+    {
+      "id": "custom-19",
+      "type": "excluded",
+      "target": "CODE_OF_CONDUCT.md",
+      "summary": "Excluded upstream code of conduct",
+      "reason": "Not relevant to plugin functionality"
+    }
+  ]
+}

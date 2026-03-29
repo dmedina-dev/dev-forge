@@ -28,6 +28,21 @@
         "path": "plugins/forge-keeper"
       },
       "version": "1.0.0"
+    },
+    {
+      "name": "forge-superpowers",
+      "description": "Core skills library: TDD, debugging, collaboration patterns, and proven techniques. Curated from obra/superpowers.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-superpowers"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "obra/superpowers",
+        "ref": "v5.0.6",
+        "url": "https://github.com/obra/superpowers"
+      }
     }
   ]
 }

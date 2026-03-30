@@ -1,5 +1,5 @@
 {
-  "description": "Suggests context sync before compact/clear — captures knowledge while context is still available",
+  "description": "Context rescue: PreCompact suggests /sync before context loss; SessionStart(clear) attempts best-effort recovery from durable sources",
   "hooks": {
     "PreCompact": [
       {
@@ -8,6 +8,17 @@
           {
             "type": "prompt",
             "prompt": "The user is about to compact or clear this session. Before context is lost, check if there are significant uncommitted knowledge changes (new conventions, architectural decisions, changed commands) that should be synced to CLAUDE.md, rules, or exemplars. If yes, briefly suggest running /forge-keeper:sync first. If nothing meaningful to capture, say nothing."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "The user just ran /clear — previous session context is gone. Attempt a best-effort context rescue from durable sources. Do this quickly and concisely:\n\n1. **Session logs**: Check if docs/sessions/ exists and find the most recent .md file. Read its summary to recover what was being worked on.\n\n2. **Uncommitted changes**: Run `git diff --stat` and `git diff --cached --stat` to see if there are active changes that weren't committed. If yes, briefly describe what files were touched.\n\n3. **Recent commits**: Run `git log --oneline -5` to show what was recently committed. Check if any commits look like they were from the session that just got cleared.\n\nPresent a brief recovery summary:\n- What was likely being worked on (from logs or commits)\n- Whether there are uncommitted changes at risk\n- Whether /forge-keeper:sync was run before the clear (check the latest session log timestamp vs now)\n\nIf everything looks clean (no uncommitted changes, recent sync exists), just say: \"Clean slate — last session was synced.\" and move on.\n\nIf there are signs of unsaved context, warn: \"Found uncommitted work or unsynced decisions. Consider running /forge-keeper:sync to capture what's recoverable from git state.\"\n\nKeep it to 3-5 lines max. Don't block the user."
           }
         ]
       }

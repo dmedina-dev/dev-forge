@@ -1,6 +1,6 @@
 # Structured Proposal Format
 
-Reference for forge-keeper step 7. Use this format to present sync results
+Reference for forge-keeper step 6. Use this format to present sync results
 to the user for approval.
 
 ## Format
@@ -26,8 +26,8 @@ will change and WHY.
 - Replace [category]: `old.ts` → `new.ts` — [why new is better]
 - New category: "[name]" → `file.ts` — [what pattern it shows]
 
-### Session summary
-- `docs/sessions/YYYY-MM-DD-title.md` — [preview]
+### Session log
+- `docs/sessions/YYYY-MM-DD-title.md` — [preview of session entry]
 
 ### No changes needed
 - `shared/CLAUDE.md` — still accurate
@@ -41,6 +41,8 @@ will change and WHY.
 - "No changes needed" section builds trust — shows you checked, not just skipped
 - Include content previews for Create actions — user should see what will be written
 - Keep the proposal concise — this is a summary, not a full diff
+- Session log captures the user's personal bitácora — what was done and why,
+  searchable later via `/forge-keeper:recall`
 
 ## User response handling
 
@@ -48,10 +50,9 @@ After presenting the proposal:
 - **Approve all** → execute all changes
 - **Approve selectively** → "apply 1, 2, and 4 but skip 3" → execute only approved
 - **Request modifications** → adjust proposal, re-present
-- **Reject** → no changes, reset watcher
+- **Reject** → no changes applied
 
 ## Post-approval
 
 After applying approved changes:
-1. Run `${CLAUDE_PLUGIN_ROOT}/scripts/reset-watch.sh`
-2. Brief confirmation: "Applied N changes. Watcher reset."
+- Brief confirmation: "Applied N changes."

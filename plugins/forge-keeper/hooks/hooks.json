@@ -1,14 +1,13 @@
 {
-  "description": "Context-aware safety net that monitors git activity and reminds to sync when thresholds are exceeded",
+  "description": "Suggests context sync before compact/clear — captures knowledge while context is still available",
   "hooks": {
-    "UserPromptSubmit": [
+    "PreCompact": [
       {
         "matcher": "",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/context-watch.sh",
-            "timeout": 10
+            "type": "prompt",
+            "prompt": "The user is about to compact or clear this session. Before context is lost, check if there are significant uncommitted knowledge changes (new conventions, architectural decisions, changed commands) that should be synced to CLAUDE.md, rules, or exemplars. If yes, briefly suggest running /forge-keeper:sync first. If nothing meaningful to capture, say nothing."
           }
         ]
       }

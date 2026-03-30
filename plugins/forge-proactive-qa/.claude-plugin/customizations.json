@@ -1,0 +1,64 @@
+{
+  "origin": {
+    "type": "native",
+    "note": "Original plugin by dmedina. Genericized from a project-specific implementation."
+  },
+  "customizations": [
+    {
+      "id": "modified-01",
+      "type": "modified",
+      "target": "SKILL.md",
+      "summary": "Genericized project references, added channel-first notifications",
+      "reason": "Replace stock-manager-specific paths/commands with configurable placeholders. Add MCP reply tool as primary notification channel with curl fallback."
+    },
+    {
+      "id": "modified-02",
+      "type": "modified",
+      "target": "explore-checklist.md",
+      "summary": "Stripped stock-manager routes and app-specific categories (9-12)",
+      "reason": "Route inventory and cross-page data coherence checks are stock-manager-specific. Replaced with dynamic route discovery and project-specific category placeholder."
+    },
+    {
+      "id": "modified-03",
+      "type": "modified",
+      "target": "explore.md",
+      "summary": "Parametrized server URLs, dev commands, and config paths",
+      "reason": "Replace hardcoded localhost:3001/5173, pnpm commands, and tests/e2e paths with project config placeholders."
+    },
+    {
+      "id": "modified-04",
+      "type": "modified",
+      "target": "autofix.md",
+      "summary": "Replaced commit script reference, parametrized lint/test commands",
+      "reason": "Use plugin's own commit.sh instead of stock-manager's scripts/commit.sh. Replace pnpm lint/test with configurable commands."
+    },
+    {
+      "id": "modified-05",
+      "type": "modified",
+      "target": "cleanup-explore.sh",
+      "summary": "Removed hardcoded tests/e2e/ path, only cleans $TMPDIR",
+      "reason": "tests/e2e/ is stock-manager-specific. Generic plugin should only clean temp directory patterns."
+    },
+    {
+      "id": "added-06",
+      "type": "added",
+      "target": "commit.sh",
+      "summary": "Pre-approved commit script for autonomous loop execution",
+      "reason": "Raw git add/commit triggers sandbox permission prompts that break /loop automation. Dedicated script can be pre-approved in settings.json."
+    },
+    {
+      "id": "modified-07",
+      "type": "modified",
+      "target": "telegram-notify.sh",
+      "summary": "Kept as standalone curl fallback, updated .env resolution",
+      "reason": "Channel-first notifications handled by Claude via MCP reply tool. This script serves as fallback when forge-channels-telegram is not installed."
+    },
+    {
+      "id": "modified-08",
+      "type": "modified",
+      "target": "rules/proactive-qa.md",
+      "summary": "Genericized path scope, removed tests/e2e/** reference",
+      "reason": "tests/e2e/ is stock-manager-specific. Plugin rule scopes to its own path; projects add their own e2e path rules."
+    }
+  ]
+}

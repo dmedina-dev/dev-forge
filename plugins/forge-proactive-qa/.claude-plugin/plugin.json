@@ -1,0 +1,9 @@
+{
+  "name": "forge-proactive-qa",
+  "description": "Autonomous QA agent: explores web apps with Playwright to find bugs, auto-fixes them with validation and retry. Three modes: explore (browse and log), autofix (fix with retry), cycle (alternate for /loop). Channel-first Telegram notifications with curl fallback.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  }
+}

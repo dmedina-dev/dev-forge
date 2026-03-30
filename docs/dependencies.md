@@ -77,6 +77,15 @@ Which plugins depend on or complement each other.
 - Security customizations: fail-closed assertSendable, disabled-on-corrupt recovery, env var restriction, logged errors
 - Requires Bun runtime and Claude Code v2.1.80+ with channels support
 
+### forge-proactive-qa
+- **Independent** — autonomous QA agent, works standalone
+- 1 skill: /proactive-qa (explore/autofix/cycle modes)
+- 3 reference docs: explore flow, autofix flow, explore checklist
+- 4 scripts: commit.sh (pre-approved), cleanup-explore.sh, cleanup-tmpdir.sh, telegram-notify.sh (fallback)
+- Channel-first notifications: uses forge-channels-telegram MCP reply tool when available, falls back to curl
+- Designed for `/loop` (cycle mode alternates explore/autofix)
+- Requires Playwright in target project
+
 ## Current plugin matrix
 
 ```
@@ -94,6 +103,7 @@ forge-ralph               -                   -                   everything els
 forge-frontend-design     -                   -                   everything else
 forge-ui-expert           -                   forge-frontend-design everything else
 forge-channels-telegram   -                   -                   everything else
+forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
 ```
 
 ## Rules for dependencies

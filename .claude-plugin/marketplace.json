@@ -190,6 +190,16 @@
         "ref": "main",
         "url": "https://github.com/anthropics/claude-plugins-official/tree/main/external_plugins/telegram"
       }
+    },
+    {
+      "name": "forge-proactive-qa",
+      "description": "Autonomous QA agent: explores web apps with Playwright, logs issues, auto-fixes with retry. Channel-first Telegram notifications. Three modes: explore, autofix, cycle (for /loop).",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-proactive-qa"
+      },
+      "version": "1.0.0"
     }
   ]
 }

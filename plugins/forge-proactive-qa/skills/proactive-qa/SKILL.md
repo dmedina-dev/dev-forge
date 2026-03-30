@@ -19,6 +19,12 @@ Autonomous quality assurance skill with three modes. Designed to run via `/loop`
 
 Both modes write to the same bitacora and notify via Telegram.
 
+### Quick start
+
+1. Configure the project variables (see below)
+2. Run `/proactive-qa init` to discover routes and verify prerequisites
+3. Start the loop: `/loop 15m /proactive-qa cycle`
+
 ---
 
 ## Project Configuration

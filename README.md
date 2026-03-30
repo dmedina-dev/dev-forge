@@ -22,6 +22,7 @@ plugins — install all or pick what you need.
 /plugin install forge-hookify       # custom hook rules engine
 /plugin install forge-ralph         # persistent loop technique
 /plugin install forge-frontend-design # distinctive UI/UX design
+/plugin install forge-channels-telegram # Telegram channel bridge (requires Bun)
 ```
 
 ## Working plugins
@@ -57,6 +58,12 @@ forge-keeper commands:
 | **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/help` |
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
 | **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
+
+### Channels
+
+| Plugin | Purpose | Commands |
+|--------|---------|----------|
+| **forge-channels-telegram** | Telegram bridge — push messages into running session, reply from Claude | `/telegram:configure`, `/telegram:access` |
 
 ## Configuration plugins
 
@@ -102,6 +109,7 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | Plugin | Original plugin | Original author |
 |--------|----------------|-----------------|
 | forge-frontend-design | [frontend-design](https://github.com/anthropics/claude-plugins-official) | Prithvi Rajasekaran, Alexander Bricken (Anthropic) |
+| forge-channels-telegram | [telegram](https://github.com/anthropics/claude-plugins-official/tree/main/external_plugins/telegram) | Anthropic |
 
 ### [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
 

@@ -9,7 +9,11 @@ plugins — install all or pick what you need.
 # Add marketplace (once per machine)
 /plugin marketplace add dmedina-dev/dev-forge
 
-# Install what you need
+# Install all working plugins at once
+/plugin install forge-init
+/forge-init:install-all
+
+# Or install individually
 /plugin install forge-keeper        # context maintenance (recommended always-on)
 /plugin install forge-superpowers   # TDD, debugging, collaboration patterns
 /plugin install forge-extended-dev  # discovery → design → deep review → PR review
@@ -18,21 +22,23 @@ plugins — install all or pick what you need.
 /plugin install forge-hookify       # custom hook rules engine
 /plugin install forge-ralph         # persistent loop technique
 /plugin install forge-frontend-design # distinctive UI/UX design
-/plugin install forge-ui-expert     # UI/UX design intelligence (install for frontend projects)
-/plugin install forge-plugin-dev    # plugin development toolkit (install when needed)
-/plugin install forge-init          # project bootstrapper (uninstall after use)
 ```
 
-## Available plugins
+## Working plugins
 
-### Native plugins
+Always-on plugins for daily development.
 
-Built from scratch for this marketplace.
+### Native
 
-| Plugin | Purpose | Lifecycle |
-|--------|---------|-----------|
-| **forge-init** | Project bootstrapper: `/init` interview + conventions layer + code exemplars | Disposable — uninstall after use |
-| **forge-keeper** | Context maintenance: `/sync`, `/status`, `/optimize` + context watcher hook | Permanent — keeps CLAUDE.md and docs in sync |
+| Plugin | Purpose | Commands |
+|--------|---------|----------|
+| **forge-keeper** | Context maintenance + PreCompact hook | `/sync`, `/status`, `/recall`, `/segment-doc` |
+
+forge-keeper commands:
+- `/sync` — analyze changes, propose CLAUDE.md + rules + exemplars updates
+- `/status` — context health report with drift detection
+- `/recall` — search session log for past decisions
+- `/segment-doc` — split monolithic .md into focused pieces for better context loading
 
 ### Core workflow
 
@@ -41,18 +47,7 @@ Built from scratch for this marketplace.
 | **forge-superpowers** | TDD, debugging, parallel agents, code review, worktrees, plans | Skills-based (auto-triggered) |
 | **forge-extended-dev** | 4-phase development workflow (requires forge-superpowers) | `/feature-dev`, `/deep-review`, `/pr-review` |
 
-#### Extended dev workflow
-
-```
-Phase A: /feature-dev        → Discovery, exploration, architecture design
-Phase B: superpowers          → TDD planning, execution, intermediate reviews
-Phase C: /deep-review [args]  → 5 specialized agents (tests, errors, types, comments, simplify)
-Phase D: /pr-review [PR]      → Automated PR review: bugs + CLAUDE.md compliance
-```
-
-Phase D posts inline GitHub comments with `--comment` flag. Without the `github_inline_comment` MCP server, falls back to a single `gh pr comment`.
-
-### Utility plugins
+### Utility
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
@@ -61,7 +56,16 @@ Phase D posts inline GitHub comments with `--comment` flag. Without the `github_
 | **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/list`, `/configure`, `/help` |
 | **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/help` |
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
-| **forge-plugin-dev** | Plugin development toolkit: skills, agents, commands, hooks, MCP | `/create-plugin` |
+
+## Configuration plugins
+
+Install when needed, uninstall after. Don't consume context when not in use.
+
+| Plugin | Purpose | When to install |
+|--------|---------|-----------------|
+| **forge-init** | Project bootstrapper + install-all | New project: `/forge-init:init` then `/forge-init:install-all` then uninstall |
+| **forge-plugin-dev** | Plugin development toolkit (7 skills, 3 agents) | Developing plugins: `/create-plugin` then uninstall |
+| **forge-ui-expert** | UI/UX design intelligence (67 styles, 96 palettes, 13 stacks) | Frontend-heavy projects: install on demand |
 
 ## Plugin independence
 

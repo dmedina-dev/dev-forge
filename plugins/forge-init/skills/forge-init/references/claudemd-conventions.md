@@ -78,6 +78,26 @@ Claude loads imported files lazily — only when working in a relevant context.
 This keeps the main CLAUDE.md focused while preserving access to detailed
 guidance.
 
+## Connect existing development guides
+
+Many projects already have development guides that predate Claude Code:
+`DEVELOPMENT.md`, `CONTRIBUTING.md`, `docs/development-checklist.md`,
+per-directory guides like `domains/DEVELOPMENT.md` or `apps/api/DEVELOPMENT.md`.
+
+During initialization, scan for these files and connect them:
+
+- **Per-directory guides** (e.g., `domains/DEVELOPMENT.md`) → add as @import
+  in that directory's CLAUDE.md. Claude will load them automatically when
+  working in that zone.
+- **Root-level guides** (e.g., `CONTRIBUTING.md`) → add as @import in root
+  CLAUDE.md if they contain conventions Claude should follow.
+- **Cross-cutting checklists** (e.g., `docs/development-checklist.md`) → add
+  as @import in root CLAUDE.md or as a path-scoped rule if it applies to
+  specific file patterns.
+
+This eliminates the need for separate "read the development guide" skills —
+the context system loads the right guide at the right time automatically.
+
 ## Child CLAUDE.md Files
 
 Per-directory CLAUDE.md files are loaded lazily when Claude works in that

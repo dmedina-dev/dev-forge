@@ -52,6 +52,20 @@ If over limit, prune in this order:
 4. Move detailed guidance to @imports
 5. Remove the oldest or most well-established conventions
 
+### 5. Connect new development guides
+
+If the session created new development guides (DEVELOPMENT.md, CONTRIBUTING.md,
+per-directory checklists), check that they're referenced as @imports in the
+corresponding CLAUDE.md:
+
+- `domains/DEVELOPMENT.md` → @import in `domains/CLAUDE.md`
+- `apps/api/DEVELOPMENT.md` → @import in `apps/api/CLAUDE.md`
+- Root `CONTRIBUTING.md` → @import in root `CLAUDE.md`
+
+If a guide exists but isn't connected, propose adding the @import. This
+ensures Claude loads the guide automatically when working in that zone,
+eliminating the need for separate "read the guide" skills.
+
 ## What Makes a Good Update
 
 Good CLAUDE.md updates share these qualities:

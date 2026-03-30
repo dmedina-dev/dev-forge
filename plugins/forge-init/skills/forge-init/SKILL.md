@@ -37,13 +37,17 @@ Audit what /init produced and layer on top. For detailed criteria, read
    specific and verifiable instructions, no linter rule duplication
 2. **Fill per-directory gaps** — CLAUDE.md for zones /init missed (~100 lines
    each, supplement root, don't repeat)
-3. **Add path-scoped rules** — `.claude/rules/` with globs for cross-cutting
+3. **Connect existing development guides** — scan for DEVELOPMENT.md,
+   CONTRIBUTING.md, and per-directory guides. Add as @imports in the
+   corresponding CLAUDE.md so Claude loads them automatically per zone.
+   See `references/claudemd-conventions.md` § "Connect existing development guides".
+4. **Add path-scoped rules** — `.claude/rules/` with globs for cross-cutting
    conventions (testing, security, style)
-4. **Documentation scaffolding** — `docs/sessions/`, `docs/adr/` with template
-5. **Personal overrides** — `CLAUDE.local.md` (gitignored)
-6. **Code exemplars** — identify reference files with the human.
+5. **Documentation scaffolding** — `docs/sessions/`, `docs/adr/` with template
+6. **Personal overrides** — `CLAUDE.local.md` (gitignored)
+7. **Code exemplars** — identify reference files with the human.
    See `references/code-exemplars.md` for the process.
-7. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
+8. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
 
 Present complete summary to the human. **DO NOT write files until confirmed.**
 

@@ -1,0 +1,12 @@
+{
+  "name": "forge-channels-telegram",
+  "description": "Telegram channel for Claude Code — messaging bridge with built-in access control and security hardening. Curated from anthropics/claude-plugins-official.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": ["telegram", "messaging", "channel", "mcp", "security"]
+}

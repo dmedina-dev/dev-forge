@@ -68,22 +68,32 @@ Which plugins depend on or complement each other.
 - Stop hook + setup script for self-referential loop
 - 3 commands: /ralph-loop (start), /cancel-ralph (stop), /help
 
+### forge-channels-telegram
+- **Independent** — Telegram channel bridge, works standalone
+- Curated from anthropics/claude-plugins-official (external_plugins/telegram) with security hardening
+- MCP server: bridges Telegram Bot API to Claude Code session via channels protocol
+- 2 skills: /telegram:access (pairing + allowlist management), /telegram:configure (token setup)
+- 4 MCP tools: reply, react, download_attachment, edit_message
+- Security customizations: fail-closed assertSendable, disabled-on-corrupt recovery, env var restriction, logged errors
+- Requires Bun runtime and Claude Code v2.1.80+ with channels support
+
 ## Current plugin matrix
 
 ```
-Plugin              Requires            Complements         Independent of
-──────────────────────────────────────────────────────────────────────────
-forge-init          -                   forge-keeper        everything else
-forge-keeper        -                   forge-init          everything else
-forge-superpowers   -                   forge-keeper        everything else
-forge-plugin-dev    -                   -                   everything else
-forge-extended-dev  forge-superpowers   forge-keeper        everything else
-forge-hookify       -                   -                   everything else
-forge-security      -                   -                   everything else
-forge-commit        -                   -                   everything else
-forge-ralph         -                   -                   everything else
-forge-frontend-design -                 -                   everything else
-forge-ui-expert     -                   forge-frontend-design everything else
+Plugin                    Requires            Complements         Independent of
+──────────────────────────────────────────────────────────────────────────────────
+forge-init                -                   forge-keeper        everything else
+forge-keeper              -                   forge-init          everything else
+forge-superpowers         -                   forge-keeper        everything else
+forge-plugin-dev          -                   -                   everything else
+forge-extended-dev        forge-superpowers   forge-keeper        everything else
+forge-hookify             -                   -                   everything else
+forge-security            -                   -                   everything else
+forge-commit              -                   -                   everything else
+forge-ralph               -                   -                   everything else
+forge-frontend-design     -                   -                   everything else
+forge-ui-expert           -                   forge-frontend-design everything else
+forge-channels-telegram   -                   -                   everything else
 ```
 
 ## Rules for dependencies

@@ -175,6 +175,21 @@
         "ref": "main",
         "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
       }
+    },
+    {
+      "name": "forge-channels-telegram",
+      "description": "Telegram channel for Claude Code — messaging bridge with built-in access control and security hardening. Curated from anthropics/claude-plugins-official.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-channels-telegram"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-plugins-official",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-plugins-official/tree/main/external_plugins/telegram"
+      }
     }
   ]
 }

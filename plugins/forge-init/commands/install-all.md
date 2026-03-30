@@ -12,7 +12,7 @@ Always-on plugins for daily development work.
 
 | Plugin | Description | Requires |
 |--------|-------------|----------|
-| forge-keeper | Context maintenance: sync, status, optimize + hooks | - |
+| forge-keeper | Context maintenance: sync, status, recall, segment-doc + hooks | - |
 | forge-superpowers | TDD, debugging, parallel agents, code review, worktrees, plans | - |
 | forge-extended-dev | 4-phase workflow: feature-dev + deep-review + pr-review | forge-superpowers |
 | forge-commit | Git commit and PR commands | - |
@@ -20,6 +20,7 @@ Always-on plugins for daily development work.
 | forge-hookify | Custom hook rules engine with .local.md rules | - |
 | forge-ralph | Persistent loop: Claude keeps working across stop events | - |
 | forge-frontend-design | Distinctive, production-grade UI/UX design | - |
+| forge-ui-expert | UI/UX design intelligence: 67 styles, 96 palettes, 13 stacks | - |
 
 ### Configuration plugins (NOT installed by this command)
 
@@ -30,7 +31,6 @@ value when not actively being used.
 |--------|---------|-----------------|
 | forge-init | Project bootstrapper | New project → `/plugin install forge-init` → `/forge-init:init` → uninstall |
 | forge-plugin-dev | Plugin development toolkit | Developing plugins → `/plugin install forge-plugin-dev` → build → uninstall |
-| forge-ui-expert | UI/UX design intelligence (67 styles, 96 palettes, 13 stacks) | Frontend-heavy projects → `/plugin install forge-ui-expert` |
 
 ## Process
 
@@ -59,9 +59,9 @@ Already installed: [list or "none"]
 6. forge-hookify — custom hook rules
 7. forge-ralph — persistent loop
 8. forge-frontend-design — UI/UX design
+9. forge-ui-expert — UI/UX design intelligence
 
 ### Not included (configuration plugins — install on demand):
-- forge-init → /plugin install forge-init (for new projects)
 - forge-plugin-dev → /plugin install forge-plugin-dev (for plugin development)
 
 Want to exclude any working plugins? Otherwise proceed.
@@ -94,11 +94,10 @@ Working:
   forge-hookify ✓
   forge-ralph ✓
   forge-frontend-design ✓
+  forge-ui-expert ✓
 
 Configuration (install when needed):
-  forge-init → /plugin install forge-init
   forge-plugin-dev → /plugin install forge-plugin-dev
-  forge-ui-expert → /plugin install forge-ui-expert (frontend-heavy projects)
 
 Next: /forge-keeper:status
 ```

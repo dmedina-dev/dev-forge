@@ -56,6 +56,7 @@ forge-keeper commands:
 | **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/list`, `/configure`, `/help` |
 | **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/help` |
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
+| **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
 
 ## Configuration plugins
 
@@ -65,7 +66,6 @@ Install when needed, uninstall after. Don't consume context when not in use.
 |--------|---------|-----------------|
 | **forge-init** | Project bootstrapper + install-all | New project: `/forge-init:init` then `/forge-init:install-all` then uninstall |
 | **forge-plugin-dev** | Plugin development toolkit (7 skills, 3 agents) | Developing plugins: `/create-plugin` then uninstall |
-| **forge-ui-expert** | UI/UX design intelligence (67 styles, 96 palettes, 13 stacks) | Frontend-heavy projects: install on demand |
 
 ## Plugin independence
 

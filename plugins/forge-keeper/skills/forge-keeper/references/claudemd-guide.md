@@ -52,19 +52,19 @@ If over limit, prune in this order:
 4. Move detailed guidance to @imports
 5. Remove the oldest or most well-established conventions
 
-### 5. Connect new development guides
+### 5. Detect unconnected .md documentation
 
-If the session created new development guides (DEVELOPMENT.md, CONTRIBUTING.md,
-per-directory checklists), check that they're referenced as @imports in the
-corresponding CLAUDE.md:
+If the session created or modified .md files with development context
+(guides, checklists, architecture docs, READMEs — any name, any location),
+check that they're wired into the context system:
 
-- `domains/DEVELOPMENT.md` → @import in `domains/CLAUDE.md`
-- `apps/api/DEVELOPMENT.md` → @import in `apps/api/CLAUDE.md`
-- Root `CONTRIBUTING.md` → @import in root `CLAUDE.md`
+- Zone-specific .md → @import in that zone's CLAUDE.md
+- Project-wide .md → @import in root CLAUDE.md
+- .md with cross-cutting rules → extract to `.claude/rules/` with globs
 
-If a guide exists but isn't connected, propose adding the @import. This
-ensures Claude loads the guide automatically when working in that zone,
-eliminating the need for separate "read the guide" skills.
+If a .md exists but isn't connected via @import, propose adding it. If it's
+monolithic (>200 lines), note it and suggest the user run `/forge-init:segment`
+to break it into focused pieces.
 
 ## What Makes a Good Update
 

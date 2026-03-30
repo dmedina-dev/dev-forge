@@ -78,25 +78,47 @@ Claude loads imported files lazily — only when working in a relevant context.
 This keeps the main CLAUDE.md focused while preserving access to detailed
 guidance.
 
-## Connect existing development guides
+## Discover and connect existing documentation
 
-Many projects already have development guides that predate Claude Code:
-`DEVELOPMENT.md`, `CONTRIBUTING.md`, `docs/development-checklist.md`,
-per-directory guides like `domains/DEVELOPMENT.md` or `apps/api/DEVELOPMENT.md`.
+Projects accumulate .md files with valuable context before Claude Code
+arrives: guides, checklists, architecture docs, READMEs per module. During
+initialization, discover them all and wire them into the context system.
 
-During initialization, scan for these files and connect them:
+### What to scan for
 
-- **Per-directory guides** (e.g., `domains/DEVELOPMENT.md`) → add as @import
-  in that directory's CLAUDE.md. Claude will load them automatically when
-  working in that zone.
-- **Root-level guides** (e.g., `CONTRIBUTING.md`) → add as @import in root
-  CLAUDE.md if they contain conventions Claude should follow.
-- **Cross-cutting checklists** (e.g., `docs/development-checklist.md`) → add
-  as @import in root CLAUDE.md or as a path-scoped rule if it applies to
-  specific file patterns.
+Don't limit the search to specific filenames. Scan broadly:
 
-This eliminates the need for separate "read the development guide" skills —
-the context system loads the right guide at the right time automatically.
+- `docs/` directory — any .md with development conventions, architecture
+  descriptions, API docs, deployment guides
+- Per-directory .md files — README.md, DEVELOPMENT.md, CONTRIBUTING.md,
+  ARCHITECTURE.md, or any custom name in any subdirectory
+- Root-level guides — CONTRIBUTING.md, DEVELOPMENT.md, SECURITY.md
+
+### How to classify each file
+
+For each discovered .md, determine:
+
+1. **Is it zone-specific?** (lives in or describes a specific directory)
+   → @import in that directory's CLAUDE.md
+2. **Is it project-wide?** (describes the whole project or cross-cutting concerns)
+   → @import in root CLAUDE.md
+3. **Does it contain cross-cutting rules for specific file patterns?**
+   → extract those rules to `.claude/rules/` with globs
+4. **Is it irrelevant to Claude?** (changelogs, release notes, marketing)
+   → skip it
+
+### Handling monolithic documents
+
+If a .md file is too large to be useful as a single @import (>200 lines),
+it will load as a wall of context that dilutes the signal. Suggest
+segmenting it — see `/forge-init:segment` command.
+
+### The hybrid approach
+
+- @import the document as-is (non-destructive, team keeps using it)
+- Extract only cross-cutting rules to `.claude/rules/` (globs for precision)
+- Don't delete or redistribute the original — it coexists with CLAUDE.md
+- forge-keeper detects new .md files during sync and proposes connecting them
 
 ## Child CLAUDE.md Files
 

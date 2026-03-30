@@ -3,10 +3,12 @@ name: forge-init
 description: >
   Project bootstrapper for Claude Code. Runs the native /init interview, then
   layers opinionated conventions: CLAUDE.md quality audit, per-directory context
-  files, path-scoped rules, @import wiring for existing docs, code exemplars,
-  and documentation scaffolding. Use when bootstrapping a new project, adding
-  Claude Code to an existing project, or when the user mentions "initialize",
-  "bootstrap", "setup project", "forge init". Uninstall after use.
+  files, discovery and wiring of existing .md documentation, path-scoped rules,
+  code exemplars, and documentation scaffolding. Use when bootstrapping a new
+  project, adding Claude Code to an existing project, or when the user mentions
+  "initialize", "bootstrap", "setup project", "forge init". Also use
+  /forge-init:install-all to install all dev-forge working plugins.
+  Uninstall after use.
 ---
 
 # Forge Init
@@ -30,13 +32,16 @@ Audit what /init produced and layer on top. For detailed criteria, read
 `references/claudemd-conventions.md`.
 
 1. **Audit CLAUDE.md quality** — ~200 line limit, WHY/WHAT/HOW structure,
-   specific and verifiable instructions, no linter rule duplication
+   specific and verifiable instructions, no linter rule duplication.
+   Also audit existing `.claude/rules/` for proper frontmatter (description + globs).
 2. **Fill per-directory gaps** — CLAUDE.md for zones /init missed (~100 lines
    each, supplement root, don't repeat)
-3. **Connect existing development guides** — scan for DEVELOPMENT.md,
-   CONTRIBUTING.md, and per-directory guides. Add as @imports in the
-   corresponding CLAUDE.md so Claude loads them automatically per zone.
-   See `references/claudemd-conventions.md` § "Connect existing development guides".
+3. **Discover and connect existing docs** — scan the entire project for .md
+   files with valuable context: docs/, per-directory guides, READMEs, checklists,
+   architecture docs. @import them in the corresponding CLAUDE.md. Extract
+   cross-cutting rules to `.claude/rules/` with globs. If a doc is too large
+   (>200 lines), suggest segmentation via `/forge-init:segment`.
+   See `references/claudemd-conventions.md` § "Discover and connect existing documentation".
 4. **Add path-scoped rules** — `.claude/rules/` with globs for cross-cutting
    conventions (testing, security, style)
 5. **Documentation scaffolding** — `docs/sessions/` as personal session

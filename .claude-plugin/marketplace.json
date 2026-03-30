@@ -163,13 +163,18 @@
     },
     {
       "name": "forge-ui-expert",
-      "description": "UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 25 chart types, 13 tech stacks. Searchable database with priority-based recommendations.",
+      "description": "UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 25 chart types, 13 tech stacks. Curated from nextlevelbuilder/ui-ux-pro-max-skill.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-ui-expert"
       },
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+        "ref": "main",
+        "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+      }
     }
   ]
 }

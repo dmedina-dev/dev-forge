@@ -1,0 +1,10 @@
+{
+  "upstream": {
+    "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+    "plugin": "ui-ux-pro-max",
+    "license": "MIT",
+    "authors": ["NextLevelBuilder"],
+    "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+  },
+  "customizations": []
+}

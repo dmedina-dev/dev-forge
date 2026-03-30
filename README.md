@@ -33,7 +33,6 @@ Built from scratch for this marketplace.
 |--------|---------|-----------|
 | **forge-init** | Project bootstrapper: `/init` interview + conventions layer + code exemplars | Disposable — uninstall after use |
 | **forge-keeper** | Context maintenance: `/sync`, `/status`, `/optimize` + context watcher hook | Permanent — keeps CLAUDE.md and docs in sync |
-| **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Optional — install for frontend-heavy projects |
 
 ### Core workflow
 
@@ -99,6 +98,12 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | Plugin | Original plugin | Original author |
 |--------|----------------|-----------------|
 | forge-frontend-design | [frontend-design](https://github.com/anthropics/claude-plugins-official) | Prithvi Rajasekaran, Alexander Bricken (Anthropic) |
+
+### [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+
+| Plugin | Original plugin | Original author |
+|--------|----------------|-----------------|
+| forge-ui-expert | [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | NextLevelBuilder |
 
 ### Customizations
 

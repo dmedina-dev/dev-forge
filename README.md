@@ -17,6 +17,7 @@ plugins — install all or pick what you need.
 /plugin install forge-commit        # commit/PR commands
 /plugin install forge-hookify       # custom hook rules engine
 /plugin install forge-ralph         # persistent loop technique
+/plugin install forge-frontend-design # distinctive UI/UX design
 /plugin install forge-plugin-dev    # plugin development toolkit (install when needed)
 /plugin install forge-init          # project bootstrapper (uninstall after use)
 ```
@@ -58,6 +59,7 @@ Phase D posts inline GitHub comments with `--comment` flag. Without the `github_
 | **forge-security** | Security reminder hooks (XSS, injection, eval, pickle, etc.) | Passive — hooks on Edit/Write |
 | **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/list`, `/configure`, `/help` |
 | **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/help` |
+| **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
 | **forge-plugin-dev** | Plugin development toolkit: skills, agents, commands, hooks, MCP | `/create-plugin` |
 
 ## Plugin independence
@@ -89,6 +91,12 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | forge-security | [security-guidance](https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance) | Anthropic |
 | forge-commit | [commit-commands](https://github.com/anthropics/claude-code/tree/main/plugins/commit-commands) | Anthropic |
 | forge-ralph | [ralph-wiggum](https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum) | Anthropic |
+
+### [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)
+
+| Plugin | Original plugin | Original author |
+|--------|----------------|-----------------|
+| forge-frontend-design | [frontend-design](https://github.com/anthropics/claude-plugins-official) | Prithvi Rajasekaran, Alexander Bricken (Anthropic) |
 
 ### Customizations
 

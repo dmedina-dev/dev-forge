@@ -18,6 +18,7 @@ plugins — install all or pick what you need.
 /plugin install forge-hookify       # custom hook rules engine
 /plugin install forge-ralph         # persistent loop technique
 /plugin install forge-frontend-design # distinctive UI/UX design
+/plugin install forge-ui-expert     # UI/UX design intelligence (install for frontend projects)
 /plugin install forge-plugin-dev    # plugin development toolkit (install when needed)
 /plugin install forge-init          # project bootstrapper (uninstall after use)
 ```
@@ -32,6 +33,7 @@ Built from scratch for this marketplace.
 |--------|---------|-----------|
 | **forge-init** | Project bootstrapper: `/init` interview + conventions layer + code exemplars | Disposable — uninstall after use |
 | **forge-keeper** | Context maintenance: `/sync`, `/status`, `/optimize` + context watcher hook | Permanent — keeps CLAUDE.md and docs in sync |
+| **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Optional — install for frontend-heavy projects |
 
 ### Core workflow
 

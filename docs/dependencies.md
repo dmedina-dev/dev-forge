@@ -83,6 +83,7 @@ forge-security      -                   -                   everything else
 forge-commit        -                   -                   everything else
 forge-ralph         -                   -                   everything else
 forge-frontend-design -                 -                   everything else
+forge-ui-expert     -                   forge-frontend-design everything else
 ```
 
 ## Rules for dependencies

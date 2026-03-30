@@ -30,6 +30,7 @@ value when not actively being used.
 |--------|---------|-----------------|
 | forge-init | Project bootstrapper | New project → `/plugin install forge-init` → `/forge-init:init` → uninstall |
 | forge-plugin-dev | Plugin development toolkit | Developing plugins → `/plugin install forge-plugin-dev` → build → uninstall |
+| forge-ui-expert | UI/UX design intelligence (67 styles, 96 palettes, 13 stacks) | Frontend-heavy projects → `/plugin install forge-ui-expert` |
 
 ## Process
 
@@ -97,6 +98,7 @@ Working:
 Configuration (install when needed):
   forge-init → /plugin install forge-init
   forge-plugin-dev → /plugin install forge-plugin-dev
+  forge-ui-expert → /plugin install forge-ui-expert (frontend-heavy projects)
 
 Next: /forge-keeper:status
 ```

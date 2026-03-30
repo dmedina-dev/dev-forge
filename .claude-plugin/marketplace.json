@@ -175,6 +175,16 @@
         "ref": "main",
         "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
       }
+    },
+    {
+      "name": "forge-install",
+      "description": "Installs all dev-forge working plugins in one command. Configuration plugin — uninstall after use.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-install"
+      },
+      "version": "1.0.0"
     }
   ]
 }

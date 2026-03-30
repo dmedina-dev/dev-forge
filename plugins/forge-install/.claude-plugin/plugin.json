@@ -1,0 +1,12 @@
+{
+  "name": "forge-install",
+  "version": "1.0.0",
+  "description": "Installs all dev-forge working plugins in one command. Configuration plugin — uninstall after use.",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": ["install", "setup", "marketplace"]
+}

@@ -84,6 +84,7 @@ forge-commit        -                   -                   everything else
 forge-ralph         -                   -                   everything else
 forge-frontend-design -                 -                   everything else
 forge-ui-expert     -                   forge-frontend-design everything else
+forge-install       -                   -                   everything (config plugin)
 ```
 
 ## Rules for dependencies

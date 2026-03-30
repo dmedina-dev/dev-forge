@@ -1,32 +1,28 @@
 ---
 name: forge-init
 description: >
-  Two-step project bootstrapper for Claude Code. Step 1 runs the native /init
-  to interview the developer and generate base configuration. Step 2 layers
-  opinionated conventions on top: CLAUDE.md quality improvements, per-directory
-  context files, path-scoped rules, documentation scaffolding, and code exemplars.
-  Use this skill when bootstrapping a new project, adding Claude Code support to
-  an existing project, or when the user mentions "initialize", "bootstrap",
-  "setup project", "forge init", or any variant that implies first-time
-  configuration. This plugin is designed to be uninstalled after use.
+  Project bootstrapper for Claude Code. Runs the native /init interview, then
+  layers opinionated conventions: CLAUDE.md quality audit, per-directory context
+  files, path-scoped rules, @import wiring for existing docs, code exemplars,
+  and documentation scaffolding. Use when bootstrapping a new project, adding
+  Claude Code to an existing project, or when the user mentions "initialize",
+  "bootstrap", "setup project", "forge init". Uninstall after use.
 ---
 
 # Forge Init
 
-Two-step bootstrapper: native /init foundation + conventions layer.
+Guided bootstrapper: runs /init then layers conventions on top.
 
 ## Step 1 — Run native /init
 
 Guide the human to run:
 
 ```
-CLAUDE_CODE_NEW_INIT=1 /init
+/init
 ```
 
 This interviews the developer and generates base configuration (CLAUDE.md,
 skills, hooks, `.claude/`).
-
-If /init is unavailable, use the fallback in `references/manual-discovery.md`.
 
 ## Step 2 — Conventions layer
 
@@ -43,11 +39,13 @@ Audit what /init produced and layer on top. For detailed criteria, read
    See `references/claudemd-conventions.md` § "Connect existing development guides".
 4. **Add path-scoped rules** — `.claude/rules/` with globs for cross-cutting
    conventions (testing, security, style)
-5. **Documentation scaffolding** — `docs/sessions/`, `docs/adr/` with template
-6. **Personal overrides** — `CLAUDE.local.md` (gitignored)
-7. **Code exemplars** — identify reference files with the human.
+5. **Documentation scaffolding** — `docs/sessions/` as personal session
+   log (bitácora), `docs/adr/` with ADR template
+6. **Code exemplars** — identify reference files with the human. Exemplars
+   are pointers to actual files + lesson learned, not copies.
    See `references/code-exemplars.md` for the process.
-8. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
+7. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
+   documenting what was discovered, decided, and configured
 
 Present complete summary to the human. **DO NOT write files until confirmed.**
 
@@ -65,6 +63,5 @@ Run /forge-keeper:status to check context health anytime.
 ## References
 
 - CLAUDE.md conventions → `references/claudemd-conventions.md`
-- Manual discovery fallback → `references/manual-discovery.md`
 - Code exemplars process → `references/code-exemplars.md`
 - Knowledge layer principles → `references/knowledge-principles.md`

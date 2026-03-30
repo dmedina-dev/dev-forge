@@ -40,7 +40,7 @@ Audit what /init produced and layer on top. For detailed criteria, read
    files with valuable context: docs/, per-directory guides, READMEs, checklists,
    architecture docs. @import them in the corresponding CLAUDE.md. Extract
    cross-cutting rules to `.claude/rules/` with globs. If a doc is too large
-   (>200 lines), suggest segmentation via `/forge-init:segment`.
+   (>200 lines), suggest segmentation via `/forge-keeper:segment-doc`.
    See `references/claudemd-conventions.md` § "Discover and connect existing documentation".
 4. **Add path-scoped rules** — `.claude/rules/` with globs for cross-cutting
    conventions (testing, security, style)

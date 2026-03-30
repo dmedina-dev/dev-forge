@@ -111,7 +111,7 @@ For each discovered .md, determine:
 
 If a .md file is too large to be useful as a single @import (>200 lines),
 it will load as a wall of context that dilutes the signal. Suggest
-segmenting it — see `/forge-init:segment` command.
+segmenting it — see `/forge-keeper:segment-doc` command.
 
 ### The hybrid approach
 

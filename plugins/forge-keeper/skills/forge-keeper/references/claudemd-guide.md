@@ -63,7 +63,7 @@ check that they're wired into the context system:
 - .md with cross-cutting rules → extract to `.claude/rules/` with globs
 
 If a .md exists but isn't connected via @import, propose adding it. If it's
-monolithic (>200 lines), note it and suggest the user run `/forge-init:segment`
+monolithic (>200 lines), note it and suggest the user run `/forge-keeper:segment-doc`
 to break it into focused pieces.
 
 ## What Makes a Good Update

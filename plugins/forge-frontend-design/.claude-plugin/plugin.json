@@ -1,0 +1,12 @@
+{
+  "name": "forge-frontend-design",
+  "version": "1.0.0",
+  "description": "Frontend design skill for distinctive, production-grade UI/UX implementation. Curated from anthropics/claude-plugins-official.",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "Apache-2.0",
+  "keywords": ["frontend", "design", "ui", "ux", "css", "react"]
+}

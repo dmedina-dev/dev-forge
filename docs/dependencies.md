@@ -82,6 +82,7 @@ forge-hookify       -                   -                   everything else
 forge-security      -                   -                   everything else
 forge-commit        -                   -                   everything else
 forge-ralph         -                   -                   everything else
+forge-frontend-design -                 -                   everything else
 ```
 
 ## Rules for dependencies

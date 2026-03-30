@@ -19,6 +19,7 @@ Always-on plugins for daily development work.
 | forge-security | Security reminder hooks (9 vulnerability patterns) | - |
 | forge-hookify | Custom hook rules engine with .local.md rules | - |
 | forge-ralph | Persistent loop: Claude keeps working across stop events | - |
+| forge-frontend-design | Distinctive, production-grade UI/UX design | - |
 
 ### Configuration plugins (NOT installed by this command)
 
@@ -56,6 +57,7 @@ Already installed: [list or "none"]
 5. forge-security — security hooks
 6. forge-hookify — custom hook rules
 7. forge-ralph — persistent loop
+8. forge-frontend-design — UI/UX design
 
 ### Not included (configuration plugins — install on demand):
 - forge-init → /plugin install forge-init (for new projects)
@@ -90,6 +92,7 @@ Working:
   forge-security ✓
   forge-hookify ✓
   forge-ralph ✓
+  forge-frontend-design ✓
 
 Configuration (install when needed):
   forge-init → /plugin install forge-init

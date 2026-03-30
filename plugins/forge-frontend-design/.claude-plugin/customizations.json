@@ -1,0 +1,17 @@
+{
+  "upstream": {
+    "source": "anthropics/claude-plugins-official",
+    "plugin": "frontend-design",
+    "license": "Apache-2.0",
+    "authors": ["Prithvi Rajasekaran (Anthropic)", "Alexander Bricken (Anthropic)"],
+    "url": "https://github.com/anthropics/claude-plugins-official"
+  },
+  "customizations": [
+    {
+      "id": "exclude-readme-license",
+      "type": "excluded",
+      "files": ["README.md", "LICENSE"],
+      "reason": "Not needed in forge distribution — attribution in customizations.json and SKILL.md comment"
+    }
+  ]
+}

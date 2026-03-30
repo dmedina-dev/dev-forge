@@ -145,6 +145,21 @@
         "ref": "main",
         "url": "https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum"
       }
+    },
+    {
+      "name": "forge-frontend-design",
+      "description": "Frontend design skill for distinctive, production-grade UI/UX. Avoids generic AI aesthetics. Curated from anthropics/claude-plugins-official.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-frontend-design"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "anthropics/claude-plugins-official",
+        "ref": "main",
+        "url": "https://github.com/anthropics/claude-plugins-official"
+      }
     }
   ]
 }

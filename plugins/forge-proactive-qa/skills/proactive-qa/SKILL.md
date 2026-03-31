@@ -215,26 +215,27 @@ Automatically alternates between explore and autofix on each invocation. Uses a 
 
 ### How it works
 
-1. Read `${CLAUDE_PLUGIN_ROOT}/.cycle-state` (defaults to `explore` if missing)
-2. If state = `explore`: run explore mode, then write `autofix` to state file
-3. If state = `autofix`: run autofix mode, then write `explore` to state file
+1. Read state: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh read` (defaults to `explore`)
+2. If state = `explore`: run explore mode, then toggle: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh autofix`
+3. If state = `autofix`: run autofix mode, then toggle: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh explore`
 4. After finishing, run cleanup + `/clear` as usual
 
-### State file management
+### State management
 
 ```bash
-# Read current state (default: explore)
-STATE=$(cat "${CLAUDE_PLUGIN_ROOT}/.cycle-state" 2>/dev/null || echo "explore")
+# Read current state
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh read
 
-# After completing, toggle state
-if [ "$STATE" = "explore" ]; then
-  echo "autofix" > "${CLAUDE_PLUGIN_ROOT}/.cycle-state"
-else
-  echo "explore" > "${CLAUDE_PLUGIN_ROOT}/.cycle-state"
-fi
+# Toggle after completing
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh autofix
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh explore
 ```
 
-The state file should be gitignored. If autofix finds no pending issues, it skips silently and the next cycle will explore again.
+Never write to the state file directly — use the script to avoid permission prompts.
+The state file (`.proactive-qa-cycle`) lives in the project root, not in the plugin cache.
+Add `.proactive-qa-cycle` to your `.gitignore`.
+
+If autofix finds no pending issues, it skips silently and the next cycle will explore again.
 
 ---
 
@@ -285,6 +286,7 @@ Add these to your project's `.claude/settings.json` to allow unattended `/loop` 
   "permissions": {
     "allow": [
       "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh:*)",
+      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh:*)",
       "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh:*)",
       "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh:*)",
       "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/telegram-notify.sh:*)"

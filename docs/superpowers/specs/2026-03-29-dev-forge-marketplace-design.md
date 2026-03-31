@@ -333,53 +333,6 @@ Use skill-creator to run evals on forge-keeper's semantic trigger, refining the 
 
 ---
 
-## forge-keeper:optimize — Deep restructuring
-
-### Purpose
-
-When the engine (dev-forge plugins) gets updated, the fuel (project's CLAUDE.md, rules, exemplars) might not take advantage of new capabilities. `/forge-keeper:optimize` does a full audit of project configuration against current engine features and proposes upgrades.
-
-### How it differs from sync
-
-| | forge-keeper:sync | forge-keeper:optimize |
-|---|---|---|
-| Trigger | Session changes / semantic drift | Plugin update / manual |
-| Scope | Incremental — what this session added | Deep — full audit against current engine |
-| Frequency | Per session | Per plugin update (~monthly) |
-| Compares | Code changes vs existing CLAUDE.md | Project fuel vs engine capabilities |
-
-### What it does
-
-1. Detects current engine capabilities from forge-init's references
-2. Audits project fuel: missing features, outdated patterns, deprecated config
-3. Checks structural quality (line limits, frontmatter format, @imports)
-4. Presents structured Upgrade/Restructure/Migrate proposal
-5. Applies only what the user approves
-
-### Proposal format
-
-```
-## Optimize Proposal
-
-### Upgrade (adopt new capabilities)
-- Create `docs/exemplars.md` — feature now available
-
-### Restructure (improve existing configuration)
-- `CLAUDE.md` — reorganize into WHY/WHAT/HOW structure
-
-### Migrate (fix deprecated patterns)
-- Update env vars: SK_ → FK_
-
-### No changes needed
-- `apps/api/CLAUDE.md` — follows current conventions ✓
-```
-
-### Design decision
-
-Lives as `/forge-keeper:optimize` command (not a separate plugin) because forge-keeper is already permanently installed. Adding a command doesn't increase context footprint, and the deep restructuring is infrequent but shouldn't require install/uninstall ceremony.
-
----
-
 ## Future plugins
 
 Each follows engine/fuel: procedures in the plugin, knowledge in the project.

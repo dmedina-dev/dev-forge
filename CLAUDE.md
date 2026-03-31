@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Dev Forge
 
 Personal plugin marketplace for Claude Code. Curated collection of independent plugins that can be installed individually or all at once.
@@ -13,16 +17,19 @@ dev-forge/
 │   ├── forge-init/                    ← bootstrapper (disposable)
 │   ├── forge-keeper/                  ← context maintenance
 │   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
-│   ├── forge-plugin-dev/              ← plugin development toolkit (curated from anthropics/claude-code)
-│   ├── forge-extended-dev/            ← extended workflow: discovery + design + deep review (requires forge-superpowers)
-│   ├── forge-hookify/                 ← custom hook rules engine (curated from anthropics/claude-code)
-│   ├── forge-security/                ← security reminder hooks (curated from anthropics/claude-code)
-│   ├── forge-commit/                  ← commit/PR commands (curated from anthropics/claude-code)
-│   ├── forge-ralph/                   ← persistent loop technique (curated from anthropics/claude-code)
-│   └── ...                            ← each plugin independent
+│   ├── forge-plugin-dev/              ← plugin development toolkit
+│   ├── forge-extended-dev/            ← extended workflow (requires forge-superpowers)
+│   ├── forge-hookify/                 ← custom hook rules engine
+│   ├── forge-security/                ← security reminder hooks
+│   ├── forge-commit/                  ← commit/PR commands
+│   ├── forge-ralph/                   ← persistent loop technique
+│   ├── forge-frontend-design/         ← frontend UI/UX design
+│   ├── forge-ui-expert/               ← UI/UX design intelligence
+│   ├── forge-channels-telegram/       ← Telegram channel bridge (MCP, requires Bun)
+│   └── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
-    └── customizations-pattern.md      ← vendor + customizations pattern for external plugins
+    └── customizations-pattern.md      ← vendor + customizations pattern
 ```
 
 ## Plugin independence
@@ -50,12 +57,7 @@ dev-forge/
 
 ## External plugin customizations
 
-External plugins follow a **vendor + customizations** pattern (see `docs/customizations-pattern.md`):
-
-- `customizations.json` in `.claude-plugin/` tracks origin, applied changes, and upstream status
-- Each customization has an id, type (`excluded`/`removed`/`modified`/`added`), and reason
-- Upstream updates can be checked, summarized, and merged respecting local customizations
-- Native plugins (forge-init, forge-keeper) don't need customizations.json
+External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa) don't need customizations.json.
 
 ## Conventions
 
@@ -76,6 +78,14 @@ claude --plugin-dir plugins/<name>
 claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 ```
 
+## Dependencies
+
+Only hard dependency: **forge-extended-dev requires forge-superpowers**. Full matrix in @docs/dependencies.md.
+
+## Exemplars
+
+Reference plugins for how things should be done — see @docs/exemplars.md.
+
 ## Gotchas
 
 - marketplace.json `source.url` must use https (not git@) for public access
@@ -83,3 +93,5 @@ claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 - Skills trigger based on description text — vague descriptions = unreliable triggers
 - When updating from upstream (superpowers, anthropic), diff against your customizations
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
+- forge-channels-telegram requires Bun runtime and Claude Code v2.1.80+ with channels support
+- forge-proactive-qa requires Playwright installed in the target project

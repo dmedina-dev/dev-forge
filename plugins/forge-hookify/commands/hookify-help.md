@@ -29,9 +29,9 @@ Warning message shown when rule triggers.
 ## Commands
 
 - **`/hookify [description]`** — Create rules from instructions or conversation analysis
-- **`/hookify:list`** — List all configured rules
-- **`/hookify:configure`** — Enable/disable rules interactively
-- **`/hookify:help`** — This help
+- **`/hookify-list`** — List all configured rules
+- **`/hookify-configure`** — Enable/disable rules interactively
+- **`/hookify-help`** — This help
 
 ## Event Types
 

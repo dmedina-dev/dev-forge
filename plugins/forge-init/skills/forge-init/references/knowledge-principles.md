@@ -109,7 +109,7 @@ When proposing updates, check:
 - Is this still under the line limits?
 - Is this scoped as narrowly as possible?
 
-**During forge-keeper:optimize (restructuring):**
+**During forge-init (restructuring):**
 Audit all three layers against these principles:
 - Find and eliminate cross-layer duplication
 - Promote recurring conventions from CLAUDE.md to rules

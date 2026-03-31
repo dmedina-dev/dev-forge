@@ -52,10 +52,10 @@ forge-keeper commands:
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean-gone` |
-| **forge-security** | Security reminder hooks (XSS, injection, eval, pickle, etc.) | Passive — hooks on Edit/Write |
-| **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/list`, `/configure`, `/help` |
-| **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/help` |
+| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean-gone`, `/release` |
+| **forge-security** | Security reminder hooks (XSS, injection, eval, etc.) | Passive — hooks on Edit/Write |
+| **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/hookify-list`, `/hookify-configure`, `/hookify-help` |
+| **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/ralph-help` |
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
 | **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
 
@@ -63,7 +63,7 @@ forge-keeper commands:
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-channels-telegram** | Telegram bridge — push messages into running session, reply from Claude | `/telegram:configure`, `/telegram:access` |
+| **forge-channels-telegram** | Telegram bridge — push messages into running session, reply from Claude | Skills: `telegram:configure`, `telegram:access` (auto-triggered) |
 
 ## Configuration plugins
 

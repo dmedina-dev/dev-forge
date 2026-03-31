@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "plugins": [
     {
@@ -17,7 +17,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-init"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "forge-keeper",
@@ -94,7 +94,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-hookify"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",
@@ -139,7 +139,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-ralph"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",

@@ -1,6 +1,6 @@
 {
   "name": "forge-init",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Two-step project bootstrapper. Step 1: runs the native /init interview to generate base config. Step 2: layers opinionated conventions — CLAUDE.md best practices, path-scoped rules, docs scaffolding. Designed to be uninstalled after use.",
   "author": {
     "name": "dmedina",

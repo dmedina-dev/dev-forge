@@ -83,7 +83,22 @@ Create `{BITACORA_DIR}/route-inventory.md`:
 | /admin/users | Admin | User management |
 ```
 
-### 5. Setup project files
+### 5. Migrate legacy state from plugin cache
+
+The plugin cache (`${CLAUDE_PLUGIN_ROOT}`) may contain state files from previous runs. Migrate them to the project root:
+
+```bash
+# Migrate .cycle-state → .proactive-qa-cycle
+LEGACY="${CLAUDE_PLUGIN_ROOT}/.cycle-state"
+if [ -f "$LEGACY" ]; then
+  cp "$LEGACY" .proactive-qa-cycle
+  echo "Migrated cycle state: $(cat .proactive-qa-cycle)"
+fi
+```
+
+Report what was migrated (if anything) in the summary.
+
+### 6. Setup project files
 
 Ensure the project is ready for autonomous QA:
 
@@ -109,10 +124,12 @@ Print a summary:
    Framework: Next.js (App Router)
    Routes found: 42 (6 public, 32 authenticated, 4 admin)
    Inventory: docs/proactive-works/route-inventory.md
+   Migrated: .cycle-state → .proactive-qa-cycle (autofix)
 
    Prerequisites:
    ✅ Playwright installed
    ✅ Auth state found
+   ✅ .gitignore updated
    ⚠️  Dev servers not running — start with: pnpm dev
 
    Next: /loop 15m /proactive-qa cycle

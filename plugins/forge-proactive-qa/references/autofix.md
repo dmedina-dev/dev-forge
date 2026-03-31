@@ -35,7 +35,7 @@ Rules:
 - Do NOT change branch
 - Write temp files to $TMPDIR, NEVER inside the project tree
 - NEVER use rm to delete files. For cleanup use:
-  bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh file1.ts file2.png
+  bash .proactive-qa-scripts/cleanup-tmpdir.sh file1.ts file2.png
 ```
 
 ### 1c. Launch validator agent
@@ -58,10 +58,10 @@ Steps:
 6. Run {LINT_CMD} to check no lint errors were introduced
 7. Run {TEST_CMD} to check no tests broke
 8. Clean up temp files using the cleanup script (NEVER use rm directly):
-   bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh validate-pwi.spec.ts screenshot.png
+   bash .proactive-qa-scripts/cleanup-tmpdir.sh validate-pwi.spec.ts screenshot.png
 
 IMPORTANT: NEVER use rm to delete files — it triggers permission prompts and breaks automation.
-Always use: bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh <filenames>
+Always use: bash .proactive-qa-scripts/cleanup-tmpdir.sh <filenames>
 
 Report: PASS or FAIL with details
 ```
@@ -79,7 +79,7 @@ Report: PASS or FAIL with details
 
 2. Commit:
    ```bash
-   bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "fix(proactive-qa): PWI-{id} — {título corto}" {archivos modificados}
+   bash .proactive-qa-scripts/commit.sh "fix(proactive-qa): PWI-{id} — {título corto}" {archivos modificados}
    ```
 
 3. Notify: Use type `fix-ok` following the dispatch rule in SKILL.md.
@@ -106,7 +106,7 @@ Report: PASS or FAIL with details
 
    b. **Commit 1 — Preserve failed code in history**:
       ```bash
-      bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "wip(proactive-qa): PWI-{id} — intento fallido (código preservado en history)" $(git diff --name-only) $(git ls-files --others --exclude-standard)
+      bash .proactive-qa-scripts/commit.sh "wip(proactive-qa): PWI-{id} — intento fallido (código preservado en history)" $(git diff --name-only) $(git ls-files --others --exclude-standard)
       ```
 
    c. **Rollback code only** (keep bitacora):
@@ -116,7 +116,7 @@ Report: PASS or FAIL with details
 
    d. **Commit 2 — Clean commit with updated bitacora**:
       ```bash
-      bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "docs(proactive-qa): PWI-{id} marcado para revisión humana" {BITACORA_DIR}/
+      bash .proactive-qa-scripts/commit.sh "docs(proactive-qa): PWI-{id} marcado para revisión humana" {BITACORA_DIR}/
       ```
 
    e. Notify: Use type `fix-fail` following the dispatch rule in SKILL.md.

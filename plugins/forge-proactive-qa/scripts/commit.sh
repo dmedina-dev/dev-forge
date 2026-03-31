@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Usage: bash commit.sh "feat: message" file1 file2 ...
 # Pre-approved commit script for autonomous proactive-qa execution.
-# Add to settings.json: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh:*)
+# After /proactive-qa init, invoke via: bash .proactive-qa-scripts/commit.sh "msg" files...
 trap 'exit 0' ERR
 
 MSG="$1"

@@ -65,7 +65,7 @@ In channel mode, attach screenshots from `$TMPDIR/screenshot-*.png`.
 ## Step 6: Cleanup and exit
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh
+bash .proactive-qa-scripts/cleanup-explore.sh
 ```
 
 Then execute `/clear` to free context. The bitacora files are the persistent memory — the next session re-reads them.

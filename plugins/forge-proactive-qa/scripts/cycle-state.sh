@@ -6,8 +6,7 @@
 # cache (~/.claude/plugins/...) — writing to ~/.claude/ triggers sensitive
 # file permission prompts that break /loop automation.
 #
-# Pre-approve in settings.json:
-#   Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh:*)
+# After /proactive-qa init, invoke via: bash .proactive-qa-scripts/cycle-state.sh [read|explore|autofix]
 trap 'exit 0' ERR
 
 STATE_FILE=".proactive-qa-cycle"

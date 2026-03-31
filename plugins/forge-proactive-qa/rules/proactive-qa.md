@@ -27,19 +27,19 @@ El sistema de permisos bloquea `rm` y requiere confirmación del usuario, interr
 
 **Explore** — limpia todos los explore-* de $TMPDIR:
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh
+bash .proactive-qa-scripts/cleanup-explore.sh
 ```
 
 **Autofix / general** — borra archivos específicos por nombre en $TMPDIR (sin paths, solo nombres):
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh file1.ts file2.spec.ts screenshot.png
+bash .proactive-qa-scripts/cleanup-tmpdir.sh file1.ts file2.spec.ts screenshot.png
 ```
 
 ## Commits — Usar script dedicado
 
 Nunca usar `git add`/`git commit` directamente — triggean permisos del sandbox que rompen `/loop`:
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "fix(proactive-qa): descripción" archivo1 archivo2
+bash .proactive-qa-scripts/commit.sh "fix(proactive-qa): descripción" archivo1 archivo2
 ```
 
 ## Resumen
@@ -47,6 +47,6 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "fix(proactive-qa): descripción" a
 | Acción | Correcto | Prohibido |
 |--------|----------|-----------|
 | Escribir specs | `$TMPDIR/explore-*.spec.ts` | `tests/explore-*.ts` |
-| Limpiar explore | `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh` | `rm -f ...` |
-| Borrar archivo temp | `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh nombre.ts` | `rm -f $TMPDIR/nombre.ts` |
-| Commit | `bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh "msg" files` | `git add && git commit` |
+| Limpiar explore | `bash .proactive-qa-scripts/cleanup-explore.sh` | `rm -f ...` |
+| Borrar archivo temp | `bash .proactive-qa-scripts/cleanup-tmpdir.sh nombre.ts` | `rm -f $TMPDIR/nombre.ts` |
+| Commit | `bash .proactive-qa-scripts/commit.sh "msg" files` | `git add && git commit` |

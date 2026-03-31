@@ -1,12 +1,10 @@
 ---
-description: "Initialize proactive-qa: discover routes from the frontend codebase and generate the route inventory. Run once before starting /loop."
+description: "Initialize proactive-qa: discover routes, setup symlinks, configure permissions. Run once before /loop, re-run after plugin upgrades."
 ---
 
 # /proactive-qa init
 
-Bootstrap the proactive QA environment by inspecting the frontend project and generating a route inventory.
-
-Run this **once** before starting the explore/autofix loop. Re-run when the route structure changes significantly.
+Bootstrap the proactive QA environment. Run **once** before starting the loop, and **re-run after plugin upgrades** to update the scripts symlink.
 
 ## Steps
 
@@ -83,7 +81,28 @@ Create `{BITACORA_DIR}/route-inventory.md`:
 | /admin/users | Admin | User management |
 ```
 
-### 5. Migrate legacy state from plugin cache
+### 5. Create scripts symlink (version-agnostic)
+
+Create a symlink from the project root to the plugin's scripts directory. This decouples permissions from the plugin version — the symlink always points to the current version.
+
+```bash
+# Remove old symlink if exists (may point to old version)
+rm -f .proactive-qa-scripts
+
+# Create symlink to current plugin scripts
+ln -s "${CLAUDE_PLUGIN_ROOT}/scripts" .proactive-qa-scripts
+```
+
+After this, all scripts are invoked via the symlink:
+```bash
+bash .proactive-qa-scripts/commit.sh "msg" file1 file2
+bash .proactive-qa-scripts/cycle-state.sh read
+bash .proactive-qa-scripts/cleanup-explore.sh
+bash .proactive-qa-scripts/cleanup-tmpdir.sh file1.ts
+bash .proactive-qa-scripts/telegram-notify.sh "explore" "message"
+```
+
+### 6. Migrate legacy state from plugin cache
 
 The plugin cache (`${CLAUDE_PLUGIN_ROOT}`) may contain state files from previous runs. Migrate them to the project root:
 
@@ -97,44 +116,39 @@ if [ -f "$LEGACY" ]; then
 fi
 ```
 
-Report what was migrated (if anything) in the summary.
-
-### 6. Setup project files
+### 7. Setup project files
 
 Ensure the project is ready for autonomous QA:
 
 - [ ] `{BITACORA_DIR}` directory exists (create if not)
-- [ ] `.proactive-qa-cycle` added to `.gitignore` (append if not present)
+- [ ] `.proactive-qa-cycle` and `.proactive-qa-scripts` added to `.gitignore`
 - [ ] Playwright installed (`npx playwright --version`)
 - [ ] Auth state files exist at `{AUTH_STATE}` (warn if missing, suggest generation command)
 - [ ] Dev servers respond at `{API_HEALTH_URL}` and `{FRONTEND_URL}` (warn if down)
 
-For `.gitignore`, check if the entry already exists before appending:
 ```bash
-grep -qxF '.proactive-qa-cycle' .gitignore 2>/dev/null || echo '.proactive-qa-cycle' >> .gitignore
+for entry in .proactive-qa-cycle .proactive-qa-scripts; do
+  grep -qxF "$entry" .gitignore 2>/dev/null || echo "$entry" >> .gitignore
+done
 ```
 
-Report any missing prerequisites so the user can fix them before starting the loop.
+### 8. Update permissions in settings.json
 
-### 7. Update permissions in settings.json
-
-The plugin scripts need to be pre-approved in `.claude/settings.json` for autonomous `/loop` execution. The paths include the current plugin version, so this step must run on every init (including after plugin upgrades).
-
-Read `.claude/settings.json`. In `permissions.auto_grant`, ensure these entries exist with the **current** `${CLAUDE_PLUGIN_ROOT}` path:
+Read `.claude/settings.json`. In `permissions.auto_grant`, ensure these **version-agnostic** entries exist:
 
 ```
-Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh:*)
-Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh:*)
-Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh:*)
-Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh:*)
-Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/telegram-notify.sh:*)
+Bash(bash .proactive-qa-scripts/commit.sh:*)
+Bash(bash .proactive-qa-scripts/cycle-state.sh:*)
+Bash(bash .proactive-qa-scripts/cleanup-explore.sh:*)
+Bash(bash .proactive-qa-scripts/cleanup-tmpdir.sh:*)
+Bash(bash .proactive-qa-scripts/telegram-notify.sh:*)
 ```
 
-**If old versioned entries exist** (e.g., `.../forge-proactive-qa/1.0.0/scripts/...`), **remove them** and replace with entries using the current version path.
+**Remove any old versioned entries** matching `*forge-proactive-qa/*/scripts/*` — these are legacy and break on upgrades.
 
 Use the Edit tool to update settings.json — do not rewrite the entire file.
 
-### 8. Summary
+### 9. Summary
 
 Print a summary:
 
@@ -143,13 +157,13 @@ Print a summary:
    Framework: Next.js (App Router)
    Routes found: 42 (6 public, 32 authenticated, 4 admin)
    Inventory: docs/proactive-works/route-inventory.md
-   Migrated: .cycle-state → .proactive-qa-cycle (autofix)
+   Scripts: .proactive-qa-scripts → ${CLAUDE_PLUGIN_ROOT}/scripts/
 
    Prerequisites:
    ✅ Playwright installed
    ✅ Auth state found
    ✅ .gitignore updated
-   ✅ Permissions updated (5 scripts in settings.json)
+   ✅ Permissions updated (version-agnostic)
    ⚠️  Dev servers not running — start with: pnpm dev
 
    Next: /loop 15m /proactive-qa cycle

@@ -49,7 +49,7 @@ Before using this skill, the project must define these values in its CLAUDE.md o
 
 - **NEVER change git branch.** All work happens on the current branch.
 - **NEVER use `cd`.** Run everything from project root.
-- **Use `bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh`** for all commits. Never raw git commands (they trigger permission prompts that break automation).
+- **Use `bash .proactive-qa-scripts/commit.sh`** for all commits. Never raw git commands (they trigger permission prompts that break automation).
 - Respect all existing hooks (lint, tests, protect-files).
 
 ## Temporary Files — ALWAYS use $TMPDIR
@@ -73,8 +73,8 @@ The sandbox blocks `rm` and requires user confirmation, breaking automation. Alw
 
 | Action | Command |
 |--------|---------|
-| Clean all explore temp files | `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh` |
-| Delete specific files from $TMPDIR | `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh file1.ts file2.png` |
+| Clean all explore temp files | `bash .proactive-qa-scripts/cleanup-explore.sh` |
+| Delete specific files from $TMPDIR | `bash .proactive-qa-scripts/cleanup-tmpdir.sh file1.ts file2.png` |
 
 These rules apply to **all agents and subagents** — fixer agents, validator agents, and the orchestrator itself.
 
@@ -97,7 +97,7 @@ For every notification below:
 > Screenshots from `$TMPDIR` can be attached directly via the `files` parameter.
 >
 > **Fallback** (no MCP reply tool):
-> Run: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/telegram-notify.sh "<type>" "<text-only message>"`
+> Run: `bash .proactive-qa-scripts/telegram-notify.sh "<type>" "<text-only message>"`
 > Screenshots cannot be sent in fallback mode — mention file paths in the text.
 
 ### Notification Types
@@ -215,20 +215,20 @@ Automatically alternates between explore and autofix on each invocation. Uses a 
 
 ### How it works
 
-1. Read state: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh read` (defaults to `explore`)
-2. If state = `explore`: run explore mode, then toggle: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh autofix`
-3. If state = `autofix`: run autofix mode, then toggle: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh explore`
+1. Read state: `bash .proactive-qa-scripts/cycle-state.sh read` (defaults to `explore`)
+2. If state = `explore`: run explore mode, then toggle: `bash .proactive-qa-scripts/cycle-state.sh autofix`
+3. If state = `autofix`: run autofix mode, then toggle: `bash .proactive-qa-scripts/cycle-state.sh explore`
 4. After finishing, run cleanup + `/clear` as usual
 
 ### State management
 
 ```bash
 # Read current state
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh read
+bash .proactive-qa-scripts/cycle-state.sh read
 
 # Toggle after completing
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh autofix
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh explore
+bash .proactive-qa-scripts/cycle-state.sh autofix
+bash .proactive-qa-scripts/cycle-state.sh explore
 ```
 
 Never write to the state file directly — use the script to avoid permission prompts.
@@ -272,11 +272,11 @@ Every agent prompt (fixer, validator) MUST include these rules:
 - Follow project conventions in CLAUDE.md
 - Write temp files to $TMPDIR, NEVER inside the project tree
 - NEVER use rm to delete files. Use:
-  bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh file1.ts file2.png
+  bash .proactive-qa-scripts/cleanup-tmpdir.sh file1.ts file2.png
 - Do NOT change branch
 - Do NOT commit — the orchestrator handles commits
 ```
 
 ## Setup — Permissions for Autonomous Execution
 
-Run `/proactive-qa init` — it automatically adds the correct script permissions to `.claude/settings.json` with the current plugin version path. Re-run init after plugin upgrades to update the paths.
+Run `/proactive-qa init` — it creates a `.proactive-qa-scripts` symlink to the plugin scripts and adds version-agnostic permissions to `.claude/settings.json`. Re-run init after plugin upgrades to update the symlink.

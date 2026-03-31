@@ -279,18 +279,4 @@ Every agent prompt (fixer, validator) MUST include these rules:
 
 ## Setup — Permissions for Autonomous Execution
 
-Add these to your project's `.claude/settings.json` to allow unattended `/loop` execution:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh:*)",
-      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh:*)",
-      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh:*)",
-      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh:*)",
-      "Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/telegram-notify.sh:*)"
-    ]
-  }
-}
-```
+Run `/proactive-qa init` — it automatically adds the correct script permissions to `.claude/settings.json` with the current plugin version path. Re-run init after plugin upgrades to update the paths.

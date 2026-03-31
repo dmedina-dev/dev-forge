@@ -116,7 +116,25 @@ grep -qxF '.proactive-qa-cycle' .gitignore 2>/dev/null || echo '.proactive-qa-cy
 
 Report any missing prerequisites so the user can fix them before starting the loop.
 
-### 6. Summary
+### 7. Update permissions in settings.json
+
+The plugin scripts need to be pre-approved in `.claude/settings.json` for autonomous `/loop` execution. The paths include the current plugin version, so this step must run on every init (including after plugin upgrades).
+
+Read `.claude/settings.json`. In `permissions.auto_grant`, ensure these entries exist with the **current** `${CLAUDE_PLUGIN_ROOT}` path:
+
+```
+Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/commit.sh:*)
+Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cycle-state.sh:*)
+Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-explore.sh:*)
+Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/cleanup-tmpdir.sh:*)
+Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/telegram-notify.sh:*)
+```
+
+**If old versioned entries exist** (e.g., `.../forge-proactive-qa/1.0.0/scripts/...`), **remove them** and replace with entries using the current version path.
+
+Use the Edit tool to update settings.json — do not rewrite the entire file.
+
+### 8. Summary
 
 Print a summary:
 
@@ -131,6 +149,7 @@ Print a summary:
    ✅ Playwright installed
    ✅ Auth state found
    ✅ .gitignore updated
+   ✅ Permissions updated (5 scripts in settings.json)
    ⚠️  Dev servers not running — start with: pnpm dev
 
    Next: /loop 15m /proactive-qa cycle

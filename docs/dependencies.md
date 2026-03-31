@@ -16,7 +16,7 @@ Which plugins depend on or complement each other.
 
 ### forge-keeper
 - **Self-contained** — hooks + skills + scripts form a cohesive unit
-- The context-watch hook, sync/status/optimize commands, and references are tightly coupled
+- The context-watch hook, sync/status commands, and references are tightly coupled
 - This is an example of justified unification: splitting hook from skill would break the workflow
 
 ### forge-superpowers
@@ -47,7 +47,7 @@ Which plugins depend on or complement each other.
 - **Independent** — custom hook rules engine, works standalone
 - Curated from anthropics/claude-code (plugins/hookify) with import customizations
 - 4 hook events: PreToolUse, PostToolUse, Stop, UserPromptSubmit
-- 4 commands: /hookify (create rules), /list, /configure, /help
+- 4 commands: /hookify (create rules), /hookify-list, /hookify-configure, /hookify-help
 - 1 agent: conversation-analyzer
 - 1 skill: writing-rules (rule format reference)
 
@@ -66,7 +66,7 @@ Which plugins depend on or complement each other.
 - **Independent** — persistent loop technique, works standalone
 - Curated from anthropics/claude-code (plugins/ralph-wiggum) with customizations
 - Stop hook + setup script for self-referential loop
-- 3 commands: /ralph-loop (start), /cancel-ralph (stop), /help
+- 3 commands: /ralph-loop (start), /cancel-ralph (stop), /ralph-help
 
 ### forge-channels-telegram
 - **Independent** — Telegram channel bridge, works standalone
@@ -86,6 +86,10 @@ Which plugins depend on or complement each other.
 - Designed for `/loop` (cycle mode alternates explore/autofix)
 - Requires Playwright in target project
 
+### forge-export
+- **Independent** — standalone exporter, no dependencies
+- Install on demand, uninstall after use (disposable like forge-init)
+
 ## Current plugin matrix
 
 ```
@@ -104,6 +108,7 @@ forge-frontend-design     -                   -                   everything els
 forge-ui-expert           -                   forge-frontend-design everything else
 forge-channels-telegram   -                   -                   everything else
 forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
+forge-export              -                   -                   everything else
 ```
 
 ## Rules for dependencies

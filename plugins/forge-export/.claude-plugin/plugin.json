@@ -1,0 +1,12 @@
+{
+  "name": "forge-export",
+  "version": "1.0.0",
+  "description": "Exports a dev-forge marketplace into a new standalone repository. Interview-driven: select plugins, apply customizations, generate complete marketplace structure. Designed to be uninstalled after use.",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": ["export", "marketplace", "scaffold", "bootstrap", "fork", "disposable"]
+}

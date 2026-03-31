@@ -177,7 +177,7 @@
       }
     },
     {
-      "name": "forge-channels-telegram",
+      "name": "telegram",
       "description": "Telegram channel for Claude Code — messaging bridge with built-in access control and security hardening. Curated from anthropics/claude-plugins-official.",
       "source": {
         "source": "git-subdir",

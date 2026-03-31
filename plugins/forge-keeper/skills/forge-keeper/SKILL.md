@@ -46,6 +46,10 @@ For detailed criteria on each step, read the corresponding references.
 
 **DO NOT apply changes without explicit human confirmation.**
 
+## Related commands
+
+- `/forge-keeper:update-check` — check plugins for upstream updates and apply them
+
 ## References
 
 - CLAUDE.md maintenance → `references/claudemd-guide.md`

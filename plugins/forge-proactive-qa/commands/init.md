@@ -92,6 +92,7 @@ The plugin cache (`${CLAUDE_PLUGIN_ROOT}`) may contain state files from previous
 LEGACY="${CLAUDE_PLUGIN_ROOT}/.cycle-state"
 if [ -f "$LEGACY" ]; then
   cp "$LEGACY" .proactive-qa-cycle
+  rm "$LEGACY"
   echo "Migrated cycle state: $(cat .proactive-qa-cycle)"
 fi
 ```

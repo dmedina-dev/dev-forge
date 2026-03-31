@@ -202,6 +202,16 @@
       "version": "1.2.0"
     },
     {
+      "name": "forge-context-mcp",
+      "description": "MCP server setup guide: Context7 (library docs), Serena (LSP navigation), XRAY (structural analysis). Install to configure, uninstall after.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-context-mcp"
+      },
+      "version": "1.0.0"
+    },
+    {
       "name": "forge-export",
       "description": "Exports a dev-forge marketplace into a new standalone marketplace repository. Interview-driven: select plugins, apply customizations, generate complete structure. Disposable — uninstall after use.",
       "source": {

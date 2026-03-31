@@ -71,8 +71,9 @@ Install when needed, uninstall after. Don't consume context when not in use.
 
 | Plugin | Purpose | When to install |
 |--------|---------|-----------------|
-| **forge-init** | Project bootstrapper + install-all | New project: `/forge-init:init` then `/forge-init:install-all` then uninstall |
+| **forge-init** | Project bootstrapper + install-all + AGENTS.md generation | New project: `/forge-init:init` then `/forge-init:install-all` then uninstall |
 | **forge-plugin-dev** | Plugin development toolkit (7 skills, 3 agents) | Developing plugins: `/create-plugin` then uninstall |
+| **forge-context-mcp** | MCP server setup guide (Context7, Serena, XRAY) | Setting up codebase intelligence: configure servers then uninstall |
 
 ## Plugin independence
 

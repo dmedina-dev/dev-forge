@@ -1,0 +1,9 @@
+{
+  "name": "forge-context-mcp",
+  "description": "Recommended MCP server configurations for codebase intelligence. Install to set up Context7, Serena, or XRAY — uninstall after configuring.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  }
+}

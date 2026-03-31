@@ -49,7 +49,14 @@ Audit what /init produced and layer on top. For detailed criteria, read
 6. **Code exemplars** — identify reference files with the human. Exemplars
    are pointers to actual files + lesson learned, not copies.
    See `references/code-exemplars.md` for the process.
-7. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
+7. **Generate AGENTS.md** — create an AGENTS.md at the project root for
+   cross-tool compatibility. Extract tool-agnostic instructions from
+   CLAUDE.md (conventions, architecture, commands, gotchas). Skip
+   Claude-specific features (@imports, Skills, hooks). This makes the
+   project's conventions available to Cursor, Copilot, Codex, Windsurf,
+   and any AGENTS.md-compatible tool.
+   See `references/agentsmd-guide.md` for the format.
+8. **Initialization report** — `docs/sessions/YYYY-MM-DD-forge-init.md`
    documenting what was discovered, decided, and configured
 
 Present complete summary to the human. **DO NOT write files until confirmed.**

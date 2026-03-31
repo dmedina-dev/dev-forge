@@ -26,7 +26,9 @@ dev-forge/
 │   ├── forge-frontend-design/         ← frontend UI/UX design
 │   ├── forge-ui-expert/               ← UI/UX design intelligence
 │   ├── forge-channels-telegram/       ← Telegram channel bridge (MCP, requires Bun)
-│   └── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
+│   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
+│   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
+│   └── forge-export/                  ← marketplace export wizard (disposable)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
     └── customizations-pattern.md      ← vendor + customizations pattern

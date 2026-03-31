@@ -90,6 +90,12 @@ Which plugins depend on or complement each other.
 - **Independent** — standalone exporter, no dependencies
 - Install on demand, uninstall after use (disposable like forge-init)
 
+### forge-context-mcp
+- **Independent** — MCP server setup guide, no dependencies
+- Install on demand, uninstall after configuring servers (disposable)
+- Guides: Context7 (library docs), Serena (LSP navigation), XRAY (structural analysis)
+- MCP servers run independently from .claude/settings.json after setup
+
 ## Current plugin matrix
 
 ```
@@ -109,6 +115,7 @@ forge-ui-expert           -                   forge-frontend-design everything e
 forge-channels-telegram   -                   -                   everything else
 forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
 forge-export              -                   -                   everything else
+forge-context-mcp         -                   -                   everything else
 ```
 
 ## Rules for dependencies

@@ -83,14 +83,20 @@ Create `{BITACORA_DIR}/route-inventory.md`:
 | /admin/users | Admin | User management |
 ```
 
-### 5. Verify project configuration
+### 5. Setup project files
 
-Check that the project has the required configuration for proactive-qa:
+Ensure the project is ready for autonomous QA:
 
 - [ ] `{BITACORA_DIR}` directory exists (create if not)
+- [ ] `.proactive-qa-cycle` added to `.gitignore` (append if not present)
 - [ ] Playwright installed (`npx playwright --version`)
 - [ ] Auth state files exist at `{AUTH_STATE}` (warn if missing, suggest generation command)
 - [ ] Dev servers respond at `{API_HEALTH_URL}` and `{FRONTEND_URL}` (warn if down)
+
+For `.gitignore`, check if the entry already exists before appending:
+```bash
+grep -qxF '.proactive-qa-cycle' .gitignore 2>/dev/null || echo '.proactive-qa-cycle' >> .gitignore
+```
 
 Report any missing prerequisites so the user can fix them before starting the loop.
 

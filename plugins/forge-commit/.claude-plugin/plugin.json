@@ -1,6 +1,6 @@
 {
   "name": "forge-commit",
-  "description": "Git workflow commands: /commit (smart commit with style-matching), /commit-push-pr (branch → commit → push → PR), /clean_gone (remove stale branches).",
+  "description": "Git workflow commands: /commit (smart commit with style-matching), /commit-push-pr (branch → commit → push → PR), /clean_gone (remove stale branches), /release (bump changed plugins, tag, push).",
   "version": "1.0.0",
   "author": {
     "name": "dmedina",

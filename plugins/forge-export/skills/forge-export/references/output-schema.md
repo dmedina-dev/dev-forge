@@ -24,6 +24,8 @@ All files are written under `<dest>/` (the user-specified destination directory)
 │           └── customizations.json          (for each external plugin with carried customizations)
 ├── commands/
 │   └── install-all.md
+├── .claude/
+│   └── settings.json                  (only if hooks carried from Step 6)
 ├── CLAUDE.md
 ├── README.md
 └── docs/

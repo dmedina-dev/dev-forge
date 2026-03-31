@@ -18,9 +18,10 @@ Guided exporter: interviews you, then generates a new standalone marketplace rep
 Ask the user:
 
 1. Marketplace name (e.g., "acme-forge")
-2. Destination path (absolute or relative, e.g., ~/acme-forge)
-3. New marketplace repo URL (used for `source.url` entries in marketplace.json — a placeholder is fine)
-4. Owner name and email (for authorship in generated files)
+2. Short description (e.g., "Acme team's curated Claude Code plugins")
+3. Destination path (absolute or relative, e.g., ~/acme-forge)
+4. New marketplace repo URL (used for `source.url` entries in marketplace.json — a placeholder is fine)
+5. Owner name and email (for authorship in generated files)
 
 Validate the destination path does not already exist. If it does, stop and report — do not proceed.
 

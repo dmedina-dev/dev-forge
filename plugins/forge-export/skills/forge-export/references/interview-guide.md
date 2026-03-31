@@ -31,10 +31,12 @@ the same dev-forge repository.
 
 ### Customization count per plugin
 
-For each plugin (external or native), check whether
-`plugins/<name>/.claude-plugin/customizations.json` exists in the source
-repo. If it exists, read the `customizations` array and count entries. If the
-file does not exist, count is 0.
+For each plugin (external or native), resolve its directory using the
+`source.path` field from marketplace.json (this may differ from `name` — e.g.,
+the `telegram` plugin lives at `plugins/forge-channels-telegram`). Check whether
+`<source.path>/.claude-plugin/customizations.json` exists. If it exists, read
+the `customizations` array and count entries. If the file does not exist, count
+is 0.
 
 ---
 
@@ -74,6 +76,9 @@ Ask the user which to include in the new marketplace.
 
 For the upstream column of external plugins: show `repo @ ref` for single
 upstream, or `repo (name + N more)` for arrays.
+
+**Omit forge-export itself from the table** — it is the running exporter and
+should not export itself.
 
 ### Default and exclusions
 
@@ -132,8 +137,8 @@ Skip any external plugin with no `customizations.json` or an empty
 
 - **Carried** customizations are written into the new repo's
   `plugins/<name>/.claude-plugin/customizations.json` verbatim.
-- The `origin` and `upstream_status` blocks are copied from the source
-  `customizations.json`, with `fetched_at` and `last_checked` updated to today.
+- The `origin` and `upstream_status` blocks are copied verbatim from the source
+  `customizations.json` (dates are preserved — this is a carry-over, not a fresh fetch).
 - Non-carried customizations are omitted from the new file. If none are
   carried, no `customizations.json` is created for that plugin.
 
@@ -163,33 +168,9 @@ Ask two questions:
 > "Enter the new author's name and email for origin tracking in
 > customizations.json (format: Name <email>):"
 
-Pre-fill the `customizations.json` origin block for native plugins as:
-
-```json
-{
-  "origin": {
-    "type": "github",
-    "repo": "<source-dev-forge-repo-url>",
-    "path": "plugins/<name>",
-    "ref": "<current-marketplace-version>",
-    "commit": "",
-    "fetched_at": "<today>",
-    "check_url": "<source-dev-forge-repo-url>/releases"
-  },
-  "upstream_status": {
-    "last_checked": "<today>",
-    "latest_ref": "<current-marketplace-version>",
-    "latest_commit": "",
-    "has_updates": false,
-    "summary": "",
-    "changes": []
-  },
-  "customizations": []
-}
-```
-
-Where `<source-dev-forge-repo-url>` is the `source.url` from the plugin's
-marketplace entry, and `<today>` is the current date (YYYY-MM-DD).
+Generate a `customizations.json` tracking the source dev-forge as origin.
+See `references/output-schema.md` § customizations.json for copied native
+plugins for the exact template and field values.
 
 The author name/email is stored in the new repo's marketplace.json `owner`
 field, not in `customizations.json`.

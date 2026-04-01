@@ -9,7 +9,7 @@
     "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev"
   },
   "upstream_status": {
-    "last_checked": "2026-03-29",
+    "last_checked": "2026-04-01",
     "latest_ref": "main",
     "latest_commit": "",
     "has_updates": false,

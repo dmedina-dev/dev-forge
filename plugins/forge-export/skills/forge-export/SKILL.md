@@ -65,8 +65,11 @@ See `references/interview-guide.md` § Native plugin interview.
 
 ## Step 6 — Settings and hooks
 
-Detect entries in `.claude/settings.json` (hooks, permissions, env) that are associated with
-selected plugins. Present them and ask which to export.
+Detect ALL hooks in `.claude/settings.json`. Classify each as plugin-associated
+(travels with its plugin) or project-level (candidate for packaging). For each
+project-level hook, diagnose its trigger, scope of action, and portability.
+Present a diagnostic table and ask which to package as a
+`<marketplace-name>-hooks` plugin.
 
 See `references/interview-guide.md` § Settings/hooks detection.
 
@@ -94,7 +97,8 @@ On confirmation, generate the new marketplace:
    with only the carried customizations
 4. For each selected native plugin copied: copy the plugin directory and write a
    `customizations.json` recording origin and authorship
-5. Write `.claude/settings.json` with the selected hooks/settings
+5. If project-level hooks were selected: generate `plugins/<marketplace-name>-hooks/` plugin
+   with hooks.json, copied scripts, and README. Add to marketplace.json and install-all.
 6. Run `git init` and create an initial commit
 
 Post-write: print a summary of what was generated, then display the uninstall reminder:

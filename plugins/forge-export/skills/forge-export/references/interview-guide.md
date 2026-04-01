@@ -179,48 +179,109 @@ field, not in `customizations.json`.
 
 ## § Settings/hooks detection (Step 6)
 
-After plugin selection is finalized, check for settings that are tied to
-selected plugins.
+After plugin selection is finalized, detect ALL hooks in the project and
+classify them so the user can decide which to package.
 
 ### Check for .claude/settings.json
 
 Look for `.claude/settings.json` in the source repo root. If it does not
 exist, skip this step entirely.
 
-### Find plugin-associated hooks
+### Classify every hook
 
-Read the `hooks` array from `settings.json`. For each hook entry, examine
-the `command` field. A hook is associated with a plugin if its command
-string contains `plugins/<name>` for any selected plugin name.
+Read the `hooks` object from `settings.json`. For each event type
+(PreToolUse, PostToolUse, Stop, SessionStart, UserPromptSubmit, Notification,
+PreCompact), iterate over each hook entry.
 
-Group associated hooks by plugin name.
+Classify each hook into one of three categories:
 
-### Present grouped hooks
+**Plugin-associated** — command string contains `plugins/<name>` or
+`${CLAUDE_PLUGIN_ROOT}` for a selected plugin. These travel with the plugin
+and don't need separate packaging.
+
+**Project-level** — command references project scripts (e.g.,
+`scripts/hooks/...`), inline bash, or prompt-type hooks with project-specific
+content. These are candidates for packaging.
+
+**Infrastructure** — hooks for notifications, session context, or other
+system-level concerns not tied to code quality or conventions.
+
+### Diagnose each project-level hook
+
+For each project-level hook, produce a short diagnostic:
+
+1. **Read the hook command or prompt** — if it's a script path, read the
+   script file to understand what it does
+2. **Determine trigger**: the event type + matcher (e.g., "PreToolUse on
+   Edit|Write", "Stop on all", "UserPromptSubmit")
+3. **Determine scope of action**: what the hook actually does — one line
+   summary (e.g., "Blocks rm -rf and other destructive bash commands",
+   "Runs ESLint --fix on edited .ts/.tsx files", "Injects monorepo
+   conventions as context")
+4. **Assess portability**: is this hook project-specific (references
+   project paths, project-specific tools) or generic (useful for any
+   project with similar stack)?
+
+### Present diagnostic table
 
 ```
-## Settings associated with selected plugins
+## Project-level hooks detected
 
-forge-proactive-qa
-  PreToolUse  — "bash ${CLAUDE_PLUGIN_ROOT}/plugins/forge-proactive-qa/hooks/..."
-  PostToolUse — "bash ${CLAUDE_PLUGIN_ROOT}/plugins/forge-proactive-qa/hooks/..."
+| # | Event           | Matcher    | Script/Source             | Action                                          | Portable? |
+|---|-----------------|------------|---------------------------|------------------------------------------------|-----------|
+| 1 | PreToolUse      | Edit|Write | scripts/hooks/protect-files.sh   | Blocks edits to protected files (lock files, generated code) | ⚠ project-specific (hardcoded file list) |
+| 2 | PreToolUse      | Bash       | scripts/hooks/block-destructive.sh | Blocks rm -rf, git reset --hard, drop table | ✓ generic |
+| 3 | PreToolUse      | Write      | scripts/hooks/validate-imports.sh  | Validates import paths follow conventions  | ⚠ project-specific (import rules) |
+| 4 | PostToolUse     | Edit|Write | scripts/hooks/run-domain-tests.sh | Runs domain tests on edited files          | ⚠ project-specific (test runner) |
+| 5 | Stop            | —          | scripts/hooks/lint-check.sh       | Runs pnpm lint --fix, blocks on errors     | ✓ generic (any pnpm project) |
+| 6 | UserPromptSubmit| —          | inline echo                       | Injects monorepo structure conventions     | ⚠ project-specific (hardcoded conventions) |
+| 7 | SessionStart    | —          | scripts/hooks/session-context.sh  | Provides session startup context           | ⚠ project-specific |
 
-forge-hookify
-  PreToolUse  — "bash ${CLAUDE_PLUGIN_ROOT}/plugins/forge-hookify/hooks/..."
-  Stop        — "bash ${CLAUDE_PLUGIN_ROOT}/plugins/forge-hookify/hooks/..."
-
-Also present (not plugin-associated):
-  [list any remaining hooks not tied to any selected plugin, if any]
+Plugin-associated hooks (travel with their plugins, no action needed):
+  forge-hookify: PreToolUse, PostToolUse, Stop, UserPromptSubmit
+  forge-proactive-qa: PreToolUse, PostToolUse
 ```
 
-### Ask which to carry
+### Ask which to package
 
-> "Which hook groups carry over to the new repo's .claude/settings.json?
-> Enter plugin names (comma-separated), 'all', or 'none':"
+> "Which project-level hooks should be packaged into the new marketplace?
+> Enter numbers (e.g., 2,5), 'all', or 'none'.
+>
+> Selected hooks will be bundled as a plugin named `<marketplace-name>-hooks`
+> with their scripts copied. Project-specific hooks may need adaptation."
 
-If there are unassociated hooks, ask separately whether to include them.
+Record selections.
 
-Record selections. In the generation phase, write a `.claude/settings.json`
-in the new repo containing only the selected hook entries.
+### Packaging as a plugin
+
+Selected project-level hooks are packaged as a new plugin in the generated
+marketplace:
+
+```
+plugins/<marketplace-name>-hooks/
+├── .claude-plugin/
+│   └── plugin.json
+├── hooks/
+│   ├── hooks.json         ← converted from settings.json format
+│   └── <script-name>.sh   ← copied scripts, paths rewritten to ${CLAUDE_PLUGIN_ROOT}
+└── README.md              ← documents each hook's trigger and purpose
+```
+
+**Conversion rules:**
+- `settings.json` hook entries become `hooks.json` entries
+- Script paths rewrite from `scripts/hooks/<name>.sh` to
+  `${CLAUDE_PLUGIN_ROOT}/hooks/<name>.sh`
+- Inline commands (`bash -c '...'`) become script files for readability
+- Prompt-type hooks stay as `"type": "prompt"` entries
+- The plugin.json gets `name`, `version: "1.0.0"`, `description` listing
+  the packaged hooks
+- Add entry to generated marketplace.json as a native plugin
+
+### Plugin-associated hooks
+
+Plugin-associated hooks do NOT need packaging — they are already part of
+their plugin's `hooks/hooks.json` and will work when the plugin is installed.
+Just confirm they are present and note them in the summary.
 
 ---
 

@@ -22,10 +22,16 @@ All files are written under `<dest>/` (the user-specified destination directory)
 │   └── <name>/
 │       └── .claude-plugin/
 │           └── customizations.json          (for each external plugin with carried customizations)
+├── plugins/
+│   └── <marketplace-name>-hooks/              (only if project hooks packaged from Step 6)
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       ├── hooks/
+│       │   ├── hooks.json
+│       │   └── <script>.sh            (copied scripts, paths rewritten)
+│       └── README.md
 ├── commands/
 │   └── install-all.md
-├── .claude/
-│   └── settings.json                  (only if hooks carried from Step 6)
 ├── CLAUDE.md
 ├── README.md
 └── docs/
@@ -256,6 +262,113 @@ Example — forge-superpowers with selected customizations carried over:
 ```
 
 If the user carried NO customizations for an external plugin, do NOT write a `customizations.json` for it.
+
+---
+
+## § Project hooks plugin
+
+Written to: `<dest>/plugins/<marketplace-name>-hooks/`
+
+Only created when the user selected project-level hooks in Step 6. This
+packages selected hooks as a proper Claude Code plugin.
+
+### plugin.json
+
+```json
+{
+  "name": "<marketplace-name>-hooks",
+  "version": "1.0.0",
+  "description": "Project hooks packaged from <source-project>: <brief list of hooks>.",
+  "author": {
+    "name": "<owner-name>",
+    "email": "<owner-email>"
+  },
+  "license": "MIT",
+  "keywords": ["hooks", "automation", "quality"]
+}
+```
+
+### hooks/hooks.json
+
+Convert selected hooks from `settings.json` format to plugin `hooks.json`:
+
+```json
+{
+  "hooks": {
+    "<EventType>": [
+      {
+        "matcher": "<matcher-from-settings>",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/<script-name>.sh",
+            "timeout": <timeout-if-specified>
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Conversion rules:**
+- Script paths rewrite from `scripts/hooks/<name>.sh` to
+  `${CLAUDE_PLUGIN_ROOT}/hooks/<name>.sh`
+- Inline `bash -c '...'` commands: extract to a named `.sh` script file
+  for readability, reference via `${CLAUDE_PLUGIN_ROOT}/hooks/<descriptive-name>.sh`
+- `"type": "prompt"` hooks: keep as-is in hooks.json
+- Preserve `matcher` and `timeout` from source
+- Each script must start with `#!/usr/bin/env bash` and end with `exit 0`
+  (use `trap 'exit 0' ERR` for safety)
+
+### Script files
+
+Copy each selected script to `hooks/`. Ensure:
+- Paths inside scripts that reference project-specific locations are
+  flagged with a `# TODO: adapt path` comment
+- Scripts use `${CLAUDE_PLUGIN_ROOT}` for self-references
+- Scripts are executable (`chmod +x`)
+
+### README.md
+
+Document each hook:
+
+```markdown
+# <marketplace-name>-hooks
+
+Project hooks packaged for the <marketplace-name> marketplace.
+
+## Hooks
+
+| Event | Matcher | Script | What it does |
+|-------|---------|--------|-------------|
+| PreToolUse | Bash | block-destructive.sh | Blocks rm -rf, git reset --hard, drop table |
+| Stop | — | lint-check.sh | Runs lint --fix, blocks on errors |
+
+## Adaptation
+
+Some hooks may need project-specific adaptation. Look for `# TODO: adapt`
+comments in script files.
+```
+
+### Marketplace entry
+
+Add to the generated `marketplace.json` as a native plugin:
+
+```json
+{
+  "name": "<marketplace-name>-hooks",
+  "description": "Project hooks: <brief list>.",
+  "source": {
+    "source": "git-subdir",
+    "url": "<new-marketplace-repo-url>",
+    "path": "plugins/<marketplace-name>-hooks"
+  },
+  "version": "1.0.0"
+}
+```
+
+Include in the generated `install-all.md` as a working plugin.
 
 ---
 

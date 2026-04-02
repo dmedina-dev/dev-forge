@@ -96,6 +96,15 @@ Which plugins depend on or complement each other.
 - Guides: Context7 (library docs), Serena (LSP navigation), XRAY (structural analysis)
 - MCP servers run independently from .claude/settings.json after setup
 
+### forge-brainstorming
+- **Requires forge-superpowers** — provides writing-plans, TDD, verification, finishing, worktrees
+- Native plugin — full-lifecycle teammate orchestration with 5 persistent agents
+- 1 command: /brainstorming (6-phase flow with 4 gates)
+- 5 agents: scout (sonnet), architect (opus), builder (inherit), reviewer (inherit), closer (inherit)
+- 1 skill: brainstorming-workflow (trigger + reference docs)
+- Complements forge-extended-dev (user chooses between teammate or subagent workflow)
+- Complements forge-commit (closer can use /commit-push-pr if available)
+
 ## Current plugin matrix
 
 ```
@@ -116,6 +125,7 @@ forge-channels-telegram   -                   -                   everything els
 forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
 forge-export              -                   -                   everything else
 forge-context-mcp         -                   -                   everything else
+forge-brainstorming       forge-superpowers   forge-extended-dev, forge-commit  everything else
 ```
 
 ## Rules for dependencies

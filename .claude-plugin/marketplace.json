@@ -220,6 +220,16 @@
         "path": "plugins/forge-export"
       },
       "version": "1.1.0"
+    },
+    {
+      "name": "forge-brainstorming",
+      "description": "Full-lifecycle teammate orchestration: discovery, design, planning, TDD execution, deep review, and PR — single /brainstorming command with 5 persistent named agents (scout, architect, builder, reviewer, closer).",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-brainstorming"
+      },
+      "version": "1.0.0"
     }
   ]
 }

@@ -17,6 +17,7 @@ plugins — install all or pick what you need.
 /plugin install forge-keeper        # context maintenance (recommended always-on)
 /plugin install forge-superpowers   # TDD, debugging, collaboration patterns
 /plugin install forge-extended-dev  # discovery → design → deep review → PR review
+/plugin install forge-brainstorming # teammate-driven full lifecycle (requires forge-superpowers)
 /plugin install forge-security      # security reminder hooks
 /plugin install forge-commit        # commit/PR commands
 /plugin install forge-hookify       # custom hook rules engine
@@ -47,6 +48,7 @@ forge-keeper commands:
 |--------|---------|----------|
 | **forge-superpowers** | TDD, debugging, parallel agents, code review, worktrees, plans | Skills-based (auto-triggered) |
 | **forge-extended-dev** | 4-phase development workflow (requires forge-superpowers) | `/feature-dev`, `/deep-review`, `/pr-review` |
+| **forge-brainstorming** | Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers) | `/brainstorming` |
 
 ### Utility
 
@@ -78,7 +80,7 @@ Install when needed, uninstall after. Don't consume context when not in use.
 ## Plugin independence
 
 - Every plugin works standalone — test with `claude --plugin-dir plugins/<name>`
-- Only hard dependency: **forge-extended-dev requires forge-superpowers**
+- Hard dependencies: **forge-extended-dev** and **forge-brainstorming** both require **forge-superpowers**
 - Dependencies documented in `docs/dependencies.md`
 - Remove any plugin to free context window space
 

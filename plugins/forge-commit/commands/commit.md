@@ -1,5 +1,4 @@
 ---
-# Curated from: anthropics/claude-code (plugins/commit-commands) — Author: Anthropic
 allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*)
 description: Create a git commit
 ---

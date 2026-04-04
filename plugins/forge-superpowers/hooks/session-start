@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Curated from: obra/superpowers v5.0.6
+# Curated from: obra/superpowers v5.0.7
 # Customization custom-14: Removed multi-platform detection, Claude Code only
 
 set -euo pipefail

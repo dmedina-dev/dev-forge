@@ -2,21 +2,99 @@
   "origin": {
     "type": "github",
     "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
-    "path": "",
+    "path": ".claude/skills",
     "ref": "main",
-    "commit": "",
-    "fetched_at": "2026-03-29",
+    "commit": "b7e3af80f6e331f6fb456667b82b12cade7c9d35",
+    "fetched_at": "2026-04-04",
     "check_url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
     "license": "MIT",
     "authors": ["NextLevelBuilder"]
   },
   "upstream_status": {
-    "last_checked": "",
-    "latest_ref": "",
-    "latest_commit": "",
+    "last_checked": "2026-04-04",
+    "latest_ref": "main",
+    "latest_commit": "b7e3af80f6e331f6fb456667b82b12cade7c9d35",
     "has_updates": false,
-    "summary": "",
+    "summary": "Upstream restructured to full toolkit (CLI, search engine, multi-platform). We only sync .claude/skills/ content.",
     "changes": []
   },
-  "customizations": []
+  "customizations": [
+    {
+      "id": "custom-01",
+      "type": "excluded",
+      "target": "README.md",
+      "summary": "Excluded upstream README",
+      "reason": "Not needed in forge distribution — attribution in customizations.json"
+    },
+    {
+      "id": "custom-02",
+      "type": "excluded",
+      "target": "LICENSE",
+      "summary": "Excluded upstream LICENSE",
+      "reason": "Attribution preserved in customizations.json"
+    },
+    {
+      "id": "custom-03",
+      "type": "excluded",
+      "target": ".github/",
+      "summary": "Excluded upstream GitHub workflows and configs",
+      "reason": "CI/CD only relevant to the upstream project"
+    },
+    {
+      "id": "custom-04",
+      "type": "excluded",
+      "target": "cli/",
+      "summary": "Excluded CLI installer (uipro-cli npm package)",
+      "reason": "We install as Claude Code plugin, not via CLI"
+    },
+    {
+      "id": "custom-05",
+      "type": "excluded",
+      "target": "src/",
+      "summary": "Excluded source-of-truth data/scripts directory",
+      "reason": "Skills reference data via resolved symlinks — we copy .claude/skills/ with -L flag"
+    },
+    {
+      "id": "custom-06",
+      "type": "excluded",
+      "target": "docs/",
+      "summary": "Excluded upstream documentation",
+      "reason": "Project docs, not relevant to plugin usage"
+    },
+    {
+      "id": "custom-07",
+      "type": "excluded",
+      "target": "preview/",
+      "summary": "Excluded preview assets",
+      "reason": "Marketing/demo assets, not needed for plugin"
+    },
+    {
+      "id": "custom-08",
+      "type": "excluded",
+      "target": "screenshots/",
+      "summary": "Excluded screenshot assets",
+      "reason": "Marketing/demo assets, not needed for plugin"
+    },
+    {
+      "id": "custom-09",
+      "type": "excluded",
+      "target": "CLAUDE.md",
+      "summary": "Excluded upstream project CLAUDE.md",
+      "reason": "Upstream project config, not applicable to our plugin context"
+    },
+    {
+      "id": "custom-10",
+      "type": "excluded",
+      "target": "skill.json",
+      "summary": "Excluded upstream skill.json manifest",
+      "reason": "We use .claude-plugin/plugin.json for our plugin manifest"
+    },
+    {
+      "id": "custom-11",
+      "type": "modified",
+      "target": "origin.path",
+      "summary": "Source path set to .claude/skills instead of repo root",
+      "reason": "Upstream repo root is a full toolkit; we only sync the Claude Code skills subtree, copying with resolved symlinks (rsync -L)"
+    }
+  ]
 }

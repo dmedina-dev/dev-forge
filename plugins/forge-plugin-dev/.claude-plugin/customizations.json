@@ -4,14 +4,14 @@
     "repo": "anthropics/claude-code",
     "path": "plugins/plugin-dev",
     "ref": "main",
-    "commit": "",
-    "fetched_at": "2026-03-29",
+    "commit": "b543a256248ce5ff98804b8dfef4cd6247423d98",
+    "fetched_at": "2026-04-04",
     "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev"
   },
   "upstream_status": {
-    "last_checked": "2026-04-01",
+    "last_checked": "2026-04-04",
     "latest_ref": "main",
-    "latest_commit": "",
+    "latest_commit": "b543a256248ce5ff98804b8dfef4cd6247423d98",
     "has_updates": false,
     "summary": "",
     "changes": []

@@ -18,7 +18,7 @@ Use this AFTER `/deep-review` (Phase C) when the PR is pushed and ready for fina
 ## Review Steps
 
 **Agent assumptions (applies to all agents and subagents):**
-- All tools are functional and will work without error. Do not test tools or make exploratory calls.
+- All tools are functional and will work without error. Do not test tools or make exploratory calls. Make sure this is clear to every subagent that is launched.
 - Only call a tool if it is required to complete the task. Every tool call should have a clear purpose.
 
 ### 1. Gate Check (haiku agent)
@@ -54,7 +54,7 @@ Launch 4 agents in parallel. Each returns a list of issues with description and 
 **Agent 4**: Security/logic in introduced code (opus) — look for problems in the changed code only.
 
 **CRITICAL: HIGH SIGNAL only.** Flag issues where:
-- The code will fail to compile or parse (syntax errors, type errors, missing imports)
+- The code will fail to compile or parse (syntax errors, type errors, missing imports, unresolved references)
 - The code will definitely produce wrong results regardless of inputs (clear logic errors)
 - Clear, unambiguous CLAUDE.md violations where you can quote the exact rule being broken
 
@@ -63,7 +63,7 @@ Do NOT flag:
 - Potential issues that depend on specific inputs or state
 - Subjective suggestions or improvements
 
-If you are not certain an issue is real, do not flag it.
+If you are not certain an issue is real, do not flag it. False positives erode trust and waste reviewer time.
 
 Each subagent should receive the PR title and description for context.
 
@@ -87,13 +87,13 @@ Output a summary of review findings to the terminal:
 
 If `--comment` argument was NOT provided, stop here. This is the default mode.
 
-If `--comment` argument IS provided, continue to step 8.
+If `--comment` argument IS provided and NO issues were found, post a summary comment using `gh pr comment` and stop.
 
-### 8. Post Summary Comment
+If `--comment` argument IS provided and issues were found, continue to step 8.
 
-If NO issues were found, post a summary comment using `gh pr comment` and stop.
+### 8. Create Comment List
 
-If issues were found, continue to step 9.
+Create a list of all comments that you plan on leaving. This is only for you to make sure you are comfortable with the comments. Do not post this list anywhere.
 
 ### 9. Post Inline Comments (requires MCP server)
 
@@ -104,7 +104,7 @@ Post inline comments using `mcp__github_inline_comment__create_inline_comment` w
 - Provide a brief description of the issue
 - For small, self-contained fixes: include a committable suggestion block
 - For larger fixes (6+ lines, structural, multi-location): describe the fix without a suggestion block
-- Never post a committable suggestion UNLESS committing it fixes the issue entirely
+- Never post a committable suggestion UNLESS committing it fixes the issue entirely. If follow up steps are required, do not leave a committable suggestion.
 
 **Only ONE comment per unique issue. No duplicates.**
 
@@ -117,7 +117,7 @@ Do NOT flag these in steps 4 and 5:
 - Something that appears to be a bug but is actually correct
 - Pedantic nitpicks that a senior engineer would not flag
 - Issues that a linter will catch (do not run the linter to verify)
-- General code quality concerns (e.g., lack of test coverage) unless explicitly required in CLAUDE.md
+- General code quality concerns (e.g., lack of test coverage, general security issues) unless explicitly required in CLAUDE.md
 - Issues mentioned in CLAUDE.md but explicitly silenced in code (e.g., lint ignore comment)
 
 ## Usage Examples
@@ -155,6 +155,16 @@ Inline GitHub comments require the `github_inline_comment` MCP server. Without i
 ## Notes
 
 - Use `gh` CLI to interact with GitHub. Do not use web fetch.
+- Create a todo list before starting.
 - Cite and link each issue in comments (include link to CLAUDE.md if referencing a rule)
 - When linking to code, use full SHA format: `https://github.com/owner/repo/blob/<full-sha>/path#L<start>-L<end>`
 - Provide at least 1 line of context before and after in code links
+- If no issues are found and `--comment` argument is provided, post a comment with the following format:
+
+---
+
+## Code review
+
+No issues found. Checked for bugs and CLAUDE.md compliance.
+
+---

@@ -1,5 +1,4 @@
 ---
-# Curated from: obra/superpowers v5.0.6
 name: dispatching-parallel-agents
 description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
 ---
@@ -15,6 +14,24 @@ When you have multiple unrelated failures (different test files, different subsy
 **Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
 
 ## When to Use
+
+```dot
+digraph when_to_use {
+    "Multiple failures?" [shape=diamond];
+    "Are they independent?" [shape=diamond];
+    "Single agent investigates all" [shape=box];
+    "One agent per problem domain" [shape=box];
+    "Can they work in parallel?" [shape=diamond];
+    "Sequential agents" [shape=box];
+    "Parallel dispatch" [shape=box];
+
+    "Multiple failures?" -> "Are they independent?" [label="yes"];
+    "Are they independent?" -> "Single agent investigates all" [label="no - related"];
+    "Are they independent?" -> "Can they work in parallel?" [label="yes"];
+    "Can they work in parallel?" -> "Parallel dispatch" [label="yes"];
+    "Can they work in parallel?" -> "Sequential agents" [label="no - shared state"];
+}
+```
 
 **Use when:**
 - 3+ test files failing with different root causes
@@ -49,7 +66,7 @@ Each agent gets:
 ### 3. Dispatch in Parallel
 
 ```typescript
-// In Claude Code environment
+// In Claude Code / AI environment
 Task("Fix agent-tool-abort.test.ts failures")
 Task("Fix batch-completion-behavior.test.ts failures")
 Task("Fix tool-approval-race-conditions.test.ts failures")
@@ -94,10 +111,17 @@ Return: Summary of what you found and what you fixed.
 
 ## Common Mistakes
 
-**Too broad:** "Fix all the tests" - agent gets lost
-**Too vague:** "Fix the race condition" - agent doesn't know where
-**No constraints:** Agent might refactor everything
-**Vague output:** "Fix it" - you don't know what changed
+**❌ Too broad:** "Fix all the tests" - agent gets lost
+**✅ Specific:** "Fix agent-tool-abort.test.ts" - focused scope
+
+**❌ No context:** "Fix the race condition" - agent doesn't know where
+**✅ Context:** Paste the error messages and test names
+
+**❌ No constraints:** Agent might refactor everything
+**✅ Constraints:** "Do NOT change production code" or "Fix tests only"
+
+**❌ Vague output:** "Fix it" - you don't know what changed
+**✅ Specific:** "Return summary of root cause and changes"
 
 ## When NOT to Use
 
@@ -105,6 +129,33 @@ Return: Summary of what you found and what you fixed.
 **Need full context:** Understanding requires seeing entire system
 **Exploratory debugging:** You don't know what's broken yet
 **Shared state:** Agents would interfere (editing same files, using same resources)
+
+## Real Example from Session
+
+**Scenario:** 6 test failures across 3 files after major refactoring
+
+**Failures:**
+- agent-tool-abort.test.ts: 3 failures (timing issues)
+- batch-completion-behavior.test.ts: 2 failures (tools not executing)
+- tool-approval-race-conditions.test.ts: 1 failure (execution count = 0)
+
+**Decision:** Independent domains - abort logic separate from batch completion separate from race conditions
+
+**Dispatch:**
+```
+Agent 1 → Fix agent-tool-abort.test.ts
+Agent 2 → Fix batch-completion-behavior.test.ts
+Agent 3 → Fix tool-approval-race-conditions.test.ts
+```
+
+**Results:**
+- Agent 1: Replaced timeouts with event-based waiting
+- Agent 2: Fixed event structure bug (threadId in wrong place)
+- Agent 3: Added wait for async tool execution to complete
+
+**Integration:** All fixes independent, no conflicts, full suite green
+
+**Time saved:** 3 problems solved in parallel vs sequentially
 
 ## Key Benefits
 
@@ -120,3 +171,12 @@ After agents return:
 2. **Check for conflicts** - Did agents edit same code?
 3. **Run full suite** - Verify all fixes work together
 4. **Spot check** - Agents can make systematic errors
+
+## Real-World Impact
+
+From debugging session (2025-10-03):
+- 6 failures across 3 files
+- 3 agents dispatched in parallel
+- All investigations completed concurrently
+- All fixes integrated successfully
+- Zero conflicts between agent changes

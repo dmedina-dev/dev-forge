@@ -5,7 +5,7 @@
       "repo": "anthropics/claude-code",
       "path": "plugins/feature-dev",
       "ref": "main",
-      "fetched_at": "2026-04-01",
+      "fetched_at": "2026-04-04",
       "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev"
     },
     {
@@ -13,7 +13,7 @@
       "repo": "anthropics/claude-code",
       "path": "plugins/pr-review-toolkit",
       "ref": "main",
-      "fetched_at": "2026-04-01",
+      "fetched_at": "2026-04-04",
       "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/pr-review-toolkit"
     },
     {
@@ -21,7 +21,7 @@
       "repo": "anthropics/claude-code",
       "path": "plugins/code-review",
       "ref": "main",
-      "fetched_at": "2026-04-01",
+      "fetched_at": "2026-04-04",
       "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/code-review"
     }
   ],

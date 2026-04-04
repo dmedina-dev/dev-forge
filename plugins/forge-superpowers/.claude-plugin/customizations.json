@@ -4,25 +4,17 @@
     "repo": "obra/superpowers",
     "path": "",
     "ref": "v5.0.7",
-    "commit": "",
-    "fetched_at": "2026-04-01",
+    "commit": "1f20bef3f59b85ad7b52718f822e37c4478a3ff5",
+    "fetched_at": "2026-04-04",
     "check_url": "https://github.com/obra/superpowers/releases"
   },
   "upstream_status": {
-    "last_checked": "2026-04-01",
+    "last_checked": "2026-04-04",
     "latest_ref": "v5.0.7",
-    "latest_commit": "",
+    "latest_commit": "1f20bef3f59b85ad7b52718f822e37c4478a3ff5",
     "has_updates": false,
-    "summary": "v5.0.7 reviewed: Copilot CLI support + OpenCode fixes. All changes in excluded/removed/modified paths — no action needed.",
-    "changes": [
-      {
-        "ref": "v5.0.7",
-        "date": "2026-03-31",
-        "summary": "Copilot CLI SessionStart injection, tool mapping reference, OpenCode bootstrap fix. All changes in excluded platforms or removed skills.",
-        "files_changed": ["hooks/session-start", "skills/using-superpowers/SKILL.md", "skills/using-superpowers/references/copilot-tools.md", ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"],
-        "conflicts_with_customizations": ["hooks/session-start"]
-      }
-    ]
+    "summary": "Synced to v5.0.7. All 19 customizations re-applied.",
+    "changes": []
   },
   "customizations": [
     {

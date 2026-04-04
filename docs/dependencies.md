@@ -105,6 +105,12 @@ Which plugins depend on or complement each other.
 - Complements forge-extended-dev (user chooses between teammate or subagent workflow)
 - Complements forge-commit (closer can use /commit-push-pr if available)
 
+### forge-profiles
+- **Independent** — standalone plugin profile manager, no dependencies
+- Manages ALL plugins and MCP servers, not just forge plugins
+- 3 commands: /profile-create, /profile-list, /profile-change
+- Profiles stored in .claude/settings.local.json (gitignored, personal)
+
 ## Current plugin matrix
 
 ```
@@ -126,6 +132,7 @@ forge-proactive-qa        -                   forge-channels-telegram, /loop  ev
 forge-export              -                   -                   everything else
 forge-context-mcp         -                   -                   everything else
 forge-brainstorming       forge-superpowers   forge-extended-dev, forge-commit  everything else
+forge-profiles            -                   -                   everything else
 ```
 
 ## Rules for dependencies

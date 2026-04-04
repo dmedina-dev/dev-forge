@@ -29,7 +29,8 @@ dev-forge/
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
-│   └── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
+│   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
+│   └── forge-profiles/               ← plugin profile manager (independent)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
     └── customizations-pattern.md      ← vendor + customizations pattern

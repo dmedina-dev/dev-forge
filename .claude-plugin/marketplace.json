@@ -230,6 +230,16 @@
         "path": "plugins/forge-brainstorming"
       },
       "version": "1.0.0"
+    },
+    {
+      "name": "forge-profiles",
+      "description": "Plugin profile manager — switch between sets of active plugins and MCP servers per work mode. Reduces context by keeping only relevant tools loaded. Three commands: /profile-create, /profile-list, /profile-change.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-profiles"
+      },
+      "version": "1.0.0"
     }
   ]
 }

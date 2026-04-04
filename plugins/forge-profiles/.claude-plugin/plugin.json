@@ -1,0 +1,19 @@
+{
+  "name": "forge-profiles",
+  "description": "Plugin profile manager — switch between sets of active plugins per work mode. Reduces context by keeping only relevant plugins loaded.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": [
+    "profiles",
+    "plugins",
+    "context",
+    "configuration",
+    "workspace",
+    "modes"
+  ]
+}

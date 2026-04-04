@@ -203,68 +203,130 @@ gh api "repos/anthropics/claude-code/compare/{old_sha}...{new_sha}" \
   --jq '.files[].filename | select(startswith("plugins/feature-dev/"))'
 ```
 
+**Local alternative (when `.upstream/` exists):** If the upstream clone is already cached from
+a previous apply, you can use git locally instead of the GitHub API — faster and no rate limits:
+```bash
+git -C .upstream/{slug}/ diff --name-only {old-ref}..{new-ref} -- {subpath}
+```
+
 ---
 
 ## Apply Update Flow
 
 When the user confirms they want to apply an update to a plugin, follow these 7 steps.
 
-### Step 1 — Fetch upstream
+Upstream clones are stored persistently in `.upstream/` (gitignored). One full clone per
+upstream repo, shared across all plugins from that repo. First run clones, subsequent runs
+fetch. Full clones enable `git diff` between any two refs for precise change detection.
 
-Clone the upstream source to a temp directory:
+### Repo slug convention
+
+Derive the clone directory from the repo name: replace `/` with `-`.
+- `obra/superpowers` → `.upstream/obra-superpowers/`
+- `anthropics/claude-code` → `.upstream/anthropics-claude-code/`
+- `anthropics/claude-plugins-official` → `.upstream/anthropics-claude-plugins-official/`
+
+### Step 1 — Ensure upstream clone
+
 ```bash
-# For tag refs:
-git clone --depth 1 --branch v5.1.0 https://github.com/obra/superpowers.git /tmp/upstream-forge-superpowers
+SLUG=$(echo "{repo}" | tr '/' '-')
 
-# For branch refs:
-git clone --depth 1 --branch main https://github.com/anthropics/claude-code.git /tmp/upstream-forge-extended-dev
+# First time: full clone
+if [ ! -d ".upstream/$SLUG" ]; then
+  git clone "https://github.com/{repo}.git" ".upstream/$SLUG"
+fi
+
+# Subsequent: fetch latest
+git -C ".upstream/$SLUG" fetch --all --tags
+
+# Checkout target ref (tag or branch)
+git -C ".upstream/$SLUG" checkout {target-ref}
+
+# For branch refs, fast-forward to latest:
+git -C ".upstream/$SLUG" pull 2>/dev/null || true
 ```
 
-If the origin has a non-empty `path`, the relevant source is at `/tmp/upstream-{plugin}/{path}/`.
+Source path: `.upstream/{slug}/{origin.path}/` (empty path = repo root).
 
-### Step 2 — Identify changes
+Example for forge-superpowers:
+```bash
+git -C .upstream/obra-superpowers/ fetch --all --tags
+git -C .upstream/obra-superpowers/ checkout v5.0.7
+# Source: .upstream/obra-superpowers/.claude-plugin/
+```
 
-Compare upstream source against the local plugin directory. Produce a list of:
-- Files present upstream but missing locally (new upstream files)
-- Files present locally but missing upstream (local additions — could be `added` customizations)
-- Files present in both but different (potential updates or conflicts)
+Example for forge-commit (subpath plugin):
+```bash
+git -C .upstream/anthropics-claude-code/ fetch --all --tags
+git -C .upstream/anthropics-claude-code/ checkout main
+# Source: .upstream/anthropics-claude-code/plugins/commit-commands/
+```
 
-Use `diff -rq /tmp/upstream-{plugin}/{path}/ plugins/{plugin-name}/` to get a quick diff list.
+### Step 2 — Identify upstream changes
 
-For each changed file, check whether it matches any customization target. Build two lists:
-- **Clean changes**: changed files with no matching customization
-- **Conflicting changes**: changed files where a customization exists (type: modified or removed; treat excluded dirs as conflicting if the changed file falls inside them)
+Use git to get the precise list of files that changed upstream between the old and new refs.
 
-### Step 3 — Apply non-conflicting changes
+**When `origin.commit` is populated (normal case):**
+```bash
+git -C .upstream/{slug}/ diff --name-only {old-ref}..{new-ref} -- {subpath}
+```
 
-For each file in the clean changes list:
-- New upstream file → copy to local plugin directory
-- Modified upstream file → overwrite local copy
-- File deleted upstream → delete from local (confirm with user before deleting)
+**When `origin.commit` is empty (first sync):**
+Skip diff — treat all upstream files as new. Copy everything from `.upstream/` (applying
+customization filters in Step 3).
 
-Do not copy files or directories covered by `excluded` or `removed` customizations.
+For each changed file, cross-reference against `customizations[]`:
+
+| File matches... | Action |
+|-----------------|--------|
+| `excluded` target | Skip — still excluded |
+| `removed` target | Skip — still removed |
+| `modified` target | Flag as **conflict** — upstream changed a file you also modified |
+| No customization | **Clean change** — apply directly |
+
+To check if upstream changed a specific `modified` file:
+```bash
+git -C .upstream/{slug}/ diff --quiet {old-ref}..{new-ref} -- {subpath}/{file}
+# Exit 0 = no change (safe, keep local), Exit 1 = changed (conflict)
+```
+
+### Step 3 — Apply clean changes
+
+For each clean change (no matching customization):
+- **Added/modified upstream** → copy from `.upstream/{slug}/{subpath}/{file}` to `plugins/{name}/{file}`
+- **Deleted upstream** → delete from local (confirm with user before deleting)
+
+**Never copy:**
+- Files/dirs matching `excluded` customization targets
+- Files/dirs matching `removed` customization targets
+- `.claude-plugin/customizations.json` (always preserve local)
+- `.claude-plugin/plugin.json` (always preserve local)
+
+For first sync (no prior commit): copy all files from `.upstream/{slug}/{subpath}/` to
+`plugins/{name}/`, filtering out excluded and removed targets.
 
 ### Step 4 — Handle conflicts
 
-For each conflicting file, present a side-by-side resolution:
+For each conflicting file (upstream changed + local `modified` customization), show the
+upstream diff alongside the local version:
 
 ```
 CONFLICT: skills/brainstorming/SKILL.md
   Customization: custom-12 — "Reduced trigger sensitivity to complex requirements only"
   Reason: "Original trigger was too aggressive, activating on simple requests"
 
-  LOCAL VERSION (your customized copy):
+  UPSTREAM DIFF ({old-ref}..{new-ref}):
   ─────────────────────────────────────
-  [show relevant lines]
+  [output of: git -C .upstream/{slug} diff {old}..{new} -- {path}]
 
-  UPSTREAM VERSION (v5.1.0):
+  YOUR LOCAL VERSION:
   ─────────────────────────────────────
-  [show relevant lines]
+  [current local file content, relevant sections]
 
   Options:
     (k) keep local — preserve your customization as-is
-    (u) use upstream — overwrite with upstream version (removes customization)
-    (m) manual merge — open both versions, you merge by hand
+    (u) use upstream — copy from .upstream/ (removes your customization)
+    (m) manual merge — apply upstream, then re-apply your customization by hand
 ```
 
 Ask the user for their choice for each conflict before proceeding.
@@ -273,7 +335,7 @@ Ask the user for their choice for each conflict before proceeding.
 
 If the user wants to discard all customizations and take upstream verbatim:
 1. Delete everything in the local plugin directory (except `.claude-plugin/customizations.json` and `.claude-plugin/plugin.json`)
-2. Copy all upstream files (respecting the `path` subpath if set)
+2. Copy all files from `.upstream/{slug}/{subpath}/` (respecting origin path)
 3. Clear `customizations[]` to an empty array
 4. Update `origin` tracking fields (see Step 6)
 5. Warn the user: "All customizations discarded. Re-apply any needed changes manually."
@@ -282,19 +344,23 @@ Only do this if the user explicitly requests a reset.
 
 ### Step 6 — Update tracking
 
-After applying changes, update `customizations.json`:
+Get the exact commit SHA from the clone:
+```bash
+git -C .upstream/{slug}/ rev-parse {target-ref}
+```
 
+Update `customizations.json`:
 ```json
 {
   "origin": {
-    "ref": "v5.1.0",
-    "commit": "<new commit sha>",
-    "fetched_at": "2026-03-31"
+    "ref": "{new-ref}",
+    "commit": "{sha from rev-parse}",
+    "fetched_at": "{today YYYY-MM-DD}"
   },
   "upstream_status": {
-    "last_checked": "2026-03-31",
-    "latest_ref": "v5.1.0",
-    "latest_commit": "<new commit sha>",
+    "last_checked": "{today YYYY-MM-DD}",
+    "latest_ref": "{new-ref}",
+    "latest_commit": "{sha from rev-parse}",
     "has_updates": false,
     "summary": "",
     "changes": []
@@ -302,19 +368,17 @@ After applying changes, update `customizations.json`:
 }
 ```
 
-For conflicting files where the user chose "keep local", leave the customization entry unchanged. For conflicts where the user chose "use upstream", remove that customization entry from `customizations[]`.
+For conflicts where the user chose "keep local": leave the customization entry unchanged.
+For conflicts where the user chose "use upstream": remove that customization entry from `customizations[]`.
 
 Validate the file after editing:
 ```bash
 python3 -m json.tool plugins/{name}/.claude-plugin/customizations.json
 ```
 
-### Step 7 — Cleanup and commit
+### Step 7 — Commit
 
-Remove the temp directory:
-```bash
-rm -rf /tmp/upstream-{plugin-name}
-```
+No temp directory cleanup needed — `.upstream/` persists for future updates.
 
 Stage the changed plugin files and updated customizations.json, then commit:
 ```
@@ -349,11 +413,17 @@ forge-extended-dev (3 origins)
 
 ### Applying
 
-When applying updates for a multi-origin plugin, handle each origin separately:
-- Clone once per repo (not once per origin) — if multiple origins share a repo, one clone suffices
-- Apply changes from each subpath independently
-- Handle conflicts per-origin
+All origins from the same repo share one `.upstream/` clone. Fetch once, apply per-origin.
 
-Multi-origin customization entries have an `"origin"` field (e.g., `"origin": "feature-dev"`) that identifies which source they apply to. Use this field when doing conflict analysis — only cross-reference a customization against changes from its named origin, not all origins.
+For each origin in the `origins` array:
+1. Ensure `.upstream/{slug}/` clone (Step 1 — shared, only fetch once per repo)
+2. Identify changes for this origin's subpath (Step 2)
+3. Apply clean changes from `.upstream/{slug}/{origin.path}/` (Step 3)
+4. Handle conflicts for this origin's files (Step 4)
 
-For the apply flow (Steps 1-7), repeat Steps 1-4 per origin, then do Steps 5-7 once for the whole plugin.
+Then once for the whole plugin:
+5. Handle reset if requested (Step 5)
+6. Update tracking for all origins (Step 6)
+7. Commit (Step 7)
+
+Multi-origin customization entries have an `"origin"` field (e.g., `"origin": "feature-dev"`) that identifies which source they apply to. Only cross-reference a customization against changes from its named origin, not all origins.

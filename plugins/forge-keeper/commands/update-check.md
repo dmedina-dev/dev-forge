@@ -35,9 +35,12 @@ See `references/update-check-guide.md` § Detailed view per plugin.
 Ask: "Apply updates? Enter plugin name(s), or Enter to skip."
 
 For each plugin to update, offer three choices:
-- **apply** — fetch new version, preserve local customizations
-- **reset** — fetch fresh copy, clear customizations
+- **apply** — sync upstream clone in `.upstream/`, copy changes, preserve local customizations
+- **reset** — copy fresh from `.upstream/`, clear customizations
 - **skip** — leave as-is
+
+Uses persistent full clones in `.upstream/` (gitignored). First apply clones, subsequent
+applies fetch. One clone per upstream repo, shared across plugins from the same repo.
 
 Execute the chosen action and show a post-update summary.
 

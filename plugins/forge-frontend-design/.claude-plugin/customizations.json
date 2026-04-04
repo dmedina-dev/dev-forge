@@ -1,17 +1,37 @@
 {
-  "upstream": {
-    "source": "anthropics/claude-plugins-official",
-    "plugin": "frontend-design",
+  "origin": {
+    "type": "github",
+    "repo": "anthropics/claude-plugins-official",
+    "path": "frontend-design",
+    "ref": "main",
+    "commit": "",
+    "fetched_at": "2026-03-29",
+    "check_url": "https://github.com/anthropics/claude-plugins-official",
     "license": "Apache-2.0",
-    "authors": ["Prithvi Rajasekaran (Anthropic)", "Alexander Bricken (Anthropic)"],
-    "url": "https://github.com/anthropics/claude-plugins-official"
+    "authors": ["Prithvi Rajasekaran (Anthropic)", "Alexander Bricken (Anthropic)"]
+  },
+  "upstream_status": {
+    "last_checked": "",
+    "latest_ref": "",
+    "latest_commit": "",
+    "has_updates": false,
+    "summary": "",
+    "changes": []
   },
   "customizations": [
     {
-      "id": "exclude-readme-license",
+      "id": "custom-01",
       "type": "excluded",
-      "files": ["README.md", "LICENSE"],
+      "target": "README.md",
+      "summary": "Excluded upstream README",
       "reason": "Not needed in forge distribution — attribution in customizations.json and SKILL.md comment"
+    },
+    {
+      "id": "custom-02",
+      "type": "excluded",
+      "target": "LICENSE",
+      "summary": "Excluded upstream LICENSE",
+      "reason": "Attribution preserved in customizations.json"
     }
   ]
 }

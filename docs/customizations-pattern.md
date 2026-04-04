@@ -145,12 +145,15 @@ v5.0.7 (2026-04-01): Bug fixes for session-start hook
 
 ### Update decision: "Apply update"
 
-1. Fetch new upstream version
-2. Compare upstream diff (old → new) against customizations
-3. For non-conflicting changes: apply directly
-4. For conflicts: present both versions + customization intent for manual resolution
-5. Update `origin.ref`, `origin.commit`, `origin.fetched_at`
-6. Update `upstream_status`
+Uses persistent full clones in `.upstream/` (gitignored, one clone per upstream repo).
+
+1. Ensure `.upstream/{repo-slug}/` exists (clone if first time, fetch if cached)
+2. Checkout target ref, get precise upstream diff via `git diff {old}..{new}`
+3. Cross-reference changed files against `customizations[]`
+4. For clean changes (no customization match): copy from `.upstream/` to local
+5. For conflicts (upstream changed a `modified` file): show upstream diff + local version + customization intent for resolution
+6. Update `origin.ref`, `origin.commit`, `origin.fetched_at`
+7. Update `upstream_status`
 
 ## Native plugins
 

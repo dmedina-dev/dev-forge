@@ -13,6 +13,7 @@ Each plugin is **independent** — install, test, remove any plugin without affe
 ```
 dev-forge/
 ├── .claude-plugin/marketplace.json    ← catalog of all available plugins
+├── .upstream/                         ← persistent upstream clones (gitignored)
 ├── plugins/
 │   ├── forge-init/                    ← bootstrapper (disposable)
 │   ├── forge-keeper/                  ← context maintenance
@@ -21,10 +22,10 @@ dev-forge/
 │   ├── forge-extended-dev/            ← extended workflow (requires forge-superpowers)
 │   ├── forge-hookify/                 ← custom hook rules engine
 │   ├── forge-security/                ← security reminder hooks
-│   ├── forge-commit/                  ← commit/PR commands
+│   ├── forge-commit/                  ← commit/PR commands + marketplace release
 │   ├── forge-ralph/                   ← persistent loop technique
 │   ├── forge-frontend-design/         ← frontend UI/UX design
-│   ├── forge-ui-expert/               ← UI/UX design intelligence
+│   ├── forge-ui-expert/               ← UI/UX design intelligence (7 skills)
 │   ├── forge-channels-telegram/       ← Telegram channel bridge (MCP, requires Bun)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
@@ -95,7 +96,9 @@ Reference plugins for how things should be done — see @docs/exemplars.md.
 - marketplace.json `source.url` must use https (not git@) for public access
 - Plugin directories need `.claude-plugin/plugin.json` to be recognized
 - Skills trigger based on description text — vague descriptions = unreliable triggers
-- When updating from upstream (superpowers, anthropic), diff against your customizations
+- When updating from upstream, use `/update-check` which syncs via `.upstream/` persistent clones (top-down: copy upstream → apply customizations)
+- Custom `added` files in customizations.json MUST be documented or rsync `--delete` will remove them during sync
+- `/release` command only works in marketplace repos (requires `.claude-plugin/marketplace.json`)
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
 - forge-channels-telegram requires Bun runtime and Claude Code v2.1.80+ with channels support
 - forge-proactive-qa requires Playwright installed in the target project

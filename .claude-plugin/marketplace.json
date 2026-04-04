@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "1.8.0"
+    "version": "1.9.0"
   },
   "plugins": [
     {

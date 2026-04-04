@@ -11,8 +11,8 @@ Show all available profiles and indicate which one matches the current configura
 ### Step 1: Read Profiles
 
 1. Read `.claude/settings.local.json`
-2. Look for the `forge-profiles` key
-3. If the file doesn't exist or has no `forge-profiles` key: inform user "No profiles found. Create one with `/profile-create`." and stop
+2. Navigate to `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
+3. If the file doesn't exist or the path doesn't exist: inform user "No profiles found. Create one with `/profile-create`." and stop
 4. Parse each profile: name (the key), description, plugins array, mcpServers object, created_at
 
 ### Step 2: Detect Active Profile
@@ -56,6 +56,6 @@ If there are 3 or fewer profiles, also show the contents:
 
 ## Edge Cases
 
-- If no `forge-profiles` key exists: suggest `/profile-create`
+- If `pluginConfigs["forge-profiles@dev-forge"].options.profiles` path doesn't exist: suggest `/profile-create`
 - If current config doesn't match any profile: show "No active profile — current config doesn't match any saved profile"
-- If `forge-profiles` is empty object: same as no profiles found
+- If profiles object is empty: same as no profiles found

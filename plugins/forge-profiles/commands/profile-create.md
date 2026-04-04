@@ -6,7 +6,7 @@ argument-hint: "[profile name]"
 # Create Plugin Profile
 
 Create a new profile that defines which plugins should be active for a specific work mode.
-Profiles are stored in `.claude/settings.local.json` under the `forge-profiles` key (gitignored, personal).
+Profiles are stored in `.claude/settings.local.json` under `pluginConfigs["forge-profiles@dev-forge"].options.profiles` (gitignored, personal).
 
 ## Process
 
@@ -103,29 +103,35 @@ Save this profile?
 ### Step 7: Save
 
 1. Read `.claude/settings.local.json` (or create `{}` if it doesn't exist)
-2. Ensure the `forge-profiles` key exists (create as `{}` if missing)
+2. Ensure the path `pluginConfigs["forge-profiles@dev-forge"].options.profiles` exists (create each level as `{}` if missing)
 3. Add the new profile:
 
 ```json
 {
-  "forge-profiles": {
-    "<name>": {
-      "description": "<description>",
-      "plugins": ["<exact-identifier>", "..."],
-      "mcpServers": { "<server-name>": { "...config..." } },
-      "created_at": "<YYYY-MM-DD>"
+  "pluginConfigs": {
+    "forge-profiles@dev-forge": {
+      "options": {
+        "profiles": {
+          "<name>": {
+            "description": "<description>",
+            "plugins": ["<exact-identifier>", "..."],
+            "mcpServers": { "<server-name>": { "...config..." } },
+            "created_at": "<YYYY-MM-DD>"
+          }
+        }
+      }
     }
   }
 }
 ```
 
-4. Write back the FULL file (preserve all other keys: plugins, permissions, env, etc.)
+4. Write back the FULL file (preserve all other keys: plugins, permissions, env, pluginConfigs for other plugins, etc.)
 5. Validate: `python3 -m json.tool .claude/settings.local.json`
 6. Confirm: "Profile **<name>** saved. Switch to it with `/profile-change <name>`."
 
 ## Edge Cases
 
-- If `.claude/settings.local.json` doesn't exist: create it with just `{ "forge-profiles": { ... } }`
+- If `.claude/settings.local.json` doesn't exist: create it with the full `pluginConfigs` structure
 - If a profile with the same name already exists: warn and ask whether to overwrite
 - If the user wants 0 plugins: allow it — a "clean slate" profile is valid
 - If write fails: report error, do NOT leave a partial file

@@ -25,12 +25,13 @@ you even start working. Profiles let you:
 
 ## How It Works
 
-Profiles are stored inside `.claude/settings.local.json` under a custom `forge-profiles` key.
-This file is automatically gitignored by Claude Code, so profiles stay personal and project-local.
+Profiles are stored inside `.claude/settings.local.json` under `pluginConfigs["forge-profiles@dev-forge"].options.profiles`.
+This uses the official `pluginConfigs` schema key, keeping profile data valid and organized under the plugin namespace.
+The file is automatically gitignored by Claude Code, so profiles stay personal and project-local.
 
 When you switch profiles, the command:
 1. Reads `.claude/settings.local.json`
-2. Loads the target profile from the `forge-profiles` object
+2. Loads the target profile from `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
 3. Calculates what plugins and MCP servers to add/remove
 4. Updates the `plugins` and `mcpServers` keys (preserves permissions, env, everything else)
 5. Tells you to run `/reload-plugins` to apply
@@ -43,27 +44,33 @@ When you switch profiles, the command:
 
 ## Storage
 
-Everything lives in `.claude/settings.local.json`:
+Everything lives in `.claude/settings.local.json` under the `pluginConfigs` key:
 
 ```json
 {
   "plugins": ["current", "active", "plugins"],
   "mcpServers": { "...current servers..." },
   "permissions": { "...existing permissions..." },
-  "forge-profiles": {
-    "daily": {
-      "description": "Everyday coding — keeper, superpowers, commit, security",
-      "plugins": ["marketplace:owner/repo:plugin-a", "marketplace:owner/repo:plugin-b"],
-      "mcpServers": {
-        "context7": { "type": "stdio", "command": "npx", "args": ["..."] }
-      },
-      "created_at": "2026-04-04"
-    },
-    "plugin-dev": {
-      "description": "Plugin development with skill-creator and forge-plugin-dev",
-      "plugins": ["marketplace:owner/repo:plugin-c"],
-      "mcpServers": {},
-      "created_at": "2026-04-04"
+  "pluginConfigs": {
+    "forge-profiles@dev-forge": {
+      "options": {
+        "profiles": {
+          "daily": {
+            "description": "Everyday coding — keeper, superpowers, commit, security",
+            "plugins": ["marketplace:owner/repo:plugin-a", "marketplace:owner/repo:plugin-b"],
+            "mcpServers": {
+              "context7": { "type": "stdio", "command": "npx", "args": ["..."] }
+            },
+            "created_at": "2026-04-04"
+          },
+          "plugin-dev": {
+            "description": "Plugin development with skill-creator and forge-plugin-dev",
+            "plugins": ["marketplace:owner/repo:plugin-c"],
+            "mcpServers": {},
+            "created_at": "2026-04-04"
+          }
+        }
+      }
     }
   }
 }
@@ -73,5 +80,5 @@ Each profile stores the exact `plugins` identifiers and the full `mcpServers` ob
 This ensures profiles work regardless of how plugins were installed or how MCP servers
 were configured (stdio, SSE, HTTP).
 
-No extra files or directories needed. Claude Code ignores unknown keys, so `forge-profiles`
-is safely stored alongside standard settings.
+No extra files or directories needed. Profile data lives under the official `pluginConfigs`
+schema key, properly namespaced to the plugin.

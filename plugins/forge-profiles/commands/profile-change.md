@@ -14,11 +14,11 @@ to activate only the plugins defined in the target profile.
 
 ### Step 1: Select Profile
 
-1. Read `.claude/settings.local.json` and extract the `forge-profiles` object
-2. If no `forge-profiles` key or empty: "No profiles found. Create one with `/profile-create`." and stop
+1. Read `.claude/settings.local.json` and extract profiles from `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
+2. If path doesn't exist or profiles object is empty: "No profiles found. Create one with `/profile-create`." and stop
 
 **If `$ARGUMENTS` specifies a profile name:**
-3. Check if that name exists in `forge-profiles`
+3. Check if that name exists in the profiles object
 4. If not: list available profiles and ask user to pick
 
 **If `$ARGUMENTS` is empty:**
@@ -29,7 +29,7 @@ to activate only the plugins defined in the target profile.
 ### Step 2: Calculate Diff
 
 1. Get current `plugins` array and `mcpServers` object from settings.local.json
-2. Get target profile's `plugins` and `mcpServers` from `forge-profiles.<name>`
+2. Get target profile's `plugins` and `mcpServers` from `pluginConfigs["forge-profiles@dev-forge"].options.profiles.<name>`
 3. Calculate plugin diff:
    - **Install**: plugins in target but not in current
    - **Uninstall**: plugins in current but not in target
@@ -85,7 +85,7 @@ If no changes needed (both plugins and mcpServers already match): "You're alread
 4. Write the complete file back
 
 **CRITICAL:** Only modify `plugins` and `mcpServers`. Do NOT touch permissions, env,
-forge-profiles, or any other key. Read entire file → change two keys → write entire file.
+pluginConfigs, or any other key. Read entire file → change two keys → write entire file.
 
 5. Validate: `python3 -m json.tool .claude/settings.local.json`
 

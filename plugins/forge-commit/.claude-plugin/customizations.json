@@ -23,6 +23,13 @@
       "target": "README.md",
       "summary": "Excluded upstream README",
       "reason": "Commands are self-documenting."
+    },
+    {
+      "id": "custom-02",
+      "type": "added",
+      "target": "commands/release.md",
+      "summary": "Added marketplace release command with guard",
+      "reason": "Marketplace-specific release flow: detect changed plugins, bump versions, update marketplace.json, commit, tag, push. Guarded to only run in repos with .claude-plugin/marketplace.json."
     }
   ]
 }

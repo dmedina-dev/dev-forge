@@ -61,7 +61,7 @@ dev-forge/
 
 ## External plugin customizations
 
-External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming) don't need customizations.json.
+External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles) don't need customizations.json.
 
 ## Conventions
 

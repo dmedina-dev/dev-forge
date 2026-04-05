@@ -31,6 +31,7 @@ dev-forge/
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
 │   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
+│   ├── forge-executor/               ← wave-based plan executor (requires forge-superpowers)
 │   └── forge-profiles/               ← plugin profile manager (independent)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins

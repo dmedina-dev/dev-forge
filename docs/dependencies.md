@@ -96,6 +96,16 @@ Which plugins depend on or complement each other.
 - Guides: Context7 (library docs), Serena (LSP navigation), XRAY (structural analysis)
 - MCP servers run independently from .claude/settings.json after setup
 
+### forge-executor
+- **Requires forge-superpowers** — provides writing-plans, TDD, verification, finishing, worktrees
+- Native plugin — wave-based plan executor with hybrid validation and checkpoints
+- 1 command: /execute-plan (with --skip-global-validation, --resume-from-wave, --dry-run flags)
+- 4 agents: superpowers-orchestrator (opus), flow-coherence-validator (sonnet), plan-auditor (sonnet), plan-antagonist (sonnet)
+- 1 skill: executor-workflow (trigger + reference docs)
+- Execution sub-agents (BackendImplementer, FrontendImplementer, Configurator, InfraArchitect, Reviewer, Tester, Analyst) are dispatched by the orchestrator via generic Agent tool
+- Complements forge-brainstorming (brainstorming produces plans, executor runs them as waves)
+- Complements forge-commit (executor can use /commit for final PR)
+
 ### forge-brainstorming
 - **Requires forge-superpowers** — provides writing-plans, TDD, verification, finishing, worktrees
 - Native plugin — full-lifecycle teammate orchestration with 5 persistent agents
@@ -131,6 +141,7 @@ forge-channels-telegram   -                   -                   everything els
 forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
 forge-export              -                   -                   everything else
 forge-context-mcp         -                   -                   everything else
+forge-executor            forge-superpowers   forge-brainstorming, forge-commit everything else
 forge-brainstorming       forge-superpowers   forge-extended-dev, forge-commit  everything else
 forge-profiles            -                   -                   everything else
 ```

@@ -232,6 +232,16 @@
       "version": "1.0.0"
     },
     {
+      "name": "forge-executor",
+      "description": "Wave-based plan executor: hybrid validation (global + per-wave), sequential TDD execution, persistent checkpoints, manual rollback. Orchestrates multi-wave Superpowers plans with specialized sub-agents.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-executor"
+      },
+      "version": "1.0.0"
+    },
+    {
       "name": "forge-profiles",
       "description": "Plugin profile manager — switch between sets of active plugins and MCP servers per work mode. Reduces context by keeping only relevant tools loaded. Three commands: /profile-create, /profile-list, /profile-change.",
       "source": {

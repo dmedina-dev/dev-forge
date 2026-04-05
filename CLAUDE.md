@@ -30,7 +30,6 @@ dev-forge/
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
-│   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
 │   └── forge-profiles/               ← plugin profile manager (independent)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
@@ -62,7 +61,7 @@ dev-forge/
 
 ## External plugin customizations
 
-External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles) don't need customizations.json.
+External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-profiles) don't need customizations.json.
 
 ## Conventions
 
@@ -85,7 +84,7 @@ claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 
 ## Dependencies
 
-Hard dependencies: **forge-extended-dev** and **forge-brainstorming** both require **forge-superpowers**. Full matrix in @docs/dependencies.md.
+Hard dependencies: **forge-extended-dev** requires **forge-superpowers**. Full matrix in @docs/dependencies.md.
 
 ## Exemplars
 

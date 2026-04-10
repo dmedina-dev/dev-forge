@@ -4,16 +4,16 @@
     "repo": "anthropics/claude-plugins-official",
     "path": "frontend-design",
     "ref": "main",
-    "commit": "104d39be10b7b1380b2ae23a387a11a297b599c3",
-    "fetched_at": "2026-04-04",
+    "commit": "9fc974ef8be9778b19272251709bdf00ae21c259",
+    "fetched_at": "2026-04-11",
     "check_url": "https://github.com/anthropics/claude-plugins-official",
     "license": "Apache-2.0",
     "authors": ["Prithvi Rajasekaran (Anthropic)", "Alexander Bricken (Anthropic)"]
   },
   "upstream_status": {
-    "last_checked": "2026-04-04",
+    "last_checked": "2026-04-11",
     "latest_ref": "main",
-    "latest_commit": "104d39be10b7b1380b2ae23a387a11a297b599c3",
+    "latest_commit": "9fc974ef8be9778b19272251709bdf00ae21c259",
     "has_updates": false,
     "summary": "",
     "changes": []

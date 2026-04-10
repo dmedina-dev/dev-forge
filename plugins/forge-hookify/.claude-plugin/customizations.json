@@ -4,14 +4,14 @@
     "repo": "anthropics/claude-code",
     "path": "plugins/hookify",
     "ref": "main",
-    "commit": "b543a256248ce5ff98804b8dfef4cd6247423d98",
-    "fetched_at": "2026-04-04",
+    "commit": "9772e13f820002c9730af67a2409702799c7ddc6",
+    "fetched_at": "2026-04-11",
     "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/hookify"
   },
   "upstream_status": {
-    "last_checked": "2026-04-04",
+    "last_checked": "2026-04-11",
     "latest_ref": "main",
-    "latest_commit": "b543a256248ce5ff98804b8dfef4cd6247423d98",
+    "latest_commit": "9772e13f820002c9730af67a2409702799c7ddc6",
     "has_updates": false
   },
   "customizations": [

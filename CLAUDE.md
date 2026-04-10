@@ -86,7 +86,7 @@ claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 
 ## Dependencies
 
-Hard dependencies: **forge-extended-dev** and **forge-brainstorming** both require **forge-superpowers**. Full matrix in @docs/dependencies.md.
+Hard dependencies: **forge-extended-dev**, **forge-brainstorming**, and **forge-executor** all require **forge-superpowers**. Full matrix in @docs/dependencies.md.
 
 ## Exemplars
 

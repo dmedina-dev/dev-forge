@@ -26,7 +26,7 @@ dev-forge/
 │   ├── forge-ralph/                   ← persistent loop technique
 │   ├── forge-frontend-design/         ← frontend UI/UX design
 │   ├── forge-ui-expert/               ← UI/UX design intelligence (7 skills)
-│   ├── forge-channels-telegram/       ← Telegram channel bridge (MCP, requires Bun)
+│   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor + Haiku teammate)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
@@ -101,5 +101,5 @@ Reference plugins for how things should be done — see @docs/exemplars.md.
 - Custom `added` files in customizations.json MUST be documented or rsync `--delete` will remove them during sync
 - `/release` command only works in marketplace repos (requires `.claude-plugin/marketplace.json`)
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
-- forge-channels-telegram requires Bun runtime and Claude Code v2.1.80+ with channels support
+- forge-telegram requires the `Monitor` tool (Claude Code Apr 2026+), plus `curl`, `jq`, `openssl`. On macOS, `brew install coreutils` for line-buffered `gstdbuf`.
 - forge-proactive-qa requires Playwright installed in the target project

@@ -126,11 +126,11 @@ forge-security          anthropics/claude-code       main       main       ✓
 forge-commit            anthropics/claude-code       main       main       ✓
 forge-frontend-design   anthropics/claude-code       main       main       ✓
 forge-ui-expert         anthropics/claude-code       main       main       ✓
-forge-channels-telegram anthropics/claude-code       main       main       ✓
+forge-telegram          —                            —          —          ⊘ (native)
 forge-proactive-qa      —                            —          —          ⊘ (native)
 forge-keeper            —                            —          —          ⊘ (native)
 ═══════════════════════════════════════════════════════════════════════
-⚡ 1 plugin has updates   ✓ 8 up to date   ⊘ 2 skipped
+⚡ 1 plugin has updates   ✓ 7 up to date   ⊘ 3 skipped
 ```
 
 **Status icons:**

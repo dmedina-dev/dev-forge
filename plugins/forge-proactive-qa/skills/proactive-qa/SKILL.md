@@ -84,21 +84,19 @@ These rules apply to **all agents and subagents** — fixer agents, validator ag
 
 At the start of each session, resolve the notification target:
 
-1. Read `~/.claude/channels/telegram/access.json` → extract `allowFrom[0]` as NOTIFY_CHAT_ID
-2. If access.json is missing or `allowFrom` is empty, check project `.env` for `TELEGRAM_CHAT_ID`
+1. Read `~/.claude/channels/telegram/.env` → extract `AUTHORIZED_CHAT_ID` as NOTIFY_CHAT_ID
+2. If that file is missing or the key is empty, check project `.env` for `TELEGRAM_CHAT_ID` (legacy)
 3. If neither available, skip all notifications — log to transcript only
 
 ### Dispatch Rule
 
-For every notification below:
+For every notification below, run:
 
-> **Channel mode** (the `mcp__telegram__reply` tool is available):
-> Call `reply` with `chat_id=NOTIFY_CHAT_ID`, `text=<message>`, `files=<screenshot paths if any>`, `format="markdownv2"`.
-> Screenshots from `$TMPDIR` can be attached directly via the `files` parameter.
->
-> **Fallback** (no MCP reply tool):
-> Run: `bash .proactive-qa-scripts/telegram-notify.sh "<type>" "<text-only message>"`
-> Screenshots cannot be sent in fallback mode — mention file paths in the text.
+```
+bash .proactive-qa-scripts/telegram-notify.sh "<type>" "<text-only message>"
+```
+
+The script resolves the chat_id itself (same order as above) and sends via curl. Screenshots cannot be attached — mention file paths in the text body when relevant.
 
 ### Notification Types
 

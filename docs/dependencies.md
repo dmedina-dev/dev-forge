@@ -68,21 +68,22 @@ Which plugins depend on or complement each other.
 - Stop hook + setup script for self-referential loop
 - 3 commands: /ralph-loop (start), /cancel-ralph (stop), /ralph-help
 
-### forge-channels-telegram
-- **Independent** — Telegram channel bridge, works standalone
-- Curated from anthropics/claude-plugins-official (external_plugins/telegram) with security hardening
-- MCP server: bridges Telegram Bot API to Claude Code session via channels protocol
-- 2 skills: /telegram:access (pairing + allowlist management), /telegram:configure (token setup)
-- 4 MCP tools: reply, react, download_attachment, edit_message
-- Security customizations: fail-closed assertSendable, disabled-on-corrupt recovery, env var restriction, logged errors
-- Requires Bun runtime and Claude Code v2.1.80+ with channels support
+### forge-telegram
+- **Independent** — Telegram listener + sender, works standalone
+- Native plugin (no upstream) — bash scripts + Haiku teammate using the `Monitor` tool
+- 1 skill: /telegram (start/stop/setup/status/send dispatcher)
+- 1 agent: telegram-listener (Haiku teammate that wraps listen.sh under Monitor and re-arms indefinitely)
+- 4 scripts: setup.sh (PIN pairing), listen.sh (long-poll getUpdates), send.sh (outbound), transcribe.sh (Whisper helper)
+- Credentials at ~/.claude/channels/telegram/.env (chmod 0600): TELEGRAM_BOT_TOKEN, AUTHORIZED_CHAT_ID, optional OPENAI_API_KEY
+- Voice transcription inline in listen.sh via OpenAI Whisper — teammate only sees text events
+- Requires the `Monitor` tool (Claude Code Apr 2026+), curl, jq, openssl. macOS: coreutils for gstdbuf.
 
 ### forge-proactive-qa
 - **Independent** — autonomous QA agent, works standalone
 - 1 skill: /proactive-qa (explore/autofix/cycle modes)
 - 3 reference docs: explore flow, autofix flow, explore checklist
-- 4 scripts: commit.sh (pre-approved), cleanup-explore.sh, cleanup-tmpdir.sh, telegram-notify.sh (fallback)
-- Channel-first notifications: uses forge-channels-telegram MCP reply tool when available, falls back to curl
+- 4 scripts: commit.sh (pre-approved), cleanup-explore.sh, cleanup-tmpdir.sh, telegram-notify.sh
+- Notifications via direct curl (telegram-notify.sh). Credentials resolved from forge-telegram's ~/.claude/channels/telegram/.env (AUTHORIZED_CHAT_ID) with project .env as legacy fallback.
 - Designed for `/loop` (cycle mode alternates explore/autofix)
 - Requires Playwright in target project
 
@@ -137,8 +138,8 @@ forge-commit              -                   -                   everything els
 forge-ralph               -                   -                   everything else
 forge-frontend-design     -                   -                   everything else
 forge-ui-expert           -                   forge-frontend-design everything else
-forge-channels-telegram   -                   -                   everything else
-forge-proactive-qa        -                   forge-channels-telegram, /loop  everything else
+forge-telegram            -                   -                   everything else
+forge-proactive-qa        -                   forge-telegram, /loop  everything else
 forge-export              -                   -                   everything else
 forge-context-mcp         -                   -                   everything else
 forge-executor            forge-superpowers   forge-brainstorming, forge-commit everything else

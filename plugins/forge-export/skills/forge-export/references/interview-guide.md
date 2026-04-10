@@ -32,8 +32,7 @@ the same dev-forge repository.
 ### Customization count per plugin
 
 For each plugin (external or native), resolve its directory using the
-`source.path` field from marketplace.json (this may differ from `name` — e.g.,
-the `telegram` plugin lives at `plugins/forge-channels-telegram`). Check whether
+`source.path` field from marketplace.json (this may differ from `name`). Check whether
 `<source.path>/.claude-plugin/customizations.json` exists. If it exists, read
 the `customizations` array and count entries. If the file does not exist, count
 is 0.

@@ -50,8 +50,8 @@
       "id": "modified-07",
       "type": "modified",
       "target": "telegram-notify.sh",
-      "summary": "Kept as standalone curl fallback, updated .env resolution",
-      "reason": "Channel-first notifications handled by Claude via MCP reply tool. This script serves as fallback when forge-channels-telegram is not installed."
+      "summary": "Standalone curl notifier, resolves credentials from forge-telegram's user-level env",
+      "reason": "Reads ~/.claude/channels/telegram/.env (AUTHORIZED_CHAT_ID) as primary source, with plugin-root and project .env as legacy fallbacks. Replaces the old MCP-first dispatch now that forge-channels-telegram is gone."
     },
     {
       "id": "modified-08",

@@ -1,22 +1,33 @@
 #!/usr/bin/env bash
-# Proactive QA — Telegram Notification Fallback Script
+# Proactive QA — Telegram Notification Script
 # Usage: bash telegram-notify.sh "<type>" "<message>"
 # Types: explore, fix-ok, fix-fail, cycle-done, error
 #
-# This is the FALLBACK for when forge-channels-telegram is not installed.
-# When the MCP reply tool is available, notifications go through the channel instead.
+# Credential resolution order:
+#   1. ~/.claude/channels/telegram/.env   (user-level, from forge-telegram)
+#      Keys: TELEGRAM_BOT_TOKEN + AUTHORIZED_CHAT_ID
+#   2. plugin-root .env                    (legacy)
+#   3. project .env                        (legacy, uses TELEGRAM_CHAT_ID)
 #
-# Requires env vars: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
-# If not set, logs to stderr and exits silently.
+# If no credentials are found, logs to stderr and exits 0 silently.
 trap 'exit 0' ERR
 
 TYPE="${1:-info}"
 MESSAGE="${2:-Sin mensaje}"
 
-# Load .env — try plugin root first, then project root
+# 1) forge-telegram user-level env (primary source)
+USER_ENV="${HOME}/.claude/channels/telegram/.env"
+if [[ -f "$USER_ENV" ]]; then
+  # Explicit parsing — never `source` untrusted files
+  TELEGRAM_BOT_TOKEN="${TELEGRAM_BOT_TOKEN:-$(grep -E '^TELEGRAM_BOT_TOKEN=' "$USER_ENV" | head -1 | cut -d= -f2-)}"
+  AUTHORIZED_CHAT_ID_RAW="$(grep -E '^AUTHORIZED_CHAT_ID=' "$USER_ENV" | head -1 | cut -d= -f2-)"
+  TELEGRAM_CHAT_ID="${TELEGRAM_CHAT_ID:-$AUTHORIZED_CHAT_ID_RAW}"
+fi
+
+# 2) Plugin-root .env (legacy fallback)
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 for envfile in "$PLUGIN_ROOT/.env" ".env"; do
-  if [[ -f "$envfile" ]]; then
+  if [[ -f "$envfile" ]] && { [[ -z "${TELEGRAM_BOT_TOKEN:-}" ]] || [[ -z "${TELEGRAM_CHAT_ID:-}" ]]; }; then
     set -a
     # shellcheck disable=SC1090
     source "$envfile" 2>/dev/null || true
@@ -26,7 +37,7 @@ for envfile in "$PLUGIN_ROOT/.env" ".env"; do
 done
 
 if [[ -z "${TELEGRAM_BOT_TOKEN:-}" ]] || [[ -z "${TELEGRAM_CHAT_ID:-}" ]]; then
-  echo "[proactive-qa] Telegram no configurado (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID). Skipping." >&2
+  echo "[proactive-qa] Telegram not configured (no TELEGRAM_BOT_TOKEN / chat_id in ~/.claude/channels/telegram/.env or project .env). Skipping." >&2
   exit 0
 fi
 

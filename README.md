@@ -23,7 +23,7 @@ plugins — install all or pick what you need.
 /plugin install forge-hookify       # custom hook rules engine
 /plugin install forge-ralph         # persistent loop technique
 /plugin install forge-frontend-design # distinctive UI/UX design
-/plugin install forge-channels-telegram # Telegram channel bridge (requires Bun)
+/plugin install forge-telegram          # Telegram listener + sender (bash + Monitor)
 ```
 
 ## Working plugins
@@ -66,7 +66,7 @@ forge-keeper commands:
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-channels-telegram** | Telegram bridge — push messages into running session, reply from Claude | Skills: `telegram:configure`, `telegram:access` (auto-triggered) |
+| **forge-telegram** | Telegram bridge — long-poll listener as Haiku teammate, Whisper voice transcription, manual send | `/telegram start`, `/telegram stop`, `/telegram setup`, `/telegram status`, `/telegram send` |
 
 ## Configuration plugins
 
@@ -113,7 +113,6 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | Plugin | Original plugin | Original author |
 |--------|----------------|-----------------|
 | forge-frontend-design | [frontend-design](https://github.com/anthropics/claude-plugins-official) | Prithvi Rajasekaran, Alexander Bricken (Anthropic) |
-| forge-channels-telegram | [telegram](https://github.com/anthropics/claude-plugins-official/tree/main/external_plugins/telegram) | Anthropic |
 
 ### [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
 

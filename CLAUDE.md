@@ -26,7 +26,7 @@ dev-forge/
 │   ├── forge-ralph/                   ← persistent loop technique
 │   ├── forge-frontend-design/         ← frontend UI/UX design
 │   ├── forge-ui-expert/               ← UI/UX design intelligence (7 skills)
-│   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor + Haiku teammate)
+│   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor, event-driven)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
@@ -101,5 +101,7 @@ Reference plugins for how things should be done — see @docs/exemplars.md.
 - Custom `added` files in customizations.json MUST be documented or rsync `--delete` will remove them during sync
 - `/release` command only works in marketplace repos (requires `.claude-plugin/marketplace.json`)
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
-- forge-telegram requires the `Monitor` tool (Claude Code Apr 2026+), plus `curl`, `jq`, `openssl`. On macOS, `brew install coreutils` for line-buffered `gstdbuf`.
+- forge-telegram requires the `Monitor` tool (Claude Code Apr 2026+), plus `curl`, `jq`, `openssl`. Listener writes state to `~/.claude/channels/telegram/` — if the Bash sandbox is enabled, add the paths from `plugins/forge-telegram/skills/telegram/references/operational.md` § Sandbox gotcha to `sandbox.filesystem.allowWrite` in `.claude/settings.local.json`, or the listener runs into a silent stuck-state loop.
 - forge-proactive-qa requires Playwright installed in the target project
+- **Bash sandbox blocks writes outside project root.** Plugins that store state in `~/.claude/channels/<plugin>/` (or anywhere outside the project workspace) must list every writable file in `sandbox.filesystem.allowWrite`, or `echo > file` silently returns `rc=1` under `set -uo pipefail`. Avoid `mktemp -t` / `$TMPDIR` — on macOS this resolves to `/var/folders/…/T/` which is also blocked.
+- `/forge-keeper:heal-plugin-cache` recovers orphaned sessions after a plugin version bump — it symlinks stale `cache/<marketplace>/<plugin>/<old-version>/` entries to the current installed version so sessions pinned to the old path keep working.

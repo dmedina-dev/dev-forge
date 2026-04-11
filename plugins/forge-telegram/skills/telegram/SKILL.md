@@ -66,6 +66,8 @@ While the listener is running, `listen.sh` emits line-delimited JSON events and 
 
 When you receive one of these turns:
 
+**0. No content → end the turn silently.** If the event turn contains only Monitor task metadata (description, status) with no actual stdout line to parse — i.e. nothing that looks like a JSON object — **end your turn immediately without emitting any text**. Do NOT echo a "Monitor event: …" header. Do NOT write a warning. Do NOT speculate about what might have happened. An empty event is a no-op; the next real event will trigger its own turn when it arrives. (This guard exists because some harness / tool interactions can deliver heartbeat-style events with no stdout payload, and narrating each of those to the user creates a visible runaway loop.)
+
 1. **Parse the JSON.** If it fails or `type` is missing, show a short warning and stop:
    > "⚠️ Malformed Telegram event, skipping."
 
@@ -115,5 +117,6 @@ For examples (simple ack, proactive update, threaded conversation), full emoji w
 - **Credentials** live at `~/.claude/channels/telegram/.env` (user-level, chmod 0600).
 - **Photos** are downloaded to `~/.claude/channels/telegram/inbox/` and never cleaned automatically.
 - **`/` menu commands** (`/status /context /help`) are cosmetic — the text still arrives as plain untrusted input.
+- **Debug mirror log.** Every event that `listen.sh` emits to stdout is also timestamped-appended to `~/.claude/channels/telegram/emit.log`. If the session sees events that look wrong (empty, duplicated, malformed), cross-check that file to determine whether `listen.sh` actually sent them — if the mirror log is empty or quiet while the session sees events, the noise is coming from the harness / Monitor layer, not from `listen.sh`.
 
 Full details (setup-vs-start race, voice transcription toggles, macOS `gstdbuf` requirement, menu customization, inbox cleanup): `Read` [`references/operational.md`](references/operational.md).

@@ -3,14 +3,13 @@
 # Usage: bash listen.sh
 #
 # Long-polls Telegram getUpdates in a tight loop. Emits one JSON line per
-# authorized inbound message to stdout (line-buffered). Designed to be wrapped
-# by the Monitor tool: Monitor reads each stdout line as a separate event.
+# authorized inbound message to stdout. Designed to be wrapped by the Monitor
+# tool: Monitor reads each stdout line as a separate event.
 #
-# Silence (no messages) = zero output = zero tokens consumed by the wrapping agent.
+# Silence (no messages) = zero output = zero events delivered to the session.
 #
-# Voice messages are transcribed inline by calling transcribe.sh and emitted as
-# a single text event with a [voice] prefix. The wrapping Haiku teammate never
-# sees voice events — only text.
+# Voice messages are transcribed inline by calling transcribe.sh and emitted
+# as a single text event with a [voice] prefix.
 #
 # Strict filter: only messages from AUTHORIZED_CHAT_ID are emitted.
 #
@@ -22,22 +21,11 @@ STATE_DIR="${HOME}/.claude/channels/telegram"
 ENV_FILE="${STATE_DIR}/.env"
 OFFSET_FILE="${STATE_DIR}/.offset"
 LOG_FILE="${STATE_DIR}/listen.log"
+EMIT_LOG="${STATE_DIR}/emit.log"
 INBOX_DIR="${STATE_DIR}/inbox"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TRANSCRIBE="${SCRIPT_DIR}/transcribe.sh"
-
-# ── Line-buffered stdout ────────────────────────────────────
-# Portable across Linux (stdbuf) and macOS (gstdbuf from Homebrew coreutils).
-# jq -c is already line-buffered in -c mode, so this mostly handles any bare
-# echoes we might do for log lines.
-if command -v stdbuf >/dev/null 2>&1; then
-  exec 1> >(stdbuf -oL cat)
-elif command -v gstdbuf >/dev/null 2>&1; then
-  exec 1> >(gstdbuf -oL cat)
-else
-  echo "[listen.sh] warning: stdbuf not found; output may buffer. Install coreutils." >&2
-fi
 
 # ── Load env ────────────────────────────────────────────────
 if [[ ! -f "$ENV_FILE" ]]; then
@@ -56,6 +44,33 @@ if [[ -z "$AUTHORIZED_CHAT_ID" ]]; then
   echo "[listen.sh] missing AUTHORIZED_CHAT_ID — run /telegram setup" >&2
   exit 1
 fi
+
+# ── Emit helper ─────────────────────────────────────────────
+# Writes one JSON event to stdout. Refuses to emit:
+#   - empty strings
+#   - lines whose first character is not '{' (i.e. not a JSON object)
+#
+# Uses `printf` (a bash builtin) for the actual write — builtins bypass
+# stdio buffering and write directly via write(), so we get unbuffered
+# output without needing a stdbuf/gstdbuf wrapper.
+#
+# Every accepted emission is also mirrored (timestamped) to $EMIT_LOG so
+# the developer can correlate what listen.sh sent vs what the session saw.
+emit_event() {
+  local line="$1"
+
+  if [[ -z "$line" ]]; then
+    echo "[emit] refused empty line" >> "$LOG_FILE"
+    return 0
+  fi
+  if [[ "${line:0:1}" != "{" ]]; then
+    echo "[emit] refused non-object: ${line:0:120}" >> "$LOG_FILE"
+    return 0
+  fi
+
+  printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S')" "$line" >> "$EMIT_LOG"
+  printf '%s\n' "$line"
+}
 
 # ── Prime offset on first run ───────────────────────────────
 # Skip any messages that arrived BEFORE the listener started so we don't
@@ -116,7 +131,8 @@ while true; do
     # ── Text message ──────────────────────────────────────
     MSG_TEXT=$(echo "$UPDATE" | jq -r '.message.text // empty')
     if [[ -n "$MSG_TEXT" ]]; then
-      echo "$UPDATE" | jq -c '{type: "text", text: .message.text, msg_id: .message.message_id}'
+      EVENT=$(echo "$UPDATE" | jq -c '{type: "text", text: .message.text, msg_id: .message.message_id}')
+      emit_event "$EVENT"
       continue
     fi
 
@@ -142,9 +158,9 @@ while true; do
           TEXT_OUT="[voice transcription failed — check listen.log]"
           ;;
       esac
-      # jq -nc builds a safe single-line JSON object
-      jq -nc --arg text "$TEXT_OUT" --argjson msg_id "$MSG_ID" \
-        '{type: "text", text: $text, msg_id: $msg_id, source: "voice"}'
+      EVENT=$(jq -nc --arg text "$TEXT_OUT" --argjson msg_id "$MSG_ID" \
+        '{type: "text", text: $text, msg_id: $msg_id, source: "voice"}')
+      emit_event "$EVENT"
       continue
     fi
 
@@ -161,6 +177,7 @@ while true; do
       FILE_RESP=$(curl -sS --max-time 10 \
         "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getFile?file_id=${PHOTO_FILE_ID}" 2>/dev/null || echo '{"ok":false}')
 
+      PHOTO_EMITTED=0
       if echo "$FILE_RESP" | jq -e '.ok == true' >/dev/null 2>&1; then
         FILE_PATH=$(echo "$FILE_RESP" | jq -r '.result.file_path')
         EXT="${FILE_PATH##*.}"
@@ -174,20 +191,25 @@ while true; do
              -o "$LOCAL_PATH" 2>/dev/null; then
           # Emit text = caption if present, else a neutral placeholder.
           # The image_path field is the absolute path the assistant can Read().
-          jq -nc \
+          EVENT=$(jq -nc \
             --arg text "${PHOTO_CAPTION:-(photo)}" \
             --arg image_path "$LOCAL_PATH" \
             --argjson msg_id "$MSG_ID" \
-            '{type: "text", text: $text, image_path: $image_path, msg_id: $msg_id, source: "photo"}'
-          continue
+            '{type: "text", text: $text, image_path: $image_path, msg_id: $msg_id, source: "photo"}')
+          emit_event "$EVENT"
+          PHOTO_EMITTED=1
         fi
       fi
 
-      # Fallback: photo arrived but download failed — still emit so the
-      # assistant knows something came in.
-      echo "[listen.sh] photo download failed for msg_id=${MSG_ID}" >> "$LOG_FILE"
-      jq -nc --argjson msg_id "$MSG_ID" \
-        '{type: "text", text: "(photo — download failed)", msg_id: $msg_id, source: "photo"}'
+      if [[ "$PHOTO_EMITTED" -eq 0 ]]; then
+        # Photo arrived but getFile / download failed. Emit a graceful
+        # placeholder so the assistant knows something came in, rather
+        # than silently dropping it.
+        echo "[listen.sh] photo download failed for msg_id=${MSG_ID}" >> "$LOG_FILE"
+        EVENT=$(jq -nc --argjson msg_id "$MSG_ID" \
+          '{type: "text", text: "(photo — download failed)", msg_id: $msg_id, source: "photo"}')
+        emit_event "$EVENT"
+      fi
       continue
     fi
 

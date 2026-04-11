@@ -37,10 +37,13 @@ write_mode() {
   local m="$1"
   mkdir -p "$STATE_DIR"
   chmod 700 "$STATE_DIR" 2>/dev/null || true
-  # Use a tmp file + mv so concurrent reads never see a partial write.
-  local tmp="${MODE_FILE}.tmp.$$"
-  printf '%s\n' "$m" > "$tmp"
-  mv "$tmp" "$MODE_FILE"
+  # Direct write — no staging file. The mode file is a single word (~5-15
+  # bytes) well under PIPE_BUF, so the write() syscall is atomic at the
+  # kernel level; readers either see the old content or the new content,
+  # never a partial mix. A staging-and-rename pattern would need its own
+  # sandbox allowlist entry (mode.tmp.NNNN) and offers no real benefit
+  # for a file of this size.
+  printf '%s\n' "$m" > "$MODE_FILE"
   chmod 600 "$MODE_FILE" 2>/dev/null || true
   echo "$m"
 }

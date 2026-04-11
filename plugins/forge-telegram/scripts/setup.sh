@@ -60,6 +60,25 @@ validate_token() {
   echo "$resp" | jq -e '.ok == true' >/dev/null 2>&1
 }
 
+# Register a small default slash-commands menu on the Telegram side. These
+# appear as suggestions in the chat's "/" autocomplete. They don't grant the
+# assistant any special handling — text still arrives at listen.sh as a
+# normal message. The menu is purely UX on the Telegram app.
+#
+# Idempotent: setMyCommands overwrites any previous list.
+set_default_commands() {
+  local token="$1"
+  local commands
+  commands=$(jq -nc '[
+    {command: "status",  description: "Ask the assistant for current state"},
+    {command: "context", description: "Ask for a short context summary"},
+    {command: "help",    description: "Show what you can ask over Telegram"}
+  ]')
+  curl -sS --max-time 10 -X POST \
+    "https://api.telegram.org/bot${token}/setMyCommands" \
+    --data-urlencode "commands=${commands}" >/dev/null 2>&1 || true
+}
+
 TELEGRAM_BOT_TOKEN=$(get_env_key TELEGRAM_BOT_TOKEN)
 OPENAI_API_KEY=$(get_env_key OPENAI_API_KEY)
 AUTHORIZED_CHAT_ID=$(get_env_key AUTHORIZED_CHAT_ID)
@@ -69,6 +88,9 @@ AUTHORIZED_CHAT_ID=$(get_env_key AUTHORIZED_CHAT_ID)
 # ───────────────────────────────────────────────────────────
 if [[ -n "$TELEGRAM_BOT_TOKEN" && -n "$AUTHORIZED_CHAT_ID" ]]; then
   if validate_token "$TELEGRAM_BOT_TOKEN"; then
+    # Re-register the menu on every successful re-run so older installs
+    # pick it up without needing a full reconfigure.
+    set_default_commands "$TELEGRAM_BOT_TOKEN"
     echo ""
     echo "✅ forge-telegram already configured"
     echo "  Token:          $(mask "$TELEGRAM_BOT_TOKEN")"
@@ -78,6 +100,7 @@ if [[ -n "$TELEGRAM_BOT_TOKEN" && -n "$AUTHORIZED_CHAT_ID" ]]; then
     else
       echo "  Voice (Whisper): disabled (no OPENAI_API_KEY)"
     fi
+    echo "  Menu commands:  /status /context /help"
     echo ""
     echo "Run /telegram start to begin listening."
     exit 0
@@ -202,6 +225,11 @@ if [[ -z "$AUTHORIZED_CHAT_ID" ]]; then
 fi
 
 # ───────────────────────────────────────────────────────────
+# Register default Telegram /commands menu (cosmetic UX)
+# ───────────────────────────────────────────────────────────
+set_default_commands "$TELEGRAM_BOT_TOKEN"
+
+# ───────────────────────────────────────────────────────────
 # Final summary
 # ───────────────────────────────────────────────────────────
 echo ""
@@ -213,5 +241,6 @@ if [[ -n "$OPENAI_API_KEY" ]]; then
 else
   echo "  Voice (Whisper): disabled (no OPENAI_API_KEY)"
 fi
+echo "  Menu commands:  /status /context /help"
 echo ""
 echo "Run /telegram start to begin listening."

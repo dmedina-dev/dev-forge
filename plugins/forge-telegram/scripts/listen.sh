@@ -22,6 +22,7 @@ STATE_DIR="${HOME}/.claude/channels/telegram"
 ENV_FILE="${STATE_DIR}/.env"
 OFFSET_FILE="${STATE_DIR}/.offset"
 LOG_FILE="${STATE_DIR}/listen.log"
+INBOX_DIR="${STATE_DIR}/inbox"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TRANSCRIBE="${SCRIPT_DIR}/transcribe.sh"
@@ -75,6 +76,8 @@ while true; do
   # curl stderr is intentionally discarded (never logged) because it includes
   # the full URL with the bot token on errors. Our own echoes to $LOG_FILE
   # are token-free.
+  # allowed_updates=["message"] — covers text, voice, photo, and every other
+  # .message.* sub-field; media fields arrive attached to a message object.
   if ! RESP=$(curl -sS --max-time 40 \
        "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${OFFSET}&timeout=25&allowed_updates=%5B%22message%22%5D" 2>/dev/null); then
     FAIL_COUNT=$((FAIL_COUNT + 1))
@@ -145,7 +148,50 @@ while true; do
       continue
     fi
 
-    # ── Other media (sticker, photo, doc, etc.) ───────────
+    # ── Photo message: download + emit with image_path ────
+    HAS_PHOTO=$(echo "$UPDATE" | jq '(.message.photo // []) | length')
+    if [[ "$HAS_PHOTO" -gt 0 ]]; then
+      # Pick the LAST entry in .message.photo — Telegram returns size variants
+      # in ascending resolution order, so the last element is the largest.
+      PHOTO_FILE_ID=$(echo "$UPDATE" | jq -r '.message.photo[-1].file_id')
+      PHOTO_UNIQUE_ID=$(echo "$UPDATE" | jq -r '.message.photo[-1].file_unique_id // empty')
+      PHOTO_CAPTION=$(echo "$UPDATE" | jq -r '.message.caption // ""')
+
+      # Resolve the file path (Telegram gives us a relative path into its CDN).
+      FILE_RESP=$(curl -sS --max-time 10 \
+        "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getFile?file_id=${PHOTO_FILE_ID}" 2>/dev/null || echo '{"ok":false}')
+
+      if echo "$FILE_RESP" | jq -e '.ok == true' >/dev/null 2>&1; then
+        FILE_PATH=$(echo "$FILE_RESP" | jq -r '.result.file_path')
+        EXT="${FILE_PATH##*.}"
+        # Fallback extension if none in the path
+        [[ "$EXT" == "$FILE_PATH" ]] && EXT="jpg"
+        mkdir -p "$INBOX_DIR"
+        LOCAL_PATH="${INBOX_DIR}/$(date +%s)-${PHOTO_UNIQUE_ID:-$MSG_ID}.${EXT}"
+
+        if curl -sS --max-time 30 \
+             "https://api.telegram.org/file/bot${TELEGRAM_BOT_TOKEN}/${FILE_PATH}" \
+             -o "$LOCAL_PATH" 2>/dev/null; then
+          # Emit text = caption if present, else a neutral placeholder.
+          # The image_path field is the absolute path the assistant can Read().
+          jq -nc \
+            --arg text "${PHOTO_CAPTION:-(photo)}" \
+            --arg image_path "$LOCAL_PATH" \
+            --argjson msg_id "$MSG_ID" \
+            '{type: "text", text: $text, image_path: $image_path, msg_id: $msg_id, source: "photo"}'
+          continue
+        fi
+      fi
+
+      # Fallback: photo arrived but download failed — still emit so the
+      # assistant knows something came in.
+      echo "[listen.sh] photo download failed for msg_id=${MSG_ID}" >> "$LOG_FILE"
+      jq -nc --argjson msg_id "$MSG_ID" \
+        '{type: "text", text: "(photo — download failed)", msg_id: $msg_id, source: "photo"}'
+      continue
+    fi
+
+    # ── Other media (sticker, doc, etc.) ──────────────────
     echo "[listen.sh] unsupported message type, msg_id=${MSG_ID}" >> "$LOG_FILE"
   done < <(echo "$RESP" | jq -c '.result[]')
 done

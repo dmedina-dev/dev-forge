@@ -100,8 +100,8 @@ while true; do
   # Iterate each update. Advance offset after EVERY update (even filtered ones)
   # so we never reprocess them.
   while IFS= read -r UPDATE; do
-    UID=$(echo "$UPDATE" | jq '.update_id')
-    echo "$((UID + 1))" > "$OFFSET_FILE"
+    UPD_ID=$(echo "$UPDATE" | jq '.update_id')
+    echo "$((UPD_ID + 1))" > "$OFFSET_FILE"
 
     CHAT_ID=$(echo "$UPDATE" | jq -r '.message.chat.id // empty')
     if [[ -z "$CHAT_ID" || "$CHAT_ID" != "$AUTHORIZED_CHAT_ID" ]]; then

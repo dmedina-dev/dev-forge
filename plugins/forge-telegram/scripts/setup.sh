@@ -34,9 +34,11 @@ mask() {
   fi
 }
 
-# Read a single key from env file (grep-based, never source)
+# Read a single key from env file (grep-based, never source).
+# The grep is wrapped so a no-match (exit 1) doesn't trip `set -o pipefail`
+# and abort the script under bash 3.2 — missing key must yield empty string.
 get_env_key() {
-  grep -E "^$1=" "$ENV_FILE" 2>/dev/null | head -1 | cut -d= -f2-
+  { grep -E "^$1=" "$ENV_FILE" 2>/dev/null || true; } | head -1 | cut -d= -f2-
 }
 
 # Atomically write or replace a single key
@@ -172,10 +174,12 @@ if [[ -z "$AUTHORIZED_CHAT_ID" ]]; then
     if [[ "$COUNT" -eq 0 ]]; then
       continue
     fi
-    # Iterate updates, advance offset, look for PIN match
+    # Iterate updates, advance offset, look for PIN match.
+    # NOTE: use UPD_ID, not UID — $UID is a readonly builtin in bash (real uid)
+    # and assigning to it fails with "readonly variable", aborting the loop.
     while IFS= read -r UPDATE; do
-      UID=$(echo "$UPDATE" | jq '.update_id')
-      echo "$((UID + 1))" > "$PAIRING_OFFSET_FILE"
+      UPD_ID=$(echo "$UPDATE" | jq '.update_id')
+      echo "$((UPD_ID + 1))" > "$PAIRING_OFFSET_FILE"
       MSG_TEXT=$(echo "$UPDATE" | jq -r '.message.text // empty' | tr -d '[:space:]')
       if [[ "$MSG_TEXT" == "$PIN" ]]; then
         MATCHED_CHAT_ID=$(echo "$UPDATE" | jq -r '.message.chat.id')

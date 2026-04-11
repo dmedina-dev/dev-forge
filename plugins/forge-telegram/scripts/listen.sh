@@ -17,7 +17,10 @@
 
 set -uo pipefail
 
-STATE_DIR="${HOME}/.claude/channels/telegram"
+# TELEGRAM_STATE_DIR overrides the default ~/.claude/channels/telegram.
+# Useful when a Claude Code session sandbox blocks writes outside the
+# project root (see operational.md § sandbox gotcha).
+STATE_DIR="${TELEGRAM_STATE_DIR:-${HOME}/.claude/channels/telegram}"
 ENV_FILE="${STATE_DIR}/.env"
 OFFSET_FILE="${STATE_DIR}/.offset"
 LOG_FILE="${STATE_DIR}/listen.log"
@@ -72,6 +75,34 @@ emit_event() {
   printf '%s\n' "$line"
 }
 
+# ── Pre-flight: verify $OFFSET_FILE is actually writable ───
+# The offset file must be writable from THIS process's context, not just
+# exist with the right permissions. When the listener runs under the
+# Claude Code Bash sandbox, writes to paths outside the project root can
+# silently fail (echo exits 1, file unchanged) — and because the main
+# loop uses `set -uo pipefail` (no -e), a failing offset write would
+# result in every iteration re-reading the same offset and re-emitting
+# the same update forever. Catch that here and bail with a useful error.
+preflight_offset_write() {
+  local current test_value readback
+  current=$(cat "$OFFSET_FILE" 2>/dev/null || echo 0)
+  # Write a sentinel distinct from current so readback is unambiguous,
+  # then restore the original value.
+  test_value=$(( current + 99999 ))
+  if ! echo "$test_value" > "$OFFSET_FILE" 2>/dev/null; then
+    return 1
+  fi
+  readback=$(cat "$OFFSET_FILE" 2>/dev/null)
+  if [[ "$readback" != "$test_value" ]]; then
+    return 2
+  fi
+  # Restore
+  if ! echo "$current" > "$OFFSET_FILE" 2>/dev/null; then
+    return 3
+  fi
+  return 0
+}
+
 # ── Prime offset on first run ───────────────────────────────
 # Skip any messages that arrived BEFORE the listener started so we don't
 # replay old history from previous sessions.
@@ -79,7 +110,53 @@ if [[ ! -f "$OFFSET_FILE" ]]; then
   PRIME=$(curl -sS --max-time 10 \
     "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=-1&limit=1" 2>/dev/null || echo '{"ok":true,"result":[]}')
   LATEST_UID=$(echo "$PRIME" | jq '[.result[].update_id] | max // 0')
-  echo "$((LATEST_UID + 1))" > "$OFFSET_FILE"
+  echo "$((LATEST_UID + 1))" > "$OFFSET_FILE" 2>/dev/null || {
+    echo "[listen.sh] cannot create $OFFSET_FILE — check write permissions on $STATE_DIR" >&2
+    exit 1
+  }
+fi
+
+# Offset file now exists. Verify it round-trips.
+preflight_offset_write
+PREFLIGHT_RC=$?
+if [[ "$PREFLIGHT_RC" != "0" ]]; then
+  cat >&2 <<EOF
+[listen.sh] FATAL: offset file is not writable (preflight rc=$PREFLIGHT_RC)
+[listen.sh]   path: $OFFSET_FILE
+[listen.sh]
+[listen.sh] Claude Code's Bash sandbox is blocking writes to paths outside
+[listen.sh] the project root. Without a working offset, listen.sh would
+[listen.sh] re-process every update forever — visible as a runaway of
+[listen.sh] duplicate events in the session.
+[listen.sh]
+[listen.sh] RECOMMENDED FIX — add this to your project's
+[listen.sh] .claude/settings.local.json, merging with any existing
+[listen.sh] sandbox.filesystem.allowWrite list (don't replace it):
+[listen.sh]
+[listen.sh]   "sandbox": {
+[listen.sh]     "filesystem": {
+[listen.sh]       "allowWrite": [
+[listen.sh]         "~/.claude/channels/telegram/.env",
+[listen.sh]         "~/.claude/channels/telegram/.offset",
+[listen.sh]         "~/.claude/channels/telegram/.pairing-offset",
+[listen.sh]         "~/.claude/channels/telegram/listen.log",
+[listen.sh]         "~/.claude/channels/telegram/emit.log",
+[listen.sh]         "~/.claude/channels/telegram/inbox/"
+[listen.sh]       ]
+[listen.sh]     }
+[listen.sh]   }
+[listen.sh]
+[listen.sh] If that syntax isn't accepted by your Claude Code version, try
+[listen.sh] relative-to-HOME form without the tilde, or list paths as absolute
+[listen.sh] (/Users/you/.claude/channels/telegram/…). Keep the same entries.
+[listen.sh]
+[listen.sh] Fallbacks if the sandbox config doesn't accept the above:
+[listen.sh]   - export TELEGRAM_STATE_DIR to a path inside the project root
+[listen.sh]     (then re-run /telegram setup to seed .env in the new location)
+[listen.sh]   - disable the sandbox entirely: "sandbox": { "enabled": false }
+[listen.sh]   - start the session from \$HOME instead of a subdir
+EOF
+  exit 1
 fi
 
 # ── Main loop ───────────────────────────────────────────────

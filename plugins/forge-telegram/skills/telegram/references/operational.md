@@ -3,6 +3,97 @@
 Gotchas, config details, and lifecycle caveats. SKILL.md has a two-line
 summary; this is the long form.
 
+## Sandbox gotcha — runaway duplicate events
+
+**Symptom.** You run `/telegram start` successfully. The first inbound
+message arrives and is handled correctly. Then the session starts
+rendering a flood of the same event over and over (or "Monitor event"
+headers with no content) — one every ~0.2 seconds. The listener never
+advances past that first message.
+
+**Root cause.** Claude Code's Bash sandbox blocks writes to paths outside
+the current project root. `listen.sh` stores its Telegram long-poll
+offset at `~/.claude/channels/telegram/.offset`, which is **outside any
+project**. Under the sandbox, every write to that file returns `rc=1`
+silently — `listen.sh` uses `set -uo pipefail` (not `-e`) so the failure
+doesn't abort the loop. The result: the offset never advances, Telegram
+returns the same update every poll, the script re-emits the same event
+forever.
+
+**Diagnosis.** Run the listener once (it'll pre-flight and tell you if
+the sandbox is blocking writes). Or manually:
+
+```bash
+echo 12345 > ~/.claude/channels/telegram/.offset; echo "rc=$?"
+cat ~/.claude/channels/telegram/.offset
+```
+
+If `rc=0` and the readback is `12345`, the sandbox is NOT the problem.
+If `rc=1` or the readback differs, you're being sandboxed.
+
+**Fix A — sandbox allowlist (recommended).** Add this to the project's
+`.claude/settings.local.json`. If a `sandbox.filesystem.allowWrite`
+list already exists, **merge** — don't replace:
+
+```json
+{
+  "sandbox": {
+    "filesystem": {
+      "allowWrite": [
+        "~/.claude/channels/telegram/.env",
+        "~/.claude/channels/telegram/.offset",
+        "~/.claude/channels/telegram/.pairing-offset",
+        "~/.claude/channels/telegram/listen.log",
+        "~/.claude/channels/telegram/emit.log",
+        "~/.claude/channels/telegram/inbox/"
+      ]
+    }
+  }
+}
+```
+
+Each entry matches exactly the write surface of `listen.sh` + `setup.sh`:
+
+| Path | Written by | Purpose |
+|---|---|---|
+| `.env` | `setup.sh` | Bot token, chat id, optional OpenAI key |
+| `.offset` | `listen.sh` | Telegram long-poll cursor — **this is the one that causes the runaway when blocked** |
+| `.pairing-offset` | `setup.sh` | Short-lived offset during PIN pairing |
+| `listen.log` | `listen.sh` | Diagnostic log (curl errors, emit refusals, unsupported messages) |
+| `emit.log` | `listen.sh` | Timestamped mirror of every JSON event sent to stdout |
+| `inbox/` | `listen.sh` | Downloaded inbound photos, one file per message |
+
+**Syntax variants** if the `~/` form isn't accepted by your Claude Code
+version: try the absolute form (`/Users/you/.claude/channels/telegram/…`)
+or whatever relative-to-home notation the `excludedCommands` section of
+your existing sandbox config uses as reference.
+
+**Fix B — TELEGRAM_STATE_DIR override.** If you can't edit the sandbox
+config (shared settings, org policy, etc.), move the plugin's state
+into the project root so it's naturally inside the sandbox. Before
+starting:
+
+```bash
+export TELEGRAM_STATE_DIR="$PWD/.telegram-state"
+mkdir -p "$TELEGRAM_STATE_DIR" && chmod 700 "$TELEGRAM_STATE_DIR"
+/telegram setup   # re-pairs, writes .env in the new location
+/telegram start
+```
+
+This trades one annoyance for another: the state dir is now per-project
+instead of per-user, so re-pairing is required when you switch projects.
+
+**Fix C — disable the sandbox for the session.** In
+`.claude/settings.local.json`:
+
+```json
+{ "sandbox": { "enabled": false } }
+```
+
+Use only if you don't otherwise rely on the sandbox for safety.
+
+---
+
 ## Setup and start are mutually exclusive
 
 **Do not run `/telegram setup` while `/telegram start` is active.** The pairing flow uses a dedicated `.pairing-offset` file so it does not corrupt the listener's `.offset`, but pairing only runs when `AUTHORIZED_CHAT_ID` is missing — which is exactly when `/telegram start` refuses to spawn. Still, keep them sequential to avoid confusion.

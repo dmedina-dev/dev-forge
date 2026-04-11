@@ -15,7 +15,11 @@ set -euo pipefail
 
 FILE_ID="${1:?Usage: transcribe.sh <file_id>}"
 
-ENV_FILE="${HOME}/.claude/channels/telegram/.env"
+# Honour the same TELEGRAM_STATE_DIR override as the rest of the plugin.
+STATE_DIR="${TELEGRAM_STATE_DIR:-${HOME}/.claude/channels/telegram}"
+ENV_FILE="${STATE_DIR}/.env"
+INBOX_DIR="${STATE_DIR}/inbox"
+
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "[transcribe] env file missing: $ENV_FILE" >&2
   exit 1
@@ -60,9 +64,17 @@ if (( FILE_SIZE > 25 * 1024 * 1024 )); then
   exit 3
 fi
 
-# Step 2: download the voice file to a temp .ogg
-TMPFILE=$(mktemp -t telegram-voice.XXXXXX) || {
-  echo "[transcribe] mktemp failed" >&2
+# Step 2: download the voice file.
+#
+# IMPORTANT: write inside $INBOX_DIR rather than the system $TMPDIR. On macOS
+# TMPDIR defaults to /var/folders/... which is outside the plugin's state dir
+# and therefore outside whatever the user added to sandbox.filesystem.allowWrite.
+# $INBOX_DIR is already on that allowlist (it's the same dir where inbound
+# photos land), so a temp file here costs us nothing extra in terms of
+# sandbox permissions.
+mkdir -p "$INBOX_DIR"
+TMPFILE=$(mktemp "${INBOX_DIR}/voice-XXXXXX") || {
+  echo "[transcribe] mktemp failed (target: $INBOX_DIR)" >&2
   exit 1
 }
 # Rename with .ogg extension so Whisper detects format

@@ -1,6 +1,6 @@
 {
   "name": "forge-telegram",
-  "description": "Telegram listener + sender for Claude Code — bash scripts + Haiku teammate via Monitor tool. Long-poll getUpdates, forward to main session, Whisper voice transcription.",
+  "description": "Telegram inbound listener + sender for Claude Code — bash scripts under Monitor. Long-poll getUpdates, events arrive as turns in the main session, Whisper voice transcription.",
   "version": "1.0.2",
   "author": {
     "name": "dmedina",
@@ -8,5 +8,5 @@
   },
   "repository": "https://github.com/dmedina-dev/dev-forge",
   "license": "MIT",
-  "keywords": ["telegram", "monitor", "teammate", "haiku", "whisper", "bash"]
+  "keywords": ["telegram", "monitor", "whisper", "bash"]
 }

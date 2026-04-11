@@ -208,7 +208,8 @@ while true; do
     # ── Text message ──────────────────────────────────────
     MSG_TEXT=$(echo "$UPDATE" | jq -r '.message.text // empty')
     if [[ -n "$MSG_TEXT" ]]; then
-      EVENT=$(echo "$UPDATE" | jq -c '{type: "text", text: .message.text, msg_id: .message.message_id}')
+      EVENT=$(echo "$UPDATE" | jq -c --arg chat_id "$AUTHORIZED_CHAT_ID" \
+        '{type: "text", text: .message.text, msg_id: .message.message_id, chat_id: $chat_id}')
       emit_event "$EVENT"
       continue
     fi
@@ -235,8 +236,8 @@ while true; do
           TEXT_OUT="[voice transcription failed — check listen.log]"
           ;;
       esac
-      EVENT=$(jq -nc --arg text "$TEXT_OUT" --argjson msg_id "$MSG_ID" \
-        '{type: "text", text: $text, msg_id: $msg_id, source: "voice"}')
+      EVENT=$(jq -nc --arg text "$TEXT_OUT" --argjson msg_id "$MSG_ID" --arg chat_id "$AUTHORIZED_CHAT_ID" \
+        '{type: "text", text: $text, msg_id: $msg_id, chat_id: $chat_id, source: "voice"}')
       emit_event "$EVENT"
       continue
     fi
@@ -272,7 +273,8 @@ while true; do
             --arg text "${PHOTO_CAPTION:-(photo)}" \
             --arg image_path "$LOCAL_PATH" \
             --argjson msg_id "$MSG_ID" \
-            '{type: "text", text: $text, image_path: $image_path, msg_id: $msg_id, source: "photo"}')
+            --arg chat_id "$AUTHORIZED_CHAT_ID" \
+            '{type: "text", text: $text, image_path: $image_path, msg_id: $msg_id, chat_id: $chat_id, source: "photo"}')
           emit_event "$EVENT"
           PHOTO_EMITTED=1
         fi
@@ -283,8 +285,8 @@ while true; do
         # placeholder so the assistant knows something came in, rather
         # than silently dropping it.
         echo "[listen.sh] photo download failed for msg_id=${MSG_ID}" >> "$LOG_FILE"
-        EVENT=$(jq -nc --argjson msg_id "$MSG_ID" \
-          '{type: "text", text: "(photo — download failed)", msg_id: $msg_id, source: "photo"}')
+        EVENT=$(jq -nc --argjson msg_id "$MSG_ID" --arg chat_id "$AUTHORIZED_CHAT_ID" \
+          '{type: "text", text: "(photo — download failed)", msg_id: $msg_id, chat_id: $chat_id, source: "photo"}')
         emit_event "$EVENT"
       fi
       continue

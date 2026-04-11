@@ -43,6 +43,7 @@ list already exists, **merge** — don't replace:
         "~/.claude/channels/telegram/.env",
         "~/.claude/channels/telegram/.offset",
         "~/.claude/channels/telegram/.pairing-offset",
+        "~/.claude/channels/telegram/mode",
         "~/.claude/channels/telegram/listen.log",
         "~/.claude/channels/telegram/emit.log",
         "~/.claude/channels/telegram/inbox/"
@@ -52,13 +53,14 @@ list already exists, **merge** — don't replace:
 }
 ```
 
-Each entry matches exactly the write surface of `listen.sh` + `setup.sh`:
+Each entry matches exactly the write surface of `listen.sh` + `setup.sh` + `mode.sh`:
 
 | Path | Written by | Purpose |
 |---|---|---|
 | `.env` | `setup.sh` | Bot token, chat id, optional OpenAI key |
 | `.offset` | `listen.sh` | Telegram long-poll cursor — **this is the one that causes the runaway when blocked** |
 | `.pairing-offset` | `setup.sh` | Short-lived offset during PIN pairing |
+| `mode` | `mode.sh` | Current response mode (`strict` / `conversational` / `trust`), read on `/telegram start` |
 | `listen.log` | `listen.sh` | Diagnostic log (curl errors, emit refusals, unsupported messages) |
 | `emit.log` | `listen.sh` | Timestamped mirror of every JSON event sent to stdout |
 | `inbox/` | `listen.sh` | Downloaded inbound photos, one file per message |

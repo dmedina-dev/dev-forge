@@ -139,6 +139,7 @@ if [[ "$PREFLIGHT_RC" != "0" ]]; then
 [listen.sh]         "~/.claude/channels/telegram/.env",
 [listen.sh]         "~/.claude/channels/telegram/.offset",
 [listen.sh]         "~/.claude/channels/telegram/.pairing-offset",
+[listen.sh]         "~/.claude/channels/telegram/mode",
 [listen.sh]         "~/.claude/channels/telegram/listen.log",
 [listen.sh]         "~/.claude/channels/telegram/emit.log",
 [listen.sh]         "~/.claude/channels/telegram/inbox/"

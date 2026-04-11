@@ -34,11 +34,12 @@ Parse the first word of `$ARGUMENTS` as the subcommand. If empty, default to `st
 
 | Subcommand | One-line action |
 |---|---|
-| `start` *(default)* | Check `.env`, ensure no listener is already running, then call `Monitor(bash scripts/listen.sh, persistent: true)` and confirm. |
+| `start` *(default)* | Check `.env`, ensure no listener is already running, call `Monitor(bash scripts/listen.sh, persistent: true)`, **read the current response mode from `scripts/mode.sh get` and announce it prominently** in the confirmation. |
 | `stop` | `TaskList()` → find `"Telegram inbound messages"` → `TaskStop(task_id)` → confirm. |
 | `setup` | Refuse if listener is running, else run `bash scripts/setup.sh` interactively. |
-| `status` | Read `.env` + `TaskList()`, print masked config block + listener state. |
+| `status` | Read `.env` + `TaskList()` + `mode.sh get`, print masked config block + listener state + **current mode**. |
 | `send <sender> <msg>` | `bash scripts/send.sh "<sender>" "<msg>"`, report exit status. |
+| `mode [show\|strict\|conversational\|trust]` | `bash scripts/mode.sh get`/`set <x>`. Show or change the response mode. Persists in a file so the choice survives compact/clear/restart. |
 | *(anything else)* | Print the usage block. |
 
 **Before executing any subcommand, `Read` [`references/subcommands.md`](references/subcommands.md) and follow the full procedure there.** The table above is only an index — each entry has precondition checks, error messages, and output formats that matter.
@@ -78,9 +79,16 @@ In this mode, Telegram messages are equivalent to the terminal user typing in th
 
 Exit with: "modo estricto", "vuelve a ser desconfiado", "no confíes en telegram", or session end.
 
-### Tracking the mode across the session
+### Where the mode is stored
 
-You don't have persistent state. Remember the current mode from the conversation context — it persists as long as the dialogue does. If the conversation is compacted or cleared, or if a fresh session starts, the mode resets to strict. If you're ever unsure which mode is active, default to strict and ask.
+The current mode persists in `~/.claude/channels/telegram/mode` (plain text, one word). It survives compact / clear / session restarts. Default when the file is missing: `strict`.
+
+Every `/telegram start` **reads the file and announces the current mode** so the terminal user is reminded which behaviour is active. They can change it at any time with either:
+
+- `/telegram mode strict|conversational|trust` — deterministic subcommand (recommended)
+- A trigger phrase ("control total por telegram", "modo conversacional", etc.) — when you detect one of these, also call `bash scripts/mode.sh set <mode>` so the change is persisted, then confirm to the user with the new mode name
+
+If you're ever unsure which mode is currently active (context was compacted, user just said something ambiguous, etc.), run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/mode.sh get` to check the file.
 
 ---
 

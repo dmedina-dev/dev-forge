@@ -55,7 +55,10 @@ merge_with_builtins() {
     '[.[] | select(.command as $c | $names | index($c) | not)] + $builtins'
 }
 
-# Register commands with Telegram API
+# Register commands with Telegram API at both default and all_private_chats
+# scopes. The all_private_chats scope takes precedence in DM conversations,
+# so we must write there too — otherwise stale commands from BotFather or
+# other tools will shadow ours.
 register_commands() {
   local commands="$1"
   local token
@@ -64,17 +67,20 @@ register_commands() {
     echo "No TELEGRAM_BOT_TOKEN — skipping menu registration" >&2
     return 1
   fi
-  local resp
-  resp=$(curl -sS --max-time 10 -X POST \
-    "https://api.telegram.org/bot${token}/setMyCommands" \
-    -H "Content-Type: application/json" \
-    -d "{\"commands\": ${commands}}" 2>&1)
-  if echo "$resp" | jq -e '.ok == true' >/dev/null 2>&1; then
-    return 0
-  else
-    echo "setMyCommands failed: ${resp}" >&2
-    return 1
-  fi
+  local url="https://api.telegram.org/bot${token}/setMyCommands"
+  local body="{\"commands\": ${commands}}"
+  local body_private="{\"commands\": ${commands}, \"scope\": {\"type\": \"all_private_chats\"}}"
+  local resp failed=0
+  for payload in "$body" "$body_private"; do
+    resp=$(curl -sS --max-time 10 -X POST "$url" \
+      -H "Content-Type: application/json" \
+      -d "$payload" 2>&1)
+    if ! echo "$resp" | jq -e '.ok == true' >/dev/null 2>&1; then
+      echo "setMyCommands failed: ${resp}" >&2
+      failed=1
+    fi
+  done
+  return $failed
 }
 
 # Format commands for display

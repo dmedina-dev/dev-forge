@@ -65,7 +65,7 @@ validate_token() {
 # re-runs never overwrite a project-customized menu.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 register_menu() {
-  bash "${SCRIPT_DIR}/menu.sh" register 2>/dev/null || true
+  bash "${SCRIPT_DIR}/menu.sh" register || true
 }
 
 TELEGRAM_BOT_TOKEN=$(get_env_key TELEGRAM_BOT_TOKEN)
@@ -89,7 +89,7 @@ if [[ -n "$TELEGRAM_BOT_TOKEN" && -n "$AUTHORIZED_CHAT_ID" ]]; then
     else
       echo "  Voice (Whisper): disabled (no OPENAI_API_KEY)"
     fi
-    MENU_LABEL=$("${SCRIPT_DIR}/menu.sh" get 2>/dev/null | head -1 || echo "defaults")
+    MENU_LABEL=$("${SCRIPT_DIR}/menu.sh" get | head -1 || echo "defaults")
     echo "  Menu:           ${MENU_LABEL}"
     echo ""
     echo "Run /telegram start to begin listening."
@@ -231,7 +231,7 @@ if [[ -n "$OPENAI_API_KEY" ]]; then
 else
   echo "  Voice (Whisper): disabled (no OPENAI_API_KEY)"
 fi
-MENU_LABEL=$("${SCRIPT_DIR}/menu.sh" get 2>/dev/null | head -1 || echo "defaults")
+MENU_LABEL=$("${SCRIPT_DIR}/menu.sh" get | head -1 || echo "defaults")
 echo "  Menu:           ${MENU_LABEL}"
 echo ""
 echo "Run /telegram start to begin listening."

@@ -64,9 +64,17 @@ register_commands() {
     echo "No TELEGRAM_BOT_TOKEN — skipping menu registration" >&2
     return 1
   fi
-  curl -sS --max-time 10 -X POST \
+  local resp
+  resp=$(curl -sS --max-time 10 -X POST \
     "https://api.telegram.org/bot${token}/setMyCommands" \
-    --data-urlencode "commands=${commands}" >/dev/null 2>&1 || true
+    -H "Content-Type: application/json" \
+    -d "{\"commands\": ${commands}}" 2>&1)
+  if echo "$resp" | jq -e '.ok == true' >/dev/null 2>&1; then
+    return 0
+  else
+    echo "setMyCommands failed: ${resp}" >&2
+    return 1
+  fi
 }
 
 # Format commands for display

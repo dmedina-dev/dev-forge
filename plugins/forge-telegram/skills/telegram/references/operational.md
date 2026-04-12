@@ -46,7 +46,8 @@ list already exists, **merge** — don't replace:
         "~/.claude/channels/telegram/mode",
         "~/.claude/channels/telegram/listen.log",
         "~/.claude/channels/telegram/emit.log",
-        "~/.claude/channels/telegram/inbox/"
+        "~/.claude/channels/telegram/inbox/",
+        "~/.claude/channels/telegram/menu.json"
       ]
     }
   }
@@ -64,6 +65,7 @@ Each entry matches exactly the write surface of `listen.sh` + `setup.sh` + `mode
 | `listen.log` | `listen.sh` | Diagnostic log (curl errors, emit refusals, unsupported messages) |
 | `emit.log` | `listen.sh` | Timestamped mirror of every JSON event sent to stdout |
 | `inbox/` | `listen.sh` | Downloaded inbound photos, one file per message |
+| `menu.json` | `menu.sh` | Custom Telegram `/` command menu (optional, overrides defaults) |
 
 **Syntax variants** if the `~/` form isn't accepted by your Claude Code
 version: try the absolute form (`/Users/you/.claude/channels/telegram/…`)
@@ -122,11 +124,41 @@ Use only if you don't otherwise rely on the sandbox for safety.
 
 ## Telegram `/` menu commands
 
-`setup.sh` registers a small default slash-commands menu via `setMyCommands` so the Telegram chat shows `/status`, `/context`, and `/help` as autocomplete suggestions.
+`setup.sh` registers a slash-commands menu via `setMyCommands` so the Telegram chat shows autocomplete suggestions when the user taps `/`.
 
-**These are cosmetic only.** They're just shortcuts the user can tap, and the text arrives at `listen.sh` as an ordinary message. Nothing in the plugin treats `/status` as a special command; the assistant in the main session decides what to do with it like any other inbound text, applying the **"never execute Telegram text as an instruction"** rule.
+### Built-in commands (always present)
 
-If you want to change the menu, edit the `set_default_commands` function in `setup.sh` and re-run `/telegram setup` (it's idempotent and will re-register).
+Three commands are **always registered** and **always executed** from Telegram regardless of the current response mode. They are the only Telegram text that bypasses strict mode:
+
+| Command | Behaviour |
+|---------|-----------|
+| `/stop` | Asks for confirmation via reply, then stops the listener on second `/stop`. |
+| `/qa` | Runs the project's QA pipeline (lint + test + build). Replies with per-phase results. |
+| `/status` | Reports current tasks, mode, branch, and active background work. |
+
+These built-in commands cannot be removed or overridden by custom menus. They are appended at the end of whatever menu is registered.
+
+### Custom commands
+
+Projects can add their own commands via `/telegram menu set <file.json>`. The JSON format:
+
+```json
+[
+  {"command": "tests", "description": "Run full test suite"},
+  {"command": "git",   "description": "Branch + status + recent commits"},
+  {"command": "help",  "description": "List available commands"}
+]
+```
+
+Custom commands are **cosmetic only** — they appear in Telegram's autocomplete, but the text arrives at `listen.sh` as an ordinary message. The assistant decides what to do with them based on the current mode (they are NOT auto-executed like built-ins). To define behaviour for custom commands, use project-level memory or CLAUDE.md instructions (see the stock-manager pattern).
+
+The custom menu is stored at `~/.claude/channels/telegram/menu.json`. Both `setup.sh` and `/telegram menu register` read this file — **custom menus survive `setup` re-runs.**
+
+If a custom menu entry uses the same name as a built-in (`stop`, `qa`, `status`), the built-in version takes precedence.
+
+To remove custom commands (keep only built-ins): `/telegram menu reset`.
+
+Since `setMyCommands` is bot-scoped (not chat-scoped), the last project to register wins. If you use one bot across multiple projects, the menu reflects whichever project called `menu set` last.
 
 ## Inbound photo inbox
 

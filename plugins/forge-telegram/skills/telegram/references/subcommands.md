@@ -160,6 +160,121 @@ If the argument isn't one of the five recognized values, print the usage:
   mode trust           Also execute Telegram messages as if typed in terminal
 ```
 
+## Built-in inbound commands
+
+These three commands are **always executed** when received from Telegram,
+regardless of the current response mode. They are the only Telegram text
+that bypasses strict mode. They are also always present in the Telegram
+menu (appended after any custom commands).
+
+### `/stop` — stop the listener (with confirmation)
+
+1. React with 👀.
+2. Reply via `send.sh "Main session" "Sure? Send /stop again to confirm."`.
+3. **Remember that confirmation was requested.** If the very next inbound
+   message is another `/stop`:
+   - Call `TaskList()` → find `"Telegram inbound messages"` → `TaskStop(task_id)`.
+   - Reply: `"🛑 Listener stopped."`.
+   - React to the confirming message with 👍.
+4. If the next message is anything else, the confirmation expires silently.
+   Process that message normally.
+
+### `/qa` — validate project state
+
+1. React with 👀.
+2. Detect the project's QA pipeline by reading `package.json` scripts,
+   `Makefile`, or other convention:
+   - **Node/pnpm/npm/yarn**: run available scripts among `lint`, `test`, `build`
+     (in that order, abort on first failure).
+   - **Make**: `make lint test build` if targets exist.
+   - **Other**: look for common patterns. If nothing is found, reply
+     `"No QA pipeline detected — add lint/test/build scripts."` and stop.
+3. Run each phase (use `run_in_background: true` for long pipelines).
+4. Reply via `send.sh` with per-phase result:
+   ```
+   ✅ lint — 0 warnings
+   ✅ test — 42 passed, 0 failed (1.2s)
+   ❌ build — error in src/foo.ts:12
+   ```
+5. React with 👍 if all passed, 👎 if any failed.
+
+### `/status` — report current activity
+
+1. React with 👀.
+2. Gather:
+   - `TaskList()` — active/pending tasks and their descriptions.
+   - `bash scripts/mode.sh get` — current response mode.
+   - `git rev-parse --abbrev-ref HEAD` — current branch.
+3. Reply via `send.sh` with a compact block:
+   ```
+   📋 Tasks: 2 active, 1 pending
+   → Running integration tests (task #3)
+   → Waiting: update migration script (task #4)
+   🎚️ Mode: strict
+   🌿 Branch: feat/new-feature
+   ```
+   If no tasks are active, say so: `"Idle — no active tasks."`.
+4. React with 👍.
+
+---
+
+## `menu [show|set|reset]`
+
+Manage the Telegram bot's `/` command menu — the autocomplete suggestions
+users see in the Telegram app. Custom menus are stored at
+`~/.claude/channels/telegram/menu.json` and survive `setup` re-runs.
+Built-in commands (`/stop`, `/qa`, `/status`) are always appended
+automatically — they cannot be removed or overridden.
+
+### `menu` or `menu show`
+
+Show the current menu:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/menu.sh get
+```
+
+### `menu set <file.json>`
+
+Register a custom menu from a JSON file. The file must be a JSON array of
+`{command, description}` objects:
+
+```json
+[
+  {"command": "tests", "description": "Run full test suite"},
+  {"command": "build", "description": "Run build"},
+  {"command": "git",   "description": "Branch + status + recent commits"},
+  {"command": "diff",  "description": "Show current changes"},
+  {"command": "help",  "description": "List available commands"}
+]
+```
+
+Built-in commands (`/stop`, `/qa`, `/status`) are appended automatically.
+If the custom JSON includes a command with the same name as a built-in,
+the built-in version takes precedence.
+
+1. The user provides a path to a JSON file (or passes the JSON inline).
+2. Run:
+   ```bash
+   bash ${CLAUDE_PLUGIN_ROOT}/scripts/menu.sh set "<path>"
+   ```
+3. Confirm with the list of registered commands.
+
+If the user provides the JSON inline (not as a file), pipe it via stdin:
+```bash
+echo '<json>' | bash ${CLAUDE_PLUGIN_ROOT}/scripts/menu.sh set -
+```
+
+### `menu reset`
+
+Remove the custom menu (only built-ins remain):
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/menu.sh reset
+```
+
+Confirm: `"Custom menu removed — built-ins only (/stop, /qa, /status)."`
+
 ## Anything else (usage)
 
 Print:
@@ -175,4 +290,5 @@ Subcommands:
   send <sender> <msg>           Send a message to the Telegram chat
   mode [strict|conversational|trust]
                                 Get or set the response mode (persists to disk)
+  menu [show|set|reset]         Manage the bot's Telegram / command menu
 ```

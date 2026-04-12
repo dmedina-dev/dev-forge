@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "1.12.3"
+    "version": "1.13.0"
   },
   "plugins": [
     {
@@ -184,7 +184,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-telegram"
       },
-      "version": "1.0.2"
+      "version": "1.1.0"
     },
     {
       "name": "forge-proactive-qa",

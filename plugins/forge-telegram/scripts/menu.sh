@@ -39,7 +39,7 @@ get_env_key() {
 BUILTIN_NAMES='["stop","qa","status"]'
 builtin_commands() {
   jq -nc '[
-    {command: "stop",   description: "Stop the listener (asks for confirmation)"},
+    {command: "stop",   description: "Stop the listener"},
     {command: "qa",     description: "Validate project state (lint + test + build)"},
     {command: "status", description: "Report current task and activity"}
   ]'

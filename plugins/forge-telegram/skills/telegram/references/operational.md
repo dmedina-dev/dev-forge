@@ -132,7 +132,7 @@ Three commands are **always registered** and **always executed** from Telegram r
 
 | Command | Behaviour |
 |---------|-----------|
-| `/stop` | Asks for confirmation via reply, then stops the listener on second `/stop`. |
+| `/stop` | Stops the listener immediately via `TaskStop`. |
 | `/qa` | Runs the project's QA pipeline (lint + test + build). Replies with per-phase results. |
 | `/status` | Reports current tasks, mode, branch, and active background work. |
 

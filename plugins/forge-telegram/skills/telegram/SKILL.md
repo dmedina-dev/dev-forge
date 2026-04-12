@@ -139,7 +139,7 @@ When you receive one of these turns:
 
    | Command | Action |
    |---------|--------|
-   | `/stop` | Reply via `send.sh` asking for confirmation: `"Sure? Send /stop again to confirm."` Then **remember you asked**. If the next inbound message is another `/stop`, call `TaskList()` → find `"Telegram inbound messages"` → `TaskStop(task_id)` → reply `"🛑 Listener stopped."`. If the next message is anything else, the confirmation expires — treat it normally. |
+   | `/stop` | Call `TaskList()` → find the task whose description contains `"Telegram inbound messages"` → `TaskStop(task_id)` → reply via `send.sh`: `"🛑 Listener stopped."` → react 👍. If no listener is running, reply `"Listener is not running."`. |
    | `/qa` | Run the project's standard QA pipeline. Detect what's available: `pnpm`/`npm`/`yarn` scripts (`lint`, `test`, `build`), `Makefile` targets, etc. Run each phase, reply with per-phase ✅/❌ + summary via `send.sh`. If nothing is detectable, reply `"No QA pipeline found — add lint/test/build scripts."` Run in background (`run_in_background: true`); react 👀 immediately, 👍/👎 when done. |
    | `/status` | Call `TaskList()`, read the current mode via `bash scripts/mode.sh get`, check `git rev-parse --abbrev-ref HEAD`. Reply via `send.sh` with a compact status block: current tasks (what you're doing right now), mode, branch, and any active background work. |
 

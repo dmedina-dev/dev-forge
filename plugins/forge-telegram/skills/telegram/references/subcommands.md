@@ -167,17 +167,15 @@ regardless of the current response mode. They are the only Telegram text
 that bypasses strict mode. They are also always present in the Telegram
 menu (appended after any custom commands).
 
-### `/stop` — stop the listener (with confirmation)
+### `/stop` — stop the listener
 
 1. React with 👀.
-2. Reply via `send.sh "Main session" "Sure? Send /stop again to confirm."`.
-3. **Remember that confirmation was requested.** If the very next inbound
-   message is another `/stop`:
-   - Call `TaskList()` → find `"Telegram inbound messages"` → `TaskStop(task_id)`.
-   - Reply: `"🛑 Listener stopped."`.
-   - React to the confirming message with 👍.
-4. If the next message is anything else, the confirmation expires silently.
-   Process that message normally.
+2. Call `TaskList()` → find the task whose description contains
+   `"Telegram inbound messages"`.
+3. If no such task exists, reply via `send.sh "Main session" "Listener is not running."` and stop.
+4. Call `TaskStop(task_id)`.
+5. Reply via `send.sh "Main session" "🛑 Listener stopped."`.
+6. React with 👍.
 
 ### `/qa` — validate project state
 

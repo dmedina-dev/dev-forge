@@ -227,7 +227,8 @@
         <button id="uiforge-toggle" class="${annotating ? 'danger' : 'primary'}">
           ${annotating ? 'Salir (A)' : 'Anotar (A)'}
         </button>
-        <button id="uiforge-export" ${pins.length === 0 ? 'disabled' : ''}>Export JSON</button>
+        <button id="uiforge-copy" title="Copiar JSON al portapapeles" ${pins.length === 0 ? 'disabled' : ''}>📋</button>
+        <button id="uiforge-download" title="Descargar JSON" ${pins.length === 0 ? 'disabled' : ''}>⬇</button>
         <button id="uiforge-clear" class="danger" ${pins.length === 0 ? 'disabled' : ''}>Clear</button>
       </div>
       <div id="uiforge-meta">
@@ -259,8 +260,10 @@
       applyScenario();
     });
     document.getElementById('uiforge-toggle').addEventListener('click', toggleAnnotating);
-    const exportBtn = document.getElementById('uiforge-export');
-    if (exportBtn && !exportBtn.disabled) exportBtn.addEventListener('click', exportJSON);
+    const copyBtn = document.getElementById('uiforge-copy');
+    if (copyBtn && !copyBtn.disabled) copyBtn.addEventListener('click', exportToClipboard);
+    const downloadBtn = document.getElementById('uiforge-download');
+    if (downloadBtn && !downloadBtn.disabled) downloadBtn.addEventListener('click', exportToDownload);
     const clearBtn = document.getElementById('uiforge-clear');
     if (clearBtn && !clearBtn.disabled) {
       clearBtn.addEventListener('click', () => {
@@ -388,9 +391,8 @@
     return (parseInt(localStorage.getItem(ROUNDS_KEY), 10) || 0) + 1;
   }
 
-  function exportJSON() {
-    const round = getNextRound();
-    const payload = {
+  function buildPayload(round) {
+    return {
       screen: window.UIFORGE_SCREEN_ID,
       round,
       exportedAt: new Date().toISOString(),
@@ -398,11 +400,36 @@
       pinCount: pins.length,
       pins,
     };
-    const json = JSON.stringify(payload, null, 2);
-    navigator.clipboard?.writeText(json).then(
-      () => console.log('[ui-forge] JSON copiado'),
-      (err) => console.warn('[ui-forge] clipboard failed', err),
+  }
+
+  function bumpRound() {
+    const round = getNextRound();
+    localStorage.setItem(ROUNDS_KEY, String(round));
+    return round;
+  }
+
+  function exportToClipboard() {
+    if (!navigator.clipboard) {
+      alert('Clipboard API no disponible. Usa el botón ⬇ para descargar.');
+      return;
+    }
+    const round = bumpRound();
+    const json = JSON.stringify(buildPayload(round), null, 2);
+    navigator.clipboard.writeText(json).then(
+      () => {
+        console.log('[ui-forge] JSON copiado');
+        alert(`round-${String(round).padStart(2, '0')} copiado al portapapeles (${pins.length} pins).`);
+      },
+      (err) => {
+        console.warn('[ui-forge] clipboard failed', err);
+        alert('Fallo al copiar. Usa el botón ⬇ para descargar.');
+      },
     );
+  }
+
+  function exportToDownload() {
+    const round = bumpRound();
+    const json = JSON.stringify(buildPayload(round), null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -410,8 +437,7 @@
     a.download = `round-${String(round).padStart(2, '0')}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    localStorage.setItem(ROUNDS_KEY, String(round));
-    alert(`Exportado round-${String(round).padStart(2, '0')}.json con ${pins.length} pins (también en portapapeles).`);
+    alert(`Descargado round-${String(round).padStart(2, '0')}.json (${pins.length} pins).`);
   }
 
   function bindShortcuts() {

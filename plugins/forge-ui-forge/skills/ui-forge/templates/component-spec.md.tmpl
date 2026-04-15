@@ -1,0 +1,86 @@
+# {{COMPONENT_NAME}}
+
+> Component ID: `{{COMPONENT_ID}}` · Version: `{{VERSION}}`
+
+## Intent
+
+{{INTENT_ONE_OR_TWO_SENTENCES}}
+
+## Structure
+
+```
+{{SEMANTIC_TREE}}
+```
+
+<!-- Describe the semantic tree with roles/regions, not CSS classes. Example:
+header
+├── brand (img + text)
+├── nav (ul > li × N)
+└── actions (button × 2)
+-->
+
+## Design tokens used
+
+- **Colors:** {{COLORS_USED}}
+- **Spacing:** {{SPACING_USED}}
+- **Typography:** {{TYPOGRAPHY_USED}}
+- **Radii:** {{RADII_USED}}
+- **Shadows:** {{SHADOWS_USED}}
+
+All token references must exist in `registry/tokens.json`. If a needed token is missing, propose adding it in that file before using it ad-hoc.
+
+## States
+
+<!-- Include only the states that actually apply to this component. Delete the rest. -->
+
+- **default**: {{DEFAULT_STATE}}
+- **hover**: {{HOVER_STATE}}
+- **focus**: {{FOCUS_STATE}}
+- **active**: {{ACTIVE_STATE}}
+- **disabled**: {{DISABLED_STATE}}
+- **loading**: {{LOADING_STATE}}
+- **empty**: {{EMPTY_STATE}}
+- **error**: {{ERROR_STATE}}
+
+## Interactions
+
+{{INTERACTIONS}}
+
+<!-- Example:
+- Click on card → emits `select` event with `{id}`.
+- Hover → shadow elevates (shadow.sm → shadow.md).
+- Keyboard: Tab enters, Enter/Space triggers select, Esc clears focus.
+-->
+
+## Data contract
+
+```json
+{{DATA_CONTRACT_JSON}}
+```
+
+<!-- Reference the upstream schema entity or fixture if applicable:
+Fixture: `registry/fixtures/portfolios.json`
+Schema entity: `screens/portfolio-overview/data/schema.json#entities.portfolio`
+-->
+
+## Accessibility
+
+- **Role:** {{ARIA_ROLE}}
+- **Labels:** {{ARIA_LABELS}}
+- **Tab order:** {{TAB_ORDER}}
+- **Keyboard:** {{KEYBOARD_BEHAVIOR}}
+
+## Responsive
+
+| Breakpoint | Behavior |
+|------------|----------|
+| `< 640px` (sm) | {{SM_BEHAVIOR}} |
+| `≥ 768px` (md) | {{MD_BEHAVIOR}} |
+| `≥ 1024px` (lg) | {{LG_BEHAVIOR}} |
+
+## Out of scope
+
+{{OUT_OF_SCOPE}}
+
+<!-- What this spec deliberately does not define — e.g., concrete framework choice,
+analytics instrumentation, animations beyond the declared states. -->

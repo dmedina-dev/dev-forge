@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  ui-forge — Phase 3 · annotated forge
+  Fill placeholders: {{SCREEN_ID}}, {{SCREEN_TITLE}}, {{SCREEN_ID_JSON}}, {{SCENARIO_NAMES_JSON}}, {{SCENARIOS_DATA_JSON}}, {{RENDER_BODY}}
+
+  Contract with overlay.js:
+    - window.UIFORGE_SCREEN_ID        → used as localStorage key prefix
+    - window.UIFORGE_SCENARIOS        → array of scenario names, drives dropdown
+    - window.UIFORGE_DATA             → { scenarioName: dataObject } — overlay picks the active one
+    - window.render(data)             → MUST be defined; overlay calls it on scenario change
+    - <div id="uiforge-root">         → container that window.render populates
+
+  Phase 4 distillation: strip everything between <!-- ui-forge:overlay:start --> and :end markers.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{SCREEN_TITLE}} · forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { background: #f8fafc; margin: 0; }
+      #uiforge-root { min-height: 100vh; }
+    </style>
+  </head>
+  <body class="font-sans text-slate-900">
+    <div id="uiforge-root"></div>
+
+    <script id="uiforge-scenarios" type="application/json">
+{{SCENARIO_NAMES_JSON}}
+    </script>
+
+    <script id="uiforge-data" type="application/json">
+{{SCENARIOS_DATA_JSON}}
+    </script>
+
+    <script>
+      window.UIFORGE_SCREEN_ID = {{SCREEN_ID_JSON}};
+      window.UIFORGE_SCENARIOS = JSON.parse(document.getElementById('uiforge-scenarios').textContent);
+      window.UIFORGE_DATA = JSON.parse(document.getElementById('uiforge-data').textContent);
+
+      /**
+       * window.render(data)
+       *
+       * Rebuilds #uiforge-root based on `data` (one scenario's object).
+       * Claude fills this body according to the chosen variation.
+       * Keep it idempotent — the overlay can call it many times.
+       * Use safe DOM APIs (createElement, appendChild, textContent) rather than innerHTML with interpolated data.
+       */
+      window.render = function (data) {
+        const root = document.getElementById('uiforge-root');
+        root.replaceChildren();
+{{RENDER_BODY}}
+      };
+    </script>
+
+    <!-- ui-forge:overlay:start -->
+    <script src="../../assets/overlay.js"></script>
+    <!-- ui-forge:overlay:end -->
+  </body>
+</html>

@@ -1,0 +1,92 @@
+# {{SCREEN_TITLE}}
+
+> Screen ID: `{{SCREEN_ID}}`
+
+## Intent
+
+{{INTENT_ONE_OR_TWO_SENTENCES}}
+
+## Structure
+
+```
+{{SEMANTIC_TREE}}
+```
+
+<!-- Top-down semantic tree. Name the regions, not the classes. -->
+
+## Composition
+
+Registry components used:
+{{REGISTRY_COMPONENTS_LIST}}
+
+<!-- Example:
+- `kpi-card` v2 — four instances in the top row.
+- `data-table-dense` v1 — main holdings table.
+-->
+
+New components introduced in this screen (promoted in Phase 4):
+{{NEW_COMPONENTS_LIST}}
+
+Screen-local blocks (NOT promoted — one-offs):
+{{SCREEN_LOCAL_LIST}}
+
+Fixtures referenced:
+{{FIXTURES_LIST}}
+
+## Design tokens used
+
+- **Colors:** {{COLORS_USED}}
+- **Spacing:** {{SPACING_USED}}
+- **Typography:** {{TYPOGRAPHY_USED}}
+- **Radii:** {{RADII_USED}}
+- **Shadows:** {{SHADOWS_USED}}
+
+## States
+
+<!-- Screen-level states. Component-level states live in the per-component specs. -->
+
+- **happy**: {{HAPPY_STATE}}
+- **empty**: {{EMPTY_STATE}}
+- **loading**: {{LOADING_STATE}}
+- **error**: {{ERROR_STATE}}
+- **edge (high density / long names / etc.)**: {{EDGE_STATE}}
+
+## Interactions
+
+{{INTERACTIONS}}
+
+<!-- Screen-level orchestration. Filter changes that refetch, modal flows, navigation transitions. -->
+
+## Data contract
+
+```json
+{{DATA_CONTRACT_JSON}}
+```
+
+References: `screens/{{SCREEN_ID}}/data/schema.json`
+
+## Accessibility
+
+- **Landmark roles:** {{LANDMARK_ROLES}}
+- **Tab order:** {{TAB_ORDER}}
+- **Focus management:** {{FOCUS_MANAGEMENT}}
+- **Keyboard shortcuts:** {{KEYBOARD_SHORTCUTS}}
+
+## Responsive
+
+| Breakpoint | Layout behavior |
+|------------|-----------------|
+| `< 640px` (sm) | {{SM_LAYOUT}} |
+| `≥ 768px` (md) | {{MD_LAYOUT}} |
+| `≥ 1024px` (lg) | {{LG_LAYOUT}} |
+| `≥ 1536px` (2xl) | {{XXL_LAYOUT}} |
+
+## Out of scope
+
+{{OUT_OF_SCOPE}}
+
+<!-- Examples:
+- Analytics events (tracked separately).
+- Auth gating (handled by the route layer).
+- i18n strings (will be keyed in a later pass).
+-->

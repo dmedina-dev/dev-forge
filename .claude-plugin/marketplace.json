@@ -245,6 +245,16 @@
         "path": "plugins/forge-profiles"
       },
       "version": "1.1.0"
+    },
+    {
+      "name": "forge-ui-forge",
+      "description": "UI prototyping: iterative HTML screen variations, click-to-annotate overlay, per-project registry of reusable components and fixtures. Produces framework-agnostic specs for downstream implementation.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-ui-forge"
+      },
+      "version": "0.1.0"
     }
   ]
 }

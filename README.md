@@ -14,16 +14,21 @@ plugins — install all or pick what you need.
 /forge-init:install-all
 
 # Or install individually
-/plugin install forge-keeper        # context maintenance (recommended always-on)
-/plugin install forge-superpowers   # TDD, debugging, collaboration patterns
-/plugin install forge-extended-dev  # discovery → design → deep review → PR review
-/plugin install forge-brainstorming # teammate-driven full lifecycle (requires forge-superpowers)
-/plugin install forge-security      # security reminder hooks
-/plugin install forge-commit        # commit/PR commands
-/plugin install forge-hookify       # custom hook rules engine
-/plugin install forge-ralph         # persistent loop technique
+/plugin install forge-keeper          # context maintenance (recommended always-on)
+/plugin install forge-superpowers     # TDD, debugging, collaboration patterns
+/plugin install forge-extended-dev    # discovery → design → deep review → PR review
+/plugin install forge-brainstorming   # teammate-driven full lifecycle (requires forge-superpowers)
+/plugin install forge-executor        # wave-based plan execution (requires forge-superpowers)
+/plugin install forge-security        # security reminder hooks
+/plugin install forge-commit          # commit/PR commands
+/plugin install forge-hookify         # custom hook rules engine
+/plugin install forge-ralph           # persistent loop technique
+/plugin install forge-profiles        # plugin profile manager
 /plugin install forge-frontend-design # distinctive UI/UX design
-/plugin install forge-telegram          # Telegram listener + sender (bash + Monitor)
+/plugin install forge-ui-expert       # UI/UX design intelligence (styles, palettes, fonts)
+/plugin install forge-ui-forge        # iterative UI prototyping with per-project registry
+/plugin install forge-telegram        # Telegram listener + sender (bash + Monitor)
+/plugin install forge-proactive-qa    # autonomous Playwright QA agent (Telegram-notified)
 ```
 
 ## Working plugins
@@ -49,6 +54,7 @@ forge-keeper commands:
 | **forge-superpowers** | TDD, debugging, parallel agents, code review, worktrees, plans | Skills-based (auto-triggered) |
 | **forge-extended-dev** | 4-phase development workflow (requires forge-superpowers) | `/feature-dev`, `/deep-review`, `/pr-review` |
 | **forge-brainstorming** | Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers) | `/brainstorming` |
+| **forge-executor** | Wave-based plan executor with hybrid validation, TDD, checkpoints, manual rollback (requires forge-superpowers) | `/execute-plan` |
 
 ### Utility
 
@@ -58,15 +64,22 @@ forge-keeper commands:
 | **forge-security** | Security reminder hooks (XSS, injection, eval, etc.) | Passive — hooks on Edit/Write |
 | **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/hookify-list`, `/hookify-configure`, `/hookify-help` |
 | **forge-ralph** | Persistent loop: Claude keeps working across stop events | `/ralph-loop`, `/cancel-ralph`, `/ralph-help` |
-| **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
-| **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
 | **forge-profiles** | Plugin profile manager — switch plugins + MCP servers per work mode | `/profile-create`, `/profile-list`, `/profile-change` |
 
-### Channels
+### Design & prototyping
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-telegram** | Telegram bridge — long-poll listener as Haiku teammate, Whisper voice transcription, manual send | `/telegram start`, `/telegram stop`, `/telegram setup`, `/telegram status`, `/telegram send` |
+| **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
+| **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
+| **forge-ui-forge** | Iterative screen prototyping: schema-driven mock data, N HTML variations, click-to-annotate overlay, framework-agnostic spec handoff. Per-project registry under `.ui-forge/` | Skill-based (auto-triggered) |
+
+### Channels & autonomous agents
+
+| Plugin | Purpose | Commands |
+|--------|---------|----------|
+| **forge-telegram** | Telegram bridge — Monitor-tool long-poll listener + manual send + Whisper voice transcription. Events arrive as turns in the main session | `/telegram start`, `/telegram stop`, `/telegram setup`, `/telegram status`, `/telegram send` |
+| **forge-proactive-qa** | Autonomous Playwright QA agent — explores web apps, logs issues, auto-fixes with retry. Channel-first Telegram notifications. Three modes: explore / autofix / cycle | `/proactive-qa explore`, `/proactive-qa autofix`, `/proactive-qa cycle`, `/proactive-qa:init` |
 
 ## Configuration plugins
 
@@ -77,11 +90,13 @@ Install when needed, uninstall after. Don't consume context when not in use.
 | **forge-init** | Project bootstrapper + install-all + AGENTS.md generation | New project: `/forge-init:init` then `/forge-init:install-all` then uninstall |
 | **forge-plugin-dev** | Plugin development toolkit (7 skills, 3 agents) | Developing plugins: `/create-plugin` then uninstall |
 | **forge-context-mcp** | MCP server setup guide (Context7, Serena, XRAY) | Setting up codebase intelligence: configure servers then uninstall |
+| **forge-export** | Exports dev-forge into a standalone marketplace repo — interview-driven, applies customizations | Forking a curated subset for another org/project then uninstall |
 
 ## Plugin independence
 
 - Every plugin works standalone — test with `claude --plugin-dir plugins/<name>`
-- Hard dependencies: **forge-extended-dev** and **forge-brainstorming** both require **forge-superpowers**
+- Hard dependencies: **forge-extended-dev**, **forge-brainstorming**, and **forge-executor** all require **forge-superpowers**
+- Soft dependency: **forge-proactive-qa** integrates with **forge-telegram** for notifications (works without it)
 - Dependencies documented in `docs/dependencies.md`
 - Remove any plugin to free context window space
 

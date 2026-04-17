@@ -19,6 +19,11 @@
  * Atajos:
  *   - A → toggle modo anotación
  *   - P → toggle panel de pins
+ *
+ * v2 — hot-reload (requires serve.py running on http://):
+ *   - 🚀 Send to Claude → POST /forge/feedback (Monitor triggers Claude)
+ *   - SSE /forge/reload → auto location.reload() when 02-forge.html changes
+ *   - Falls back to clipboard/download when opened via file://
  */
 
 (function () {
@@ -27,6 +32,7 @@
   const STORAGE_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:pins`;
   const SCENARIO_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:scenario`;
   const ROUNDS_KEY = STORAGE_KEY + ':rounds';
+  const IS_SERVED = location.protocol.startsWith('http');
 
   const PIN_TYPES = {
     change: { color: '#3b82f6', label: 'Cambio' },
@@ -227,6 +233,7 @@
         <button id="uiforge-toggle" class="${annotating ? 'danger' : 'primary'}">
           ${annotating ? 'Salir (A)' : 'Anotar (A)'}
         </button>
+        ${IS_SERVED ? `<button id="uiforge-send" class="primary" title="Enviar feedback a Claude" ${pins.length === 0 ? 'disabled' : ''}>🚀</button>` : ''}
         <button id="uiforge-copy" title="Copiar JSON al portapapeles" ${pins.length === 0 ? 'disabled' : ''}>📋</button>
         <button id="uiforge-download" title="Descargar JSON" ${pins.length === 0 ? 'disabled' : ''}>⬇</button>
         <button id="uiforge-clear" class="danger" ${pins.length === 0 ? 'disabled' : ''}>Clear</button>
@@ -260,6 +267,8 @@
       applyScenario();
     });
     document.getElementById('uiforge-toggle').addEventListener('click', toggleAnnotating);
+    const sendBtn = document.getElementById('uiforge-send');
+    if (sendBtn && !sendBtn.disabled) sendBtn.addEventListener('click', sendToClaude);
     const copyBtn = document.getElementById('uiforge-copy');
     if (copyBtn && !copyBtn.disabled) copyBtn.addEventListener('click', exportToClipboard);
     const downloadBtn = document.getElementById('uiforge-download');
@@ -440,6 +449,45 @@
     alert(`Descargado round-${String(round).padStart(2, '0')}.json (${pins.length} pins).`);
   }
 
+  function sendToClaude() {
+    const round = bumpRound();
+    const payload = buildPayload(round);
+    const count = pins.length;
+    fetch('/forge/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload, null, 2),
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(() => {
+        pins = [];
+        saveState();
+        renderPins();
+        renderPanel();
+        renderFab();
+        alert(`Round ${round} enviado a Claude (${count} pins). Los cambios llegarán en breve.`);
+      })
+      .catch((err) => {
+        console.error('[ui-forge] send failed', err);
+        alert('Error enviando feedback al servidor. Usa 📋 como fallback.');
+      });
+  }
+
+  function setupSSE() {
+    if (!IS_SERVED) return;
+    const es = new EventSource('/forge/reload');
+    es.addEventListener('reload', () => {
+      console.log('[ui-forge] hot-reload triggered');
+      location.reload();
+    });
+    es.onerror = () => {
+      console.warn('[ui-forge] SSE reconnecting...');
+    };
+  }
+
   function bindShortcuts() {
     document.addEventListener('keydown', (e) => {
       if (e.target.matches('input, textarea, select')) return;
@@ -457,6 +505,7 @@
     bindShortcuts();
     applyScenario();
     renderPins();
+    setupSSE();
   }
 
   if (document.readyState === 'loading') {

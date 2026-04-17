@@ -1,7 +1,7 @@
 ---
 name: ui-forge
-description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with annotation overlay exporting feedback as JSON and a scenario switcher to validate states, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, or iterating on visual interfaces before writing production code, even if they don't explicitly say "prototype". Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
-version: 0.1.0
+description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Includes hot-reload dev server with SSE — user annotates in the browser, clicks 🚀 Send to Claude, Claude regenerates HTML, browser reloads automatically. Subcommands for the dev server lifecycle: "ui-forge serve" (start), "ui-forge stop", "ui-forge status". Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with hot-reload annotation overlay — user clicks 🚀 to send pins, Claude regenerates, browser auto-reloads via SSE, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, iterating on visual interfaces before writing production code, starting/stopping the ui-forge server, or sending feedback from the overlay. Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
+version: 0.2.0
 ---
 
 # ui-forge
@@ -106,9 +106,21 @@ On first run, briefly ask whether to adjust the default tokens before moving on.
 
 4. Output the file path and tell the user: *"Elige id ganador o `mix: 3+7`"*.
 
-### Phase 3 — Annotation
+### Phase 3 — Annotation (hot-reload loop)
 
 **Trigger:** user names the winning variant ("me gusta la 4", "mix: 3+7").
+
+#### Setup: start the dev server
+
+If the server isn't already running, start it before generating `02-forge.html`. See `references/subcommands.md` for the full command reference.
+
+```
+Monitor: python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py"
+```
+
+The server prints clickable URLs. Give the user the direct link to their forge page.
+
+#### Generate forge HTML
 
 Generate `02-forge.html` from `templates/forge.html.tmpl`:
 - Full-size chosen variation.
@@ -117,15 +129,35 @@ Generate `02-forge.html` from `templates/forge.html.tmpl`:
 - `window.render(data)` defined and must rebuild the DOM for the provided data.
 - Overlay script wrapped between `<!-- ui-forge:overlay:start -->` and `<!-- ui-forge:overlay:end -->` — these markers let Phase 4 strip the overlay cleanly.
 
-Overlay behavior (already bundled, don't reinvent):
+#### Overlay v2 behavior
+
+When served over http:// (via serve.py), the overlay gains hot-reload features:
+- **🚀 Send to Claude** — primary button. POSTs pins to `/forge/feedback`. The server writes `feedback/round-NN.json` + `feedback/latest.json` and prints a trigger line to stdout.
+- **SSE auto-reload** — `EventSource('/forge/reload')` detects `02-forge.html` mtime changes and reloads the page automatically.
+- Pins are cleared after a successful send so the user starts fresh on the updated page.
+
+Always-available (http:// and file://):
 - Click any element while annotating → prompt → pin capturing `{id, selector, x, y, viewport, comment, type, scenario, timestamp}`.
 - `type` ∈ `{change, extract-as-component, replace-with-registry, token-issue, data-issue}` — color-coded pins.
 - Panel side-bar, editable comments, per-pin type dropdown.
-- Export JSON → clipboard + downloads `round-NN.json`.
+- 📋 clipboard + ⬇ download as fallback export.
 - localStorage persistence.
 - Shortcuts: **A** annotate toggle, **P** panel toggle.
 
-**Loop:** user pastes round JSON into the chat → you regenerate `02-forge.html` applying the changes → save the JSON to `feedback/round-NN.json`.
+#### Hot-reload iteration loop
+
+1. User annotates in the browser → clicks 🚀.
+2. Monitor delivers `[ui-forge] feedback screen=<id> round=<n> pins=<k>` to you.
+3. Read `.ui-forge/screens/<id>/feedback/latest.json` → get the round filename.
+4. Read the full round file → apply the changes to `02-forge.html`.
+5. Write the updated file → serve.py detects mtime change → SSE → browser reloads.
+6. User sees the result, annotates again if needed. Repeat.
+
+No chat paste required. The user never leaves the browser until satisfied.
+
+#### Fallback (file://)
+
+If user opens `02-forge.html` via `file://` (no server), the overlay falls back to v0.1 behavior: 📋 clipboard and ⬇ download only. In this case, use the manual loop: user pastes round JSON into the chat → you regenerate `02-forge.html` → user reloads manually.
 
 ### Phase 4 — Distillation
 
@@ -227,7 +259,7 @@ Use the templates (`component-spec.md.tmpl`, `screen-spec.md.tmpl`) as scaffolds
 - **Don't touch anything outside `.ui-forge/`.** Ever.
 - **Don't hardcode data in HTML.** Data flows through `<script type="application/json">` blocks parameterized by the schema.
 - **Don't install dependencies.** Tailwind via CDN, vanilla JS, nothing else.
-- **Don't start servers.** If `file://` fails on the user's browser, tell them to run `python3 -m http.server` in `.ui-forge/` — don't start it yourself.
+- **Don't start generic servers.** The only server this skill runs is `scripts/serve.py` via Monitor (for hot-reload). Don't start other servers, proxies, or bundlers.
 - **Don't generate framework code.** HTML + Tailwind only. Translation to React/Vue/Svelte/etc. is the downstream agent's job.
 - **Don't integrate real data or MCPs** in v1. Mock only.
 - **Don't mix contradictory fixtures.** If screen A uses `portfolios.diego` with 12 holdings, screen B should use the same subset unless there's an explicit reason to diverge.
@@ -260,6 +292,17 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 ## Scripts
 
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/init-registry.sh` — idempotent bootstrap. Safe to re-run; never overwrites `tokens.json` or any user file that already exists.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py` — dev server for hot-reload (Phase 3). Static files + POST `/forge/feedback` + SSE `/forge/reload`. Port 4269. Start via Monitor.
+
+## Subcommands
+
+This skill handles `serve`, `stop`, `status` subcommands for the dev server lifecycle — similar to forge-telegram's start/stop pattern. See `references/subcommands.md` for the full command reference with exact bash snippets.
+
+| Subcommand | Action |
+|------------|--------|
+| `serve` | Start dev server under Monitor. Prints clickable URL. |
+| `stop` | Kill server by PID from `.ui-forge/.server.pid`. |
+| `status` | Check if server is running. |
 
 ## Quick checklist when the skill activates
 

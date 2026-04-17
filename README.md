@@ -72,7 +72,7 @@ forge-keeper commands:
 |--------|---------|----------|
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
 | **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
-| **forge-ui-forge** | Iterative screen prototyping: schema-driven mock data, N HTML variations, click-to-annotate overlay, framework-agnostic spec handoff. Per-project registry under `.ui-forge/` | Skill-based (auto-triggered) |
+| **forge-ui-forge** | Iterative screen prototyping: schema-driven mock data, N HTML variations, click-to-annotate overlay (click for point pins, Shift+drag for area selection), hot-reload dev server with 🚀 Send to Claude + SSE auto-reload, pin history across rounds, framework-agnostic spec handoff. Per-project registry under `.ui-forge/` | Skill + `serve`, `stop`, `status`, `refresh` subcommands |
 
 ### Channels & autonomous agents
 

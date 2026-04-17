@@ -56,3 +56,15 @@ else
   rm -f .ui-forge/.server.pid 2>/dev/null
 fi
 ```
+
+## refresh
+
+Force-refresh the runtime assets (`overlay.js` and anything else in the plugin's `assets/`) in the consumer's `.ui-forge/assets/`. Use this when the plugin's overlay.js has been updated but the consumer still has the old copy (the initial bootstrap only copies if missing, never overwrites).
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/refresh-assets.sh"
+```
+
+**Does NOT touch:** `config.json`, `registry/`, `screens/`, `fixtures/`, `feedback/`. Only `.ui-forge/assets/*` is overwritten.
+
+After refresh, tell the user to **hard-reload the browser (Cmd+Shift+R)** to bypass the browser cache. If serve.py is running, no restart needed — it serves the refreshed file on next request.

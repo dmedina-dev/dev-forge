@@ -21,8 +21,14 @@
  *   - P → toggle panel de pins
  *
  * Modos de anotación:
- *   - Click         → pin puntual sobre un elemento
- *   - Shift+arrastrar → selección de área rectangular
+ *   - Hover           → pre-highlight del elemento bajo el cursor
+ *   - Click           → fija el elemento y entra en modo refine
+ *   - Shift+arrastrar → área rectangular + refine desde el deepest common ancestor
+ *
+ * Modo refine (tras click o drag):
+ *   - ↑ sube al parentElement  ·  ↓ vuelve al hijo previo (stack)
+ *   - Enter abre el modal de anotación  ·  Esc cancela
+ *   - HUD flotante con breadcrumb del DOM
  *
  * v2 — hot-reload (requires serve.py running on http://):
  *   - 🚀 Send to Claude → POST /forge/feedback (Monitor triggers Claude)
@@ -63,6 +69,11 @@
   let dragStart = null;
   let dragRect = null;
   let dragOccurred = false;
+
+  let hoverTarget = null;
+  let refineActive = false;
+  let refineTarget = null;
+  let refineStack = [];
 
   function loadState() {
     try {
@@ -290,6 +301,43 @@
         background: #3b82f6; border-color: #3b82f6;
       }
       #uiforge-modal .modal-actions button.primary:hover:not(:disabled) { background: #2563eb; }
+      .uiforge-hover-outline {
+        outline: 2px dashed rgba(59, 130, 246, .7) !important;
+        outline-offset: 2px !important;
+      }
+      .uiforge-refine-outline {
+        outline: 3px solid #10b981 !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, .18) !important;
+      }
+      #uiforge-hud {
+        position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+        background: #0f172a; color: #e2e8f0;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 12px; padding: 10px 14px; border-radius: 8px;
+        border: 1px solid #334155;
+        box-shadow: 0 8px 24px rgba(0,0,0,.45);
+        z-index: 1000001; max-width: 80vw; pointer-events: none;
+        animation: uiforge-fade .12s ease-out;
+      }
+      #uiforge-hud .breadcrumb {
+        font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+        color: #cbd5e1; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis;
+        direction: rtl; text-align: left;
+        max-width: 70vw;
+      }
+      #uiforge-hud .breadcrumb .current {
+        color: #10b981; font-weight: 700;
+      }
+      #uiforge-hud .breadcrumb .sep { color: #64748b; }
+      #uiforge-hud .keys { margin-top: 6px; font-size: 11px; color: #94a3b8; }
+      #uiforge-hud kbd {
+        display: inline-block; padding: 1px 5px; border-radius: 3px;
+        background: #1e293b; border: 1px solid #334155;
+        font-family: ui-monospace, monospace; font-size: 10px;
+        margin: 0 2px; color: #e2e8f0;
+      }
     `;
     const style = document.createElement('style');
     style.textContent = css;
@@ -355,8 +403,10 @@
       + '<details style="margin-bottom:12px;font-size:11px;color:#94a3b8">'
       + '<summary style="cursor:pointer;font-weight:600;color:#e2e8f0">Leyenda</summary>'
       + '<div style="margin-top:6px;line-height:1.8">'
-      + '<div>\u{1F4CC} <b>Click</b> \u2014 pin puntual sobre un elemento</div>'
-      + '<div>\u{1F532} <b>Shift+arrastrar</b> \u2014 selecci\u00F3n de \u00E1rea rectangular</div>'
+      + '<div>\u{1F4CC} <b>Click</b> \u2014 fija elemento y entra en refine</div>'
+      + '<div>\u{1F532} <b>Shift+arrastrar</b> \u2014 \u00E1rea + refine desde ancestro com\u00FAn</div>'
+      + '<div>\u2328\uFE0F <b>\u2191/\u2193</b> \u2014 en refine: padre / hijo previo</div>'
+      + '<div>\u2328\uFE0F <b>Enter/Esc</b> \u2014 en refine: anotar / cancelar</div>'
       + '<div>\u2328\uFE0F <b>A</b> \u2014 toggle modo anotaci\u00F3n</div>'
       + '<div>\u2328\uFE0F <b>P</b> \u2014 toggle panel lateral</div>'
       + '<hr style="border-color:#334155;margin:6px 0">'
@@ -538,15 +588,217 @@
   function toggleAnnotating() {
     annotating = !annotating;
     document.body.classList.toggle('uiforge-annotating', annotating);
+    if (!annotating) clearHover();
     renderFab();
     if (panelOpen) renderPanel();
   }
 
   function isOverlayElement(el) {
     return el.closest('#uiforge-panel') || el.closest('#uiforge-fab') ||
-      el.closest('#uiforge-modal') ||
+      el.closest('#uiforge-modal') || el.closest('#uiforge-hud') ||
       el.classList.contains('uiforge-pin') || el.classList.contains('uiforge-region') ||
       el.closest('.uiforge-region');
+  }
+
+  function applyHover(el) {
+    if (!el || el === hoverTarget) return;
+    clearHover();
+    hoverTarget = el;
+    el.classList.add('uiforge-hover-outline');
+  }
+
+  function clearHover() {
+    document.querySelectorAll('.uiforge-hover-outline').forEach(function(el) {
+      el.classList.remove('uiforge-hover-outline');
+    });
+    hoverTarget = null;
+  }
+
+  function applyRefineOutline(el) {
+    document.querySelectorAll('.uiforge-refine-outline').forEach(function(x) {
+      x.classList.remove('uiforge-refine-outline');
+    });
+    if (el) el.classList.add('uiforge-refine-outline');
+  }
+
+  function clearRefineOutline() {
+    document.querySelectorAll('.uiforge-refine-outline').forEach(function(x) {
+      x.classList.remove('uiforge-refine-outline');
+    });
+  }
+
+  function buildBreadcrumb(el) {
+    var parts = [];
+    var node = el;
+    var isCurrent = true;
+    while (node && node.tagName && node !== document.documentElement) {
+      var seg = node.tagName.toLowerCase();
+      if (node.id) {
+        seg += '#' + node.id;
+      } else if (typeof node.className === 'string' && node.className.trim()) {
+        var first = node.className.split(/\s+/).filter(Boolean)[0];
+        if (first) seg += '.' + first;
+      }
+      parts.unshift({ text: seg, current: isCurrent });
+      isCurrent = false;
+      node = node.parentElement;
+    }
+    return parts;
+  }
+
+  function renderHUD() {
+    var hud = document.getElementById('uiforge-hud');
+    if (!hud) {
+      hud = document.createElement('div');
+      hud.id = 'uiforge-hud';
+      var bc = document.createElement('div');
+      bc.className = 'breadcrumb';
+      hud.appendChild(bc);
+      var keys = document.createElement('div');
+      keys.className = 'keys';
+      var k1 = document.createElement('kbd'); k1.textContent = '\u2191';
+      var k2 = document.createElement('kbd'); k2.textContent = '\u2193';
+      var k3 = document.createElement('kbd'); k3.textContent = 'Enter';
+      var k4 = document.createElement('kbd'); k4.textContent = 'Esc';
+      keys.appendChild(k1);
+      keys.appendChild(document.createTextNode(' padre \u00B7 '));
+      keys.appendChild(k2);
+      keys.appendChild(document.createTextNode(' hijo \u00B7 '));
+      keys.appendChild(k3);
+      keys.appendChild(document.createTextNode(' anotar \u00B7 '));
+      keys.appendChild(k4);
+      keys.appendChild(document.createTextNode(' cancelar'));
+      hud.appendChild(keys);
+      document.body.appendChild(hud);
+    }
+    updateHUDContent();
+  }
+
+  function updateHUDContent() {
+    var hud = document.getElementById('uiforge-hud');
+    if (!hud || !refineTarget) return;
+    var bc = hud.querySelector('.breadcrumb');
+    bc.replaceChildren();
+    var parts = buildBreadcrumb(refineTarget);
+    parts.forEach(function(p, i) {
+      var span = document.createElement('span');
+      span.textContent = p.text;
+      if (p.current) span.className = 'current';
+      bc.appendChild(span);
+      if (i < parts.length - 1) {
+        var sep = document.createElement('span');
+        sep.className = 'sep';
+        sep.textContent = ' \u203A ';
+        bc.appendChild(sep);
+      }
+    });
+  }
+
+  function hideHUD() {
+    var hud = document.getElementById('uiforge-hud');
+    if (hud) hud.remove();
+  }
+
+  function captureSnapshot(el) {
+    if (!el || !el.getBoundingClientRect) return null;
+    var tag = (el.tagName || '').toLowerCase();
+    var id = el.id || null;
+    var classes = (typeof el.className === 'string')
+      ? el.className.split(/\s+/).filter(Boolean)
+      : [];
+    var html = el.outerHTML || '';
+    var HTML_MAX = 600;
+    if (html.length > HTML_MAX) html = html.slice(0, HTML_MAX) + '\n\u2026[truncated]';
+    var text = (el.textContent || '').trim().replace(/\s+/g, ' ');
+    if (text.length > 200) text = text.slice(0, 200) + '\u2026';
+    var r = el.getBoundingClientRect();
+    return {
+      tag: tag, id: id, classes: classes,
+      html: html, text: text,
+      bbox: {
+        x: Math.round(r.left + window.scrollX),
+        y: Math.round(r.top + window.scrollY),
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+      },
+      path: getSelector(el),
+    };
+  }
+
+  function deepestCommonAncestorInRegion(region) {
+    var root = document.getElementById('uiforge-root') || document.body;
+    var inside = [];
+    root.querySelectorAll('*').forEach(function(el) {
+      var r = el.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) return;
+      var absX = r.left + window.scrollX;
+      var absY = r.top + window.scrollY;
+      if (absX >= region.x && absY >= region.y &&
+          absX + r.width <= region.x + region.w &&
+          absY + r.height <= region.y + region.h) {
+        inside.push(el);
+      }
+    });
+    if (inside.length === 0) {
+      var cx = region.x + region.w / 2 - window.scrollX;
+      var cy = region.y + region.h / 2 - window.scrollY;
+      return document.elementFromPoint(cx, cy) || root;
+    }
+    var candidate = inside[0];
+    while (candidate && !inside.every(function(el) { return candidate.contains(el) || candidate === el; })) {
+      candidate = candidate.parentElement;
+    }
+    return candidate || root;
+  }
+
+  function enterRefineMode(initialTarget) {
+    return new Promise(function(resolve) {
+      if (!initialTarget || !initialTarget.tagName) { resolve(null); return; }
+      refineActive = true;
+      refineTarget = initialTarget;
+      refineStack = [];
+      clearHover();
+      applyRefineOutline(refineTarget);
+      renderHUD();
+
+      function finish(result) {
+        document.removeEventListener('keydown', onKey, true);
+        clearRefineOutline();
+        hideHUD();
+        refineActive = false;
+        refineTarget = null;
+        refineStack = [];
+        resolve(result);
+      }
+
+      function onKey(e) {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault(); e.stopPropagation();
+          var parent = refineTarget.parentElement;
+          if (parent && parent.tagName && parent !== document.documentElement && parent !== document.body.parentElement) {
+            refineStack.push(refineTarget);
+            refineTarget = parent;
+            applyRefineOutline(refineTarget);
+            updateHUDContent();
+          }
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault(); e.stopPropagation();
+          if (refineStack.length) {
+            refineTarget = refineStack.pop();
+            applyRefineOutline(refineTarget);
+            updateHUDContent();
+          }
+        } else if (e.key === 'Enter') {
+          e.preventDefault(); e.stopPropagation();
+          finish(refineTarget);
+        } else if (e.key === 'Escape') {
+          e.preventDefault(); e.stopPropagation();
+          finish(null);
+        }
+      }
+
+      document.addEventListener('keydown', onKey, true);
+    });
   }
 
   function promptPinDetails() {
@@ -662,19 +914,24 @@
     if (!annotating) return;
     if (dragOccurred) { dragOccurred = false; return; }
     if (e.shiftKey) return;
+    if (refineActive) return;
     if (isOverlayElement(e.target)) return;
     e.preventDefault();
     e.stopPropagation();
-    var target = e.target;
+    var initialTarget = e.target;
     var pageX = e.pageX;
     var pageY = e.pageY;
+    clearHover();
+    var refined = await enterRefineMode(initialTarget);
+    if (!refined) return;
     var details = await promptPinDetails();
     if (!details) return;
     var pin = {
       id: pinIdCounter++,
-      selector: getSelector(target),
+      selector: getSelector(refined),
       x: pageX, y: pageY,
       region: null,
+      snapshot: captureSnapshot(refined),
       viewport: { w: window.innerWidth, h: window.innerHeight },
       comment: details.comment, type: details.type, scenario: currentScenario,
       sentInRound: null,
@@ -703,15 +960,24 @@
   }
 
   function handleMouseMove(e) {
-    if (!dragging || !dragRect) return;
-    var x = Math.min(dragStart.x, e.pageX);
-    var y = Math.min(dragStart.y, e.pageY);
-    var w = Math.abs(e.pageX - dragStart.x);
-    var h = Math.abs(e.pageY - dragStart.y);
-    dragRect.style.left = x + 'px';
-    dragRect.style.top = y + 'px';
-    dragRect.style.width = w + 'px';
-    dragRect.style.height = h + 'px';
+    if (dragging && dragRect) {
+      var x = Math.min(dragStart.x, e.pageX);
+      var y = Math.min(dragStart.y, e.pageY);
+      var w = Math.abs(e.pageX - dragStart.x);
+      var h = Math.abs(e.pageY - dragStart.y);
+      dragRect.style.left = x + 'px';
+      dragRect.style.top = y + 'px';
+      dragRect.style.width = w + 'px';
+      dragRect.style.height = h + 'px';
+      return;
+    }
+    if (annotating && !refineActive && !e.shiftKey) {
+      if (e.target && !isOverlayElement(e.target)) {
+        applyHover(e.target);
+      } else {
+        clearHover();
+      }
+    }
   }
 
   async function handleMouseUp(e) {
@@ -731,19 +997,22 @@
     var rx = Math.min(dragStart.x, e.pageX);
     var ry = Math.min(dragStart.y, e.pageY);
     dragStart = null;
+    var region = { x: rx, y: ry, w: w, h: h };
+
+    clearHover();
+    var initialTarget = deepestCommonAncestorInRegion(region);
+    var refined = await enterRefineMode(initialTarget);
+    if (!refined) return;
 
     var details = await promptPinDetails();
     if (!details) return;
 
-    var centerX = rx + w / 2 - window.scrollX;
-    var centerY = ry + h / 2 - window.scrollY;
-    var centerEl = document.elementFromPoint(centerX, centerY);
-
     var pin = {
       id: pinIdCounter++,
-      selector: getSelector(centerEl),
+      selector: getSelector(refined),
       x: rx, y: ry,
-      region: { x: rx, y: ry, w: w, h: h },
+      region: region,
+      snapshot: captureSnapshot(refined),
       viewport: { w: window.innerWidth, h: window.innerHeight },
       comment: details.comment, type: details.type, scenario: currentScenario,
       sentInRound: null,

@@ -216,6 +216,80 @@
       }
       body.uiforge-annotating { cursor: crosshair !important; }
       body.uiforge-annotating #uiforge-root * { cursor: crosshair !important; }
+      #uiforge-modal {
+        position: fixed; inset: 0; z-index: 1000000;
+        background: rgba(15, 23, 42, .72);
+        -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+        display: flex; align-items: center; justify-content: center;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        animation: uiforge-fade .12s ease-out;
+      }
+      @keyframes uiforge-fade { from { opacity: 0 } to { opacity: 1 } }
+      #uiforge-modal .modal-box {
+        background: #0f172a; color: #e2e8f0;
+        width: 480px; max-width: 92vw; max-height: 92vh;
+        border-radius: 10px; box-shadow: 0 24px 48px rgba(0,0,0,.55);
+        padding: 20px; box-sizing: border-box;
+        border: 1px solid #334155;
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      #uiforge-modal .modal-header {
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      #uiforge-modal h3 { margin: 0; font-size: 15px; font-weight: 600; }
+      #uiforge-modal .modal-close {
+        background: transparent; color: #94a3b8; border: none;
+        font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1;
+      }
+      #uiforge-modal .modal-close:hover { color: #e2e8f0; }
+      #uiforge-modal label {
+        display: block; font-size: 10px; color: #94a3b8;
+        margin-bottom: 6px; text-transform: uppercase;
+        letter-spacing: .6px; font-weight: 600;
+      }
+      #uiforge-modal textarea {
+        width: 100%; min-height: 96px; box-sizing: border-box;
+        background: #1e293b; border: 1px solid #334155; border-radius: 6px;
+        color: #e2e8f0; font-family: inherit; font-size: 13px;
+        padding: 10px; resize: vertical; outline: none;
+        transition: border-color .15s ease;
+      }
+      #uiforge-modal textarea:focus { border-color: #3b82f6; }
+      #uiforge-modal .type-chips {
+        display: flex; flex-wrap: wrap; gap: 6px;
+      }
+      #uiforge-modal .type-chip {
+        background: transparent; color: #cbd5e1;
+        border: 1.5px solid var(--chip-color, #3b82f6);
+        padding: 6px 12px; border-radius: 9999px;
+        cursor: pointer; font-size: 12px; font-weight: 500;
+        transition: all .12s ease;
+      }
+      #uiforge-modal .type-chip:hover {
+        background: color-mix(in srgb, var(--chip-color, #3b82f6) 18%, transparent);
+      }
+      #uiforge-modal .type-chip.selected {
+        background: var(--chip-color, #3b82f6); color: white;
+      }
+      #uiforge-modal .hint {
+        font-size: 11px; color: #64748b; text-align: right;
+        margin-top: -6px;
+      }
+      #uiforge-modal .modal-actions {
+        display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px;
+      }
+      #uiforge-modal .modal-actions button {
+        background: #1e293b; color: #e2e8f0;
+        border: 1px solid #334155; padding: 8px 16px;
+        border-radius: 6px; cursor: pointer; font-size: 13px;
+        font-weight: 500; transition: background .15s ease;
+      }
+      #uiforge-modal .modal-actions button:hover:not(:disabled) { background: #334155; }
+      #uiforge-modal .modal-actions button:disabled { opacity: .4; cursor: not-allowed; }
+      #uiforge-modal .modal-actions button.primary {
+        background: #3b82f6; border-color: #3b82f6;
+      }
+      #uiforge-modal .modal-actions button.primary:hover:not(:disabled) { background: #2563eb; }
     `;
     const style = document.createElement('style');
     style.textContent = css;
@@ -475,27 +549,130 @@
   }
 
   function promptPinDetails() {
-    var comment = prompt('Comentario:');
-    if (!comment) return null;
-    var typeKeys = Object.keys(PIN_TYPES);
-    var typeIdx = prompt('Tipo:\n' + typeKeys.map(function(k, i) { return (i + 1) + '. ' + PIN_TYPES[k].label; }).join('\n'), '1');
-    var type = typeKeys[(parseInt(typeIdx, 10) || 1) - 1] || 'change';
-    return { comment: comment, type: type };
+    return new Promise(function(resolve) {
+      var backdrop = document.createElement('div');
+      backdrop.id = 'uiforge-modal';
+
+      var box = document.createElement('div');
+      box.className = 'modal-box';
+
+      var header = document.createElement('div');
+      header.className = 'modal-header';
+      var title = document.createElement('h3');
+      title.textContent = 'Nueva anotaci\u00F3n';
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'modal-close';
+      closeBtn.type = 'button';
+      closeBtn.textContent = '\u00D7';
+      closeBtn.title = 'Cancelar (Esc)';
+      header.appendChild(title);
+      header.appendChild(closeBtn);
+
+      var commentWrap = document.createElement('div');
+      var commentLabel = document.createElement('label');
+      commentLabel.textContent = 'Comentario';
+      var textarea = document.createElement('textarea');
+      textarea.placeholder = 'Describe el cambio, componente, token...';
+      commentWrap.appendChild(commentLabel);
+      commentWrap.appendChild(textarea);
+
+      var typeWrap = document.createElement('div');
+      var typeLabel = document.createElement('label');
+      typeLabel.textContent = 'Tipo';
+      var chips = document.createElement('div');
+      chips.className = 'type-chips';
+      var selectedType = 'change';
+      Object.entries(PIN_TYPES).forEach(function(entry) {
+        var key = entry[0];
+        var spec = entry[1];
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'type-chip' + (key === selectedType ? ' selected' : '');
+        chip.textContent = spec.label;
+        chip.style.setProperty('--chip-color', spec.color);
+        chip.dataset.type = key;
+        chip.addEventListener('click', function() {
+          chips.querySelectorAll('.type-chip').forEach(function(c) { c.classList.remove('selected'); });
+          chip.classList.add('selected');
+          selectedType = key;
+        });
+        chips.appendChild(chip);
+      });
+      typeWrap.appendChild(typeLabel);
+      typeWrap.appendChild(chips);
+
+      var hint = document.createElement('div');
+      hint.className = 'hint';
+      hint.textContent = 'Esc para cancelar \u00B7 Cmd/Ctrl+Enter para guardar';
+
+      var actions = document.createElement('div');
+      actions.className = 'modal-actions';
+      var cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.textContent = 'Cancelar';
+      var saveBtn = document.createElement('button');
+      saveBtn.type = 'button';
+      saveBtn.className = 'primary';
+      saveBtn.textContent = 'Guardar pin';
+      saveBtn.disabled = true;
+      actions.appendChild(cancelBtn);
+      actions.appendChild(saveBtn);
+
+      box.appendChild(header);
+      box.appendChild(commentWrap);
+      box.appendChild(typeWrap);
+      box.appendChild(hint);
+      box.appendChild(actions);
+      backdrop.appendChild(box);
+      document.body.appendChild(backdrop);
+
+      function cleanup() {
+        document.removeEventListener('keydown', onKey);
+        backdrop.remove();
+      }
+      function cancel() { cleanup(); resolve(null); }
+      function save() {
+        var val = textarea.value.trim();
+        if (!val) return;
+        cleanup();
+        resolve({ comment: val, type: selectedType });
+      }
+      function onKey(e) {
+        if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); save(); }
+      }
+
+      closeBtn.addEventListener('click', cancel);
+      cancelBtn.addEventListener('click', cancel);
+      saveBtn.addEventListener('click', save);
+      textarea.addEventListener('input', function() {
+        saveBtn.disabled = !textarea.value.trim();
+      });
+      backdrop.addEventListener('click', function(e) {
+        if (e.target === backdrop) cancel();
+      });
+      document.addEventListener('keydown', onKey);
+
+      setTimeout(function() { textarea.focus(); }, 50);
+    });
   }
 
-  function handleClick(e) {
+  async function handleClick(e) {
     if (!annotating) return;
     if (dragOccurred) { dragOccurred = false; return; }
     if (e.shiftKey) return;
     if (isOverlayElement(e.target)) return;
     e.preventDefault();
     e.stopPropagation();
-    var details = promptPinDetails();
+    var target = e.target;
+    var pageX = e.pageX;
+    var pageY = e.pageY;
+    var details = await promptPinDetails();
     if (!details) return;
     var pin = {
       id: pinIdCounter++,
-      selector: getSelector(e.target),
-      x: e.pageX, y: e.pageY,
+      selector: getSelector(target),
+      x: pageX, y: pageY,
       region: null,
       viewport: { w: window.innerWidth, h: window.innerHeight },
       comment: details.comment, type: details.type, scenario: currentScenario,
@@ -536,7 +713,7 @@
     dragRect.style.height = h + 'px';
   }
 
-  function handleMouseUp(e) {
+  async function handleMouseUp(e) {
     if (!dragging) return;
     dragging = false;
     var w = Math.abs(e.pageX - dragStart.x);
@@ -554,7 +731,7 @@
     var ry = Math.min(dragStart.y, e.pageY);
     dragStart = null;
 
-    var details = promptPinDetails();
+    var details = await promptPinDetails();
     if (!details) return;
 
     var centerX = rx + w / 2 - window.scrollX;

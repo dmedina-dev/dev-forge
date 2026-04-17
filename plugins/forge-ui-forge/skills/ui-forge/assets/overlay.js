@@ -544,6 +544,7 @@
 
   function isOverlayElement(el) {
     return el.closest('#uiforge-panel') || el.closest('#uiforge-fab') ||
+      el.closest('#uiforge-modal') ||
       el.classList.contains('uiforge-pin') || el.classList.contains('uiforge-region') ||
       el.closest('.uiforge-region');
   }

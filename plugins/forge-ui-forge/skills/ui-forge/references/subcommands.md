@@ -18,7 +18,17 @@ Monitor(
 [ui-forge] serving http://127.0.0.1:4269 | forge[portfolio-overview]=http://.../02-forge.html | output[portfolio-overview]=http://.../output/screen.html | catalog=http://.../registry/catalog.html
 ```
 
-Parse that line and **present the URLs to the user as a clickable table** (Forge, Output, Catálogo — whichever exist). The URLs are copy-pasteable into any browser. Do NOT swallow the links into prose — make each URL clickable on its own row.
+Parse that line and **present the URLs to the user as a clickable table** with these exact labels + icons (only include the rows whose URL appears in the stdout):
+
+| Recurso | URL |
+|---------|-----|
+| 🔧 Forge (hot-reload) | `http://…/02-forge.html` |
+| 🎨 Screen destilada | `http://…/output/screen.html` |
+| 📁 Catálogo | `http://…/registry/catalog.html` |
+
+- One row per URL found. If there are several `forge[...]` entries (multiple screens), render a row per screen and include the screen id in the label (e.g. `🔧 Forge · portfolio-overview`).
+- The URLs must be real clickable links (markdown autolinks), not wrapped in prose.
+- Keep the icon + label exactly as shown — users recognize the visual cues between sessions.
 
 The server:
 - Serves `.ui-forge/` on `http://127.0.0.1:4269`

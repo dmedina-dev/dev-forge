@@ -1,14 +1,43 @@
 <!doctype html>
 <!--
-  ui-forge — Phase 2 · variations grid
+  ui-forge — Phase 2 · variations grid (vertical stack)
   Fill placeholders: {{SCREEN_ID}}, {{SCREEN_TITLE}}, {{VARIANT_COUNT}}, {{VARIANT_CARDS}}, {{MOCK_DATA_JSON}}
 
-  Each variant card MUST:
-    - Wrap its content inside a fixed-size container so all variants share identical viewport dimensions (e.g., 1280×800 or the target screen's viewport).
-    - Carry data-variant-id="NN" on the outer <article>.
-    - Pull its data from the shared <script id="uiforge-mock"> JSON (document.getElementById('uiforge-mock')).
+  Layout choice: full-screen prototypes don't survive a 3-column grid — the
+  content gets cramped, cut off, or scaled down until it's unreadable. Each
+  variant renders at its native viewport dimensions, stacked vertically, so
+  users compare them 1:1 by scrolling.
 
-  Reused registry components stay identical across cards; variation happens in the new blocks and the global composition.
+  Each variant card MUST match this structure:
+
+    <article id="variant-07" data-variant-id="07" class="variant-card">
+      <div class="variant-header">
+        <span class="variant-badge">07</span>
+        <div>
+          <h2 class="variant-title">Narrative Scroll</h2>
+          <p class="variant-desc">Columna central 720px · storytelling top-down · zen dense</p>
+        </div>
+      </div>
+      <div class="variant-frame-wrapper">
+        <div class="variant-frame">
+          <!-- the actual full-viewport UI for this variant -->
+        </div>
+      </div>
+    </article>
+
+  Rules:
+    - `id="variant-NN"` so the Saltar-a dropdown can scrollIntoView.
+    - `data-variant-id="NN"` for programmatic selection.
+    - Every variant MUST render inside `.variant-frame` at its native
+      dimensions (1280x800 by default; override the CSS per screen if
+      the brief needs a different viewport).
+    - Variants pull data from the shared <script id="uiforge-mock"> JSON
+      via document.getElementById('uiforge-mock').
+    - Reused registry components stay identical across cards; variation
+      happens in the new blocks and the global composition.
+
+  Also populate the #jump-variant <select> with one <option> per variant
+  (e.g. <option value="07">Variante 07 · Narrative Scroll</option>).
 -->
 <html lang="en">
   <head>
@@ -18,34 +47,76 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body { background: #f8fafc; }
-      .variant-frame {
-        width: 1280px; height: 800px;
-        overflow: hidden; background: white;
-        border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-        transform-origin: top left;
-      }
-      @media (max-width: 1400px) { .variant-frame { transform: scale(0.6); } }
-      @media (max-width: 900px) { .variant-frame { transform: scale(0.45); } }
       .variant-card {
-        position: relative; padding: 2rem; display: flex; flex-direction: column; gap: 0.75rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.08);
+        padding: 28px 24px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .variant-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
       }
       .variant-badge {
-        position: absolute; top: 12px; left: 12px; z-index: 10;
-        background: #0f172a; color: white; padding: 4px 10px;
-        border-radius: 9999px; font-size: 12px; font-weight: 600;
-        font-family: ui-monospace, monospace;
+        flex-shrink: 0;
+        width: 44px; height: 44px;
+        border-radius: 9999px;
+        background: #0f172a;
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+        font-size: 16px; font-weight: 600;
+      }
+      .variant-title { font-size: 18px; font-weight: 600; margin: 0; }
+      .variant-desc { font-size: 13px; color: #64748b; margin: 2px 0 0; }
+      .variant-frame-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 8px;
+        background: #0f172a;
+        padding: 12px;
+      }
+      .variant-frame {
+        width: 1280px;
+        min-height: 800px;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 0 auto;
+      }
+      .jump-nav {
+        position: sticky; top: 12px; z-index: 50;
+        background: rgba(15, 23, 42, 0.95);
+        color: #e2e8f0;
+        backdrop-filter: blur(6px);
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 10px 14px;
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13px;
+      }
+      .jump-nav select {
+        flex: 1;
+        background: #1e293b; color: #e2e8f0;
+        border: 1px solid #334155; border-radius: 6px;
+        padding: 6px 10px; font-size: 13px;
       }
     </style>
   </head>
   <body class="font-sans text-slate-900">
-    <header class="max-w-7xl mx-auto px-6 py-8">
+    <header class="max-w-[1400px] mx-auto px-6 py-8">
       <h1 class="text-3xl font-bold">{{SCREEN_TITLE}}</h1>
       <p class="text-slate-500 mt-1">
         Screen: <code class="bg-slate-100 px-2 py-0.5 rounded">{{SCREEN_ID}}</code> ·
-        {{VARIANT_COUNT}} variations · same mock data · same viewport.
+        {{VARIANT_COUNT}} variations · same mock data · same viewport (1280×800).
       </p>
       <p class="text-sm text-slate-400 mt-2">
-        Choose a winner: reply with <code>id: NN</code> or <code>mix: A+B</code>.
+        Scroll vertically to compare. Choose a winner: reply with <code>id: NN</code> or <code>mix: A+B</code>.
       </p>
     </header>
 
@@ -53,11 +124,21 @@
 {{MOCK_DATA_JSON}}
     </script>
 
-    <main class="max-w-[2800px] mx-auto px-6 grid gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+    <nav class="max-w-[1400px] mx-auto px-6 mb-6">
+      <div class="jump-nav">
+        <span style="color:#94a3b8">Saltar a:</span>
+        <select id="jump-variant" onchange="document.getElementById('variant-' + this.value).scrollIntoView({behavior:'smooth', block:'start'})">
+          <option value="">—</option>
+          <!-- Populate one <option value="NN">Variante NN</option> per card. -->
+        </select>
+      </div>
+    </nav>
+
+    <main class="max-w-[1400px] mx-auto px-6 pb-16 space-y-12">
 {{VARIANT_CARDS}}
     </main>
 
-    <footer class="max-w-7xl mx-auto px-6 py-12 text-xs text-slate-400">
+    <footer class="max-w-[1400px] mx-auto px-6 py-8 text-xs text-slate-400">
       Generated by ui-forge · Phase 2 · {{SCREEN_ID}}
     </footer>
   </body>

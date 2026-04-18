@@ -12,6 +12,14 @@ Monitor(
 
 `serve.sh` is a thin wrapper around `serve.py` — the `bash` path is stable and pre-approvable (add `bash **/ui-forge/scripts/*.sh` to `permissions.allow`) so no approval dialog on start/stop/status.
 
+**On startup, the server emits a single stdout line listing every discoverable URL:**
+
+```
+[ui-forge] serving http://127.0.0.1:4269 | forge[portfolio-overview]=http://.../02-forge.html | output[portfolio-overview]=http://.../output/screen.html | catalog=http://.../registry/catalog.html
+```
+
+Parse that line and **present the URLs to the user as a clickable table** (Forge, Output, Catálogo — whichever exist). The URLs are copy-pasteable into any browser. Do NOT swallow the links into prose — make each URL clickable on its own row.
+
 The server:
 - Serves `.ui-forge/` on `http://127.0.0.1:4269`
 - Prints clickable URLs for any existing `02-forge.html` screens

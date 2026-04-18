@@ -207,13 +207,21 @@ def main():
     server = http.server.ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     url = f"http://127.0.0.1:{PORT}"
 
-    screens = list(UI_FORGE.glob("screens/*/02-forge.html"))
-    if screens:
-        first = screens[0].relative_to(UI_FORGE)
-        more = f" (+{len(screens) - 1} more)" if len(screens) > 1 else ""
-        print(f"[ui-forge] serving {url} | forge: {url}/{first}{more}", flush=True)
-    else:
-        print(f"[ui-forge] serving {url} | no forge screens yet", flush=True)
+    screens = sorted(UI_FORGE.glob("screens/*/02-forge.html"))
+    catalog = UI_FORGE / "registry" / "catalog.html"
+
+    parts = [f"serving {url}"]
+    for s in screens:
+        screen_id = s.parent.name
+        parts.append(f"forge[{screen_id}]={url}/{s.relative_to(UI_FORGE)}")
+        out = s.parent / "output" / "screen.html"
+        if out.exists():
+            parts.append(f"output[{screen_id}]={url}/{out.relative_to(UI_FORGE)}")
+    if catalog.exists():
+        parts.append(f"catalog={url}/{catalog.relative_to(UI_FORGE)}")
+    if not screens and not catalog.exists():
+        parts.append("no screens yet")
+    print("[ui-forge] " + " | ".join(parts), flush=True)
 
     try:
         server.serve_forever()

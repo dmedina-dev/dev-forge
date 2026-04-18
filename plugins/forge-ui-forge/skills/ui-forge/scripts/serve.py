@@ -107,12 +107,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         round_num = payload.get("round", 1)
         pin_count = payload.get("pinCount", 0)
+        new_ids = set(payload.get("newPinIds", []) or [])
+        all_pins = payload.get("pins", []) or []
+        new_pins = [p for p in all_pins if p.get("id") in new_ids]
+        if not new_pins:
+            # Re-send with no newPinIds — fall back to every pin so Claude still
+            # sees them all.
+            new_pins = all_pins
 
         feedback_dir = UI_FORGE / "screens" / screen / "feedback"
         feedback_dir.mkdir(parents=True, exist_ok=True)
 
         filename = f"round-{int(round_num):02d}.json"
-        (feedback_dir / filename).write_text(json.dumps(payload, indent=2))
+        file_path = feedback_dir / filename
+        file_path.write_text(json.dumps(payload, indent=2))
         (feedback_dir / "latest.json").write_text(json.dumps({
             "file": filename,
             "screen": screen,
@@ -126,10 +134,55 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"ok": True, "file": filename}).encode())
 
+        # Surface the full pin content on stdout so Monitor delivers it to Claude
+        # directly — no separate "read the file" command required.
         print(
-            f"[ui-forge] feedback screen={screen} round={round_num} pins={pin_count}",
+            f"[ui-forge] feedback screen={screen} round={round_num} "
+            f"pins={pin_count} new={len(new_pins)} file={file_path}",
             flush=True,
         )
+        for p in new_pins:
+            self._emit_pin(p)
+        print(f"[ui-forge] round {round_num} ready — apply changes and save 02-forge.html", flush=True)
+
+    @staticmethod
+    def _one_line(value, limit):
+        s = (value or "")
+        s = " ".join(s.split())
+        if len(s) > limit:
+            s = s[:limit] + "\u2026"
+        return s
+
+    def _emit_pin(self, pin):
+        pid = pin.get("id")
+        ptype = pin.get("type", "change")
+        scenario = pin.get("scenario", "happy")
+        region = pin.get("region")
+        if region:
+            loc = f"region {region.get('w')}x{region.get('h')} @ ({region.get('x')},{region.get('y')})"
+        else:
+            loc = f"point @ ({pin.get('x')},{pin.get('y')})"
+        print(f"[ui-forge:pin] --- #{pid} [{ptype}] scenario={scenario} {loc}", flush=True)
+
+        selector = pin.get("selector")
+        if selector:
+            print(f"[ui-forge:pin]     selector: {self._one_line(selector, 200)}", flush=True)
+
+        comment = pin.get("comment")
+        if comment:
+            print(f"[ui-forge:pin]     comment: {self._one_line(comment, 500)}", flush=True)
+
+        snap = pin.get("snapshot") or {}
+        if snap:
+            path = snap.get("path")
+            if path and path != selector:
+                print(f"[ui-forge:pin]     path:    {self._one_line(path, 200)}", flush=True)
+            text = snap.get("text")
+            if text:
+                print(f"[ui-forge:pin]     text:    {self._one_line(text, 300)}", flush=True)
+            html = snap.get("html")
+            if html:
+                print(f"[ui-forge:pin]     html:    {self._one_line(html, 500)}", flush=True)
 
     def _handle_sse(self):
         self.send_response(200)

@@ -20,19 +20,37 @@ The server:
 
 ### On feedback event
 
-When Monitor delivers a `[ui-forge] feedback` line:
+Monitor delivers a compact, actionable block on every POST to `/forge/feedback`. Example:
 
-1. Read `.ui-forge/screens/<screen-id>/feedback/latest.json` to get the filename
-2. Read the full round file (e.g., `feedback/round-03.json`) — contains pins with types, comments, selectors, coordinates
-3. Apply the requested changes to `02-forge.html`:
-   - `change` pins → modify the element or layout as described
-   - `extract-as-component` pins → note for Phase 4 destillation
-   - `replace-with-registry` pins → swap in the registry component
-   - `token-issue` pins → fix token usage
-   - `data-issue` pins → fix mock data or schema
-4. Write the updated `02-forge.html` — the server detects the mtime change and the browser auto-reloads via SSE
+```
+[ui-forge] feedback screen=portfolio-overview round=5 pins=3 new=2 file=.../feedback/round-05.json
+[ui-forge:pin] --- #2 [change] scenario=happy point @ (120,340)
+[ui-forge:pin]     selector: main > section.holdings > div.kpi-card > span.delta
+[ui-forge:pin]     comment: El delta negativo debería ser rojo, ahora está verde
+[ui-forge:pin]     text:    +2.4% vs ayer
+[ui-forge:pin]     html:    <span class="delta text-green-500">+2.4% vs ayer</span>
+[ui-forge:pin] --- #3 [extract-as-component] scenario=happy region 480x280 @ (100,500)
+[ui-forge:pin]     selector: section.holdings > div.table-wrapper
+[ui-forge:pin]     comment: Extraer esta tabla como data-table-dense
+[ui-forge:pin]     text:    Ticker Nombre Peso Precio medio Precio actual PL abs PL %
+[ui-forge:pin]     html:    <div class="table-wrapper overflow-x-auto"><table>...</table></div>
+[ui-forge] round 5 ready — apply changes and save 02-forge.html
+```
 
-The user sees changes appear in the browser without switching to the chat.
+**All the information you need is in stdout.** You do NOT need to read `latest.json` or the round file for the normal case — parse the `[ui-forge:pin]` lines directly.
+
+Only read the round file if:
+- The `html:` line is truncated (ends with `…`) and you need the full `outerHTML`
+- You need to see pins that were sent in previous rounds (stdout only emits new pins from this round)
+
+Apply the requested changes to `02-forge.html` by pin type:
+- `change` → modify the element or layout as described
+- `extract-as-component` → note for Phase 4 distillation
+- `replace-with-registry` → swap in the registry component
+- `token-issue` → fix token usage
+- `data-issue` → fix mock data or schema
+
+Write the updated `02-forge.html` — the server detects the mtime change and the browser auto-reloads via SSE. The user sees changes appear without switching to the chat.
 
 ## stop
 

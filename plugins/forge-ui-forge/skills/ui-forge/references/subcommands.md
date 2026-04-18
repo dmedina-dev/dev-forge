@@ -39,9 +39,27 @@ Monitor delivers a compact, actionable block on every POST to `/forge/feedback`.
 
 **All the information you need is in stdout.** You do NOT need to read `latest.json` or the round file for the normal case — parse the `[ui-forge:pin]` lines directly.
 
-Only read the round file if:
+Only fetch more detail when:
 - The `html:` line is truncated (ends with `…`) and you need the full `outerHTML`
-- You need to see pins that were sent in previous rounds (stdout only emits new pins from this round)
+- You need a pin sent in a previous round (stdout only emits new pins from this round)
+
+Use `scripts/show-pin.py` for that — a stable, pre-approvable script so you don't have to craft ad-hoc `python3 -c "…"` commands (every fresh command costs a user approval). Examples:
+
+```bash
+# List pin ids available in the latest round
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py" portfolio-overview --ids
+
+# Pretty-print one specific pin with full untruncated html
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py" portfolio-overview --pin 7
+
+# Look at an older round
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py" portfolio-overview --round 3
+
+# JSON for machine parsing
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py" portfolio-overview --pin 7 --json
+```
+
+**Pre-approval tip for users:** adding `python3 **/ui-forge/scripts/show-pin.py *` to `permissions.allow` in `.claude/settings.local.json` makes every future invocation friction-free.
 
 Apply the requested changes to `02-forge.html` by pin type:
 - `change` → modify the element or layout as described

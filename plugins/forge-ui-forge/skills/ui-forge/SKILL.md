@@ -294,6 +294,7 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/init-registry.sh` — idempotent bootstrap. Safe to re-run; never overwrites `tokens.json` or any user file that already exists.
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py` — dev server for hot-reload (Phase 3). Static files + POST `/forge/feedback` + SSE `/forge/reload`. Port 4269. Start via Monitor.
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/refresh-assets.sh` — force-refresh runtime assets (`overlay.js`) in the consumer, without touching config or data.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py` — dump full untruncated pin details from a feedback round. Use when the stdout summary from serve.py is truncated or you need a pin from an older round. `--ids`, `--pin N`, `--round N`, `--json` options.
 
 ## Subcommands
 

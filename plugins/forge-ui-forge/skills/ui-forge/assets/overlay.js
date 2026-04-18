@@ -338,6 +338,45 @@
         font-family: ui-monospace, monospace; font-size: 10px;
         margin: 0 2px; color: #e2e8f0;
       }
+      #uiforge-toast {
+        position: fixed; bottom: 88px; right: 20px;
+        background: #0f172a; color: #e2e8f0;
+        border: 1px solid #334155; border-radius: 8px;
+        padding: 10px 14px;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: 13px; font-weight: 500;
+        box-shadow: 0 8px 24px rgba(0,0,0,.45);
+        z-index: 1000002; max-width: 320px;
+        display: flex; align-items: center; gap: 10px;
+        animation: uiforge-toast-in .2s ease-out;
+        transition: opacity .2s ease, transform .2s ease;
+      }
+      #uiforge-toast.hiding { opacity: 0; transform: translateY(8px); }
+      #uiforge-toast.success { border-color: #10b981; }
+      #uiforge-toast.success .uiforge-toast-icon { color: #10b981; }
+      #uiforge-toast.error { border-color: #ef4444; }
+      #uiforge-toast.error .uiforge-toast-icon { color: #ef4444; }
+      .uiforge-toast-spinner {
+        width: 14px; height: 14px;
+        border: 2px solid #334155; border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: uiforge-spin .8s linear infinite;
+        flex-shrink: 0;
+      }
+      .uiforge-toast-icon {
+        flex-shrink: 0; font-size: 16px; line-height: 1; font-weight: 700;
+      }
+      .uiforge-toast-msg { flex: 1; min-width: 0; line-height: 1.3; }
+      .uiforge-toast-close {
+        background: transparent; border: none; color: #94a3b8;
+        cursor: pointer; font-size: 16px; padding: 0 2px; line-height: 1;
+      }
+      .uiforge-toast-close:hover { color: #e2e8f0; }
+      @keyframes uiforge-spin { to { transform: rotate(360deg); } }
+      @keyframes uiforge-toast-in {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
     `;
     const style = document.createElement('style');
     style.textContent = css;
@@ -598,6 +637,78 @@
       el.closest('#uiforge-modal') || el.closest('#uiforge-hud') ||
       el.classList.contains('uiforge-pin') || el.classList.contains('uiforge-region') ||
       el.closest('.uiforge-region');
+  }
+
+  var toastHideTimer = null;
+
+  function showToast(message, opts) {
+    opts = opts || {};
+    var state = opts.state || 'loading';
+    var autoHideMs = opts.autoHideMs || null;
+    var closable = opts.closable || false;
+
+    var toast = document.getElementById('uiforge-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'uiforge-toast';
+      document.body.appendChild(toast);
+    }
+    toast.classList.remove('success', 'error', 'hiding');
+    if (state === 'success') toast.classList.add('success');
+    if (state === 'error') toast.classList.add('error');
+    toast.replaceChildren();
+
+    if (state === 'loading') {
+      var spinner = document.createElement('div');
+      spinner.className = 'uiforge-toast-spinner';
+      toast.appendChild(spinner);
+    } else {
+      var icon = document.createElement('span');
+      icon.className = 'uiforge-toast-icon';
+      icon.textContent = state === 'success' ? '\u2713' : '\u2717';
+      toast.appendChild(icon);
+    }
+
+    var msg = document.createElement('div');
+    msg.className = 'uiforge-toast-msg';
+    msg.textContent = message;
+    toast.appendChild(msg);
+
+    if (closable) {
+      var close = document.createElement('button');
+      close.className = 'uiforge-toast-close';
+      close.type = 'button';
+      close.textContent = '\u00D7';
+      close.addEventListener('click', hideToast);
+      toast.appendChild(close);
+    }
+
+    if (toastHideTimer) { clearTimeout(toastHideTimer); toastHideTimer = null; }
+    if (autoHideMs) {
+      toastHideTimer = setTimeout(hideToast, autoHideMs);
+    }
+  }
+
+  function hideToast() {
+    if (toastHideTimer) { clearTimeout(toastHideTimer); toastHideTimer = null; }
+    var toast = document.getElementById('uiforge-toast');
+    if (!toast) return;
+    toast.classList.add('hiding');
+    setTimeout(function() {
+      if (toast.parentElement) toast.remove();
+    }, 200);
+  }
+
+  function showReloadSuccessIfPending() {
+    try {
+      var raw = sessionStorage.getItem('uiforge:reloadPending');
+      sessionStorage.removeItem('uiforge:reloadPending');
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      var age = Date.now() - (parsed.t || 0);
+      if (age > 60000) return;
+      showToast('Round ' + parsed.round + ' aplicado', { state: 'success', autoHideMs: 2500 });
+    } catch (e) { /* ignore */ }
   }
 
   function applyHover(el) {
@@ -1099,6 +1210,7 @@
     var round = bumpRound();
     var payload = buildPayload(round);
     var newCount = payload.newPinCount;
+    showToast('Enviando round ' + round + ' (' + newCount + ' pin' + (newCount === 1 ? '' : 's') + ')\u2026', { state: 'loading' });
     fetch('/forge/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1114,11 +1226,14 @@
         renderPins();
         renderPanel();
         renderFab();
-        alert('Round ' + round + ' enviado a Claude (' + newCount + ' pins nuevos, ' + pins.length + ' total). Los cambios llegar\u00E1n en breve.');
+        try {
+          sessionStorage.setItem('uiforge:reloadPending', JSON.stringify({ round: round, t: Date.now() }));
+        } catch (e) { /* ignore */ }
+        showToast('Round ' + round + ' enviado. Esperando cambios de Claude\u2026', { state: 'loading' });
       })
       .catch(function(err) {
         console.error('[ui-forge] send failed', err);
-        alert('Error enviando feedback al servidor. Usa \u{1F4CB} como fallback.');
+        showToast('Error enviando al servidor. Usa \u{1F4CB} como fallback.', { state: 'error', autoHideMs: 5000, closable: true });
       });
   }
 
@@ -1127,7 +1242,8 @@
     var es = new EventSource('/forge/reload');
     es.addEventListener('reload', function() {
       console.log('[ui-forge] hot-reload triggered');
-      location.reload();
+      showToast('Aplicando cambios\u2026', { state: 'loading' });
+      setTimeout(function() { location.reload(); }, 250);
     });
     es.onerror = function() {
       console.warn('[ui-forge] SSE reconnecting...');
@@ -1155,6 +1271,7 @@
     applyScenario();
     renderPins();
     setupSSE();
+    showReloadSuccessIfPending();
   }
 
   if (document.readyState === 'loading') {

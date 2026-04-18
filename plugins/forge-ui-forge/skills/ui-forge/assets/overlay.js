@@ -53,7 +53,7 @@
   const PIN_TYPES = {
     change: { color: '#3b82f6', label: 'Cambio' },
     'extract-as-component': { color: '#10b981', label: 'Extraer como componente' },
-    'replace-with-registry': { color: '#8b5cf6', label: 'Reemplazar con registry' },
+    'replace-with-registry': { color: '#8b5cf6', label: 'Usar de cat\u00E1logo' },
     'token-issue': { color: '#f59e0b', label: 'Problema de token' },
     'data-issue': { color: '#ef4444', label: 'Problema de datos' },
   };

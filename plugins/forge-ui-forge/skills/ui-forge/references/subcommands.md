@@ -22,30 +22,20 @@ The server:
 
 ### On feedback event
 
-Monitor delivers a compact, actionable block on every POST to `/forge/feedback`. Example:
+Monitor surfaces each stdout line as its own event, so the server emits exactly ONE line per feedback POST. Example:
 
 ```
-[ui-forge] feedback screen=portfolio-overview round=5 pins=3 new=2 file=.../feedback/round-05.json
-[ui-forge:pin] --- #2 [change] scenario=happy point @ (120,340)
-[ui-forge:pin]     selector: main > section.holdings > div.kpi-card > span.delta
-[ui-forge:pin]     comment: El delta negativo debería ser rojo, ahora está verde
-[ui-forge:pin]     text:    +2.4% vs ayer
-[ui-forge:pin]     html:    <span class="delta text-green-500">+2.4% vs ayer</span>
-[ui-forge:pin] --- #3 [extract-as-component] scenario=happy region 480x280 @ (100,500)
-[ui-forge:pin]     selector: section.holdings > div.table-wrapper
-[ui-forge:pin]     comment: Extraer esta tabla como data-table-dense
-[ui-forge:pin]     text:    Ticker Nombre Peso Precio medio Precio actual PL abs PL %
-[ui-forge:pin]     html:    <div class="table-wrapper overflow-x-auto"><table>...</table></div>
-[ui-forge] round 5 ready — apply changes and save 02-forge.html
+[ui-forge] round=5 screen=portfolio-overview new=2 total=3 | #2[change] @(120,340) "El delta negativo debería ser rojo, ahora está verde" || #3[extract-as-component] 480x280@(100,500) "Extraer como data-table-dense" | details: show-pin.py portfolio-overview --round 5
 ```
 
-**All the information you need is in stdout.** You do NOT need to read `latest.json` or the round file for the normal case — parse the `[ui-forge:pin]` lines directly.
+Format:
+- Header: `round=N screen=<id> new=K total=T`
+- One `#id[type] location "comment"` segment per new pin, separated by `||`
+- Location: `@(x,y)` for point pins, `WxH@(x,y)` for area pins
+- Comment truncated to 140 chars
+- Footer: ready-to-run `show-pin.py` hint
 
-Only fetch more detail when:
-- The `html:` line is truncated (ends with `…`) and you need the full `outerHTML`
-- You need a pin sent in a previous round (stdout only emits new pins from this round)
-
-Use `scripts/show-pin.py` for that — a stable, pre-approvable script so you don't have to craft ad-hoc `python3 -c "…"` commands (every fresh command costs a user approval). Examples:
+**This one line is enough for most changes.** Use `scripts/show-pin.py` whenever you need more context:
 
 ```bash
 # List pin ids available in the latest round

@@ -134,16 +134,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"ok": True, "file": filename}).encode())
 
-        # Surface the full pin content on stdout so Monitor delivers it to Claude
-        # directly — no separate "read the file" command required.
-        print(
-            f"[ui-forge] feedback screen={screen} round={round_num} "
-            f"pins={pin_count} new={len(new_pins)} file={file_path}",
-            flush=True,
-        )
-        for p in new_pins:
-            self._emit_pin(p)
-        print(f"[ui-forge] round {round_num} ready — apply changes and save 02-forge.html", flush=True)
+        # Monitor surfaces each stdout line as its own event, so we collapse
+        # the whole feedback into ONE line. Key info (id, type, location,
+        # short comment) is inline; Claude runs scripts/show-pin.py when it
+        # needs selector / snapshot / untruncated html — that script is
+        # pre-approvable so fetching extra detail is still friction-free.
+        print(self._format_feedback_line(screen, round_num, pin_count, new_pins), flush=True)
 
     @staticmethod
     def _one_line(value, limit):
@@ -153,36 +149,25 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             s = s[:limit] + "\u2026"
         return s
 
-    def _emit_pin(self, pin):
-        pid = pin.get("id")
-        ptype = pin.get("type", "change")
-        scenario = pin.get("scenario", "happy")
-        region = pin.get("region")
-        if region:
-            loc = f"region {region.get('w')}x{region.get('h')} @ ({region.get('x')},{region.get('y')})"
-        else:
-            loc = f"point @ ({pin.get('x')},{pin.get('y')})"
-        print(f"[ui-forge:pin] --- #{pid} [{ptype}] scenario={scenario} {loc}", flush=True)
-
-        selector = pin.get("selector")
-        if selector:
-            print(f"[ui-forge:pin]     selector: {self._one_line(selector, 200)}", flush=True)
-
-        comment = pin.get("comment")
-        if comment:
-            print(f"[ui-forge:pin]     comment: {self._one_line(comment, 500)}", flush=True)
-
-        snap = pin.get("snapshot") or {}
-        if snap:
-            path = snap.get("path")
-            if path and path != selector:
-                print(f"[ui-forge:pin]     path:    {self._one_line(path, 200)}", flush=True)
-            text = snap.get("text")
-            if text:
-                print(f"[ui-forge:pin]     text:    {self._one_line(text, 300)}", flush=True)
-            html = snap.get("html")
-            if html:
-                print(f"[ui-forge:pin]     html:    {self._one_line(html, 500)}", flush=True)
+    @classmethod
+    def _format_feedback_line(cls, screen, round_num, pin_count, new_pins):
+        segments = []
+        for p in new_pins:
+            pid = p.get("id")
+            ptype = p.get("type", "change")
+            region = p.get("region")
+            if region:
+                loc = f"{region.get('w')}x{region.get('h')}@({region.get('x')},{region.get('y')})"
+            else:
+                loc = f"@({p.get('x')},{p.get('y')})"
+            comment = cls._one_line(p.get("comment") or "", 140).replace("|", "/")
+            segments.append(f"#{pid}[{ptype}] {loc} \"{comment}\"")
+        pins_part = " || ".join(segments) if segments else "(no new pins)"
+        return (
+            f"[ui-forge] round={round_num} screen={screen} "
+            f"new={len(new_pins)} total={pin_count} | {pins_part} "
+            f"| details: show-pin.py {screen} --round {round_num}"
+        )
 
     def _handle_sse(self):
         self.send_response(200)
@@ -223,13 +208,12 @@ def main():
     url = f"http://127.0.0.1:{PORT}"
 
     screens = list(UI_FORGE.glob("screens/*/02-forge.html"))
-    print(f"[ui-forge] serving {UI_FORGE} on {url}", flush=True)
     if screens:
-        for s in screens:
-            rel = s.relative_to(UI_FORGE)
-            print(f"[ui-forge] forge: {url}/{rel}", flush=True)
+        first = screens[0].relative_to(UI_FORGE)
+        more = f" (+{len(screens) - 1} more)" if len(screens) > 1 else ""
+        print(f"[ui-forge] serving {url} | forge: {url}/{first}{more}", flush=True)
     else:
-        print("[ui-forge] no forge screens yet — start prototyping to create one", flush=True)
+        print(f"[ui-forge] serving {url} | no forge screens yet", flush=True)
 
     try:
         server.serve_forever()

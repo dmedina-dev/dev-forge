@@ -292,9 +292,14 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 ## Scripts
 
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/init-registry.sh` — idempotent bootstrap. Safe to re-run; never overwrites `tokens.json` or any user file that already exists.
-- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py` — dev server for hot-reload (Phase 3). Static files + POST `/forge/feedback` + SSE `/forge/reload`. Port 4269. Start via Monitor.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.sh` — dev server launcher (Phase 3 hot-reload). Thin bash wrapper around `serve.py`; stable path for permission pre-approval. Start via Monitor.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py` — underlying server. Static files + POST `/forge/feedback` (emits full pin content on stdout) + SSE `/forge/reload`. Port 4269. Usually invoked via `serve.sh`, not directly.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/stop.sh` — stop the dev server by PID file. Idempotent, cleans stale PID files.
+- `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/status.sh` — report whether the dev server is running.
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/refresh-assets.sh` — force-refresh runtime assets (`overlay.js`) in the consumer, without touching config or data.
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py` — dump full untruncated pin details from a feedback round. Use when the stdout summary from serve.py is truncated or you need a pin from an older round. `--ids`, `--pin N`, `--round N`, `--json` options.
+
+**Pre-approval tip for users:** add `bash **/ui-forge/scripts/*.sh` and `python3 **/ui-forge/scripts/*.py` to `permissions.allow` in `.claude/settings.local.json`. All ui-forge subcommands then run friction-free.
 
 ## Subcommands
 

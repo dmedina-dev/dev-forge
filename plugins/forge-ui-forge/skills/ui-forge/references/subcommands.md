@@ -6,9 +6,11 @@ Start the dev server for hot-reload prototyping. Requires Monitor tool.
 
 ```bash
 Monitor(
-  command: "python3 '${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py'"
+  command: "bash '${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.sh'"
 )
 ```
+
+`serve.sh` is a thin wrapper around `serve.py` — the `bash` path is stable and pre-approvable (add `bash **/ui-forge/scripts/*.sh` to `permissions.allow`) so no approval dialog on start/stop/status.
 
 The server:
 - Serves `.ui-forge/` on `http://127.0.0.1:4269`
@@ -72,26 +74,23 @@ Write the updated `02-forge.html` — the server detects the mtime change and th
 
 ## stop
 
-Kill the running dev server.
+Kill the running dev server (idempotent: no-op if nothing is running).
 
 ```bash
-kill "$(cat .ui-forge/.server.pid)" 2>/dev/null && rm -f .ui-forge/.server.pid
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/stop.sh"
 ```
 
-Confirm to the user that the server has stopped.
+Output: `[ui-forge] stopped server (PID …)` or `[ui-forge] no server running`.
 
 ## status
 
 Check if the server is running.
 
 ```bash
-if [ -f .ui-forge/.server.pid ] && kill -0 "$(cat .ui-forge/.server.pid)" 2>/dev/null; then
-  echo "ui-forge server running (PID $(cat .ui-forge/.server.pid)) on port 4269"
-else
-  echo "ui-forge server not running"
-  rm -f .ui-forge/.server.pid 2>/dev/null
-fi
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/status.sh"
 ```
+
+Output: `[ui-forge] running (PID … ) on http://127.0.0.1:4269` or `[ui-forge] not running`. Stale PID files get cleaned up automatically.
 
 ## refresh
 

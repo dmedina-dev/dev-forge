@@ -47,6 +47,7 @@
 
   const STORAGE_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:pins`;
   const SCENARIO_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:scenario`;
+  const FILTER_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:round-filter`;
   const ROUNDS_KEY = STORAGE_KEY + ':rounds';
   const IS_SERVED = location.protocol.startsWith('http');
 
@@ -63,7 +64,7 @@
   let pinIdCounter = 1;
   let annotating = false;
   let panelOpen = false;
-  let roundFilter = 'all';
+  let roundFilter = 'pending';
 
   let dragging = false;
   let dragStart = null;
@@ -87,6 +88,7 @@
         pinIdCounter = (pins.reduce((m, p) => Math.max(m, p.id), 0) || 0) + 1;
       }
       currentScenario = localStorage.getItem(SCENARIO_KEY) || 'happy';
+      roundFilter = localStorage.getItem(FILTER_KEY) || 'pending';
     } catch (e) { console.warn('[ui-forge] load failed', e); }
   }
 
@@ -511,6 +513,7 @@
     });
     document.getElementById('uiforge-round-filter').addEventListener('change', function(e) {
       roundFilter = e.target.value;
+      try { localStorage.setItem(FILTER_KEY, roundFilter); } catch (err) { /* ignore */ }
       renderPins();
       renderPanel();
     });

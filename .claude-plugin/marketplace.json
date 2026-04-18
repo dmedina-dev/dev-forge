@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "1.15.0"
+    "version": "1.16.0"
   },
   "plugins": [
     {
@@ -254,7 +254,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-ui-forge"
       },
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

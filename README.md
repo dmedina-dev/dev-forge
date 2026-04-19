@@ -72,7 +72,7 @@ forge-keeper commands:
 |--------|---------|----------|
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
 | **forge-ui-expert** | UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 13 stacks | Skill-based (auto-triggered) |
-| **forge-ui-forge** | Iterative screen prototyping: schema-driven mock data, N HTML variations, click-to-annotate overlay with styled modal, devtools-style DOM navigation (hover preview → click locks → ↑/↓ walks parents/children → Enter annotates) for point and area pins, DOM snapshot per pin, hot-reload dev server that streams full pin content over stdout (no extra approved commands), `show-pin.py` helper for untruncated details, 🚀 Send to Claude + SSE auto-reload, pin history across rounds, framework-agnostic spec handoff. Per-project registry under `.ui-forge/` | Skill + `serve`, `stop`, `status`, `refresh` subcommands |
+| **forge-ui-forge** | Iterative screen prototyping: schema-driven mock data, N HTML variations stacked vertically at full viewport, click-to-annotate overlay with styled modal, devtools-style DOM navigation (hover preview → click locks → ↑/↓ walks parents/children → Enter annotates) for point and area pins, DOM snapshot per pin, hot-reload dev server with compact single-line feedback emission (1 action = 1 Monitor event), pre-approvable `serve.sh` / `stop.sh` / `status.sh` / `show-pin.py` / `refresh-assets.sh` wrappers, 🚀 Send to Claude + SSE auto-reload with non-blocking toast lifecycle, pin history across rounds (filter defaults to Pendientes), framework-agnostic spec handoff. Per-project registry under `.ui-forge/` | Skill + `serve`, `stop`, `status`, `refresh` subcommands |
 
 ### Channels & autonomous agents
 

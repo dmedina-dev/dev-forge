@@ -8,14 +8,16 @@
     "fetched_at": "2026-04-04",
     "check_url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
     "license": "MIT",
-    "authors": ["NextLevelBuilder"]
+    "authors": [
+      "NextLevelBuilder"
+    ]
   },
   "upstream_status": {
-    "last_checked": "2026-04-04",
+    "last_checked": "2026-04-23",
     "latest_ref": "main",
     "latest_commit": "b7e3af80f6e331f6fb456667b82b12cade7c9d35",
     "has_updates": false,
-    "summary": "Upstream restructured to full toolkit (CLI, search engine, multi-platform). We only sync .claude/skills/ content.",
+    "summary": "Upstream restructured to full toolkit (CLI, search engine, multi-platform). We only sync .claude/skills/ content. No changes since last check.",
     "changes": []
   },
   "customizations": [
@@ -24,7 +26,7 @@
       "type": "excluded",
       "target": "README.md",
       "summary": "Excluded upstream README",
-      "reason": "Not needed in forge distribution — attribution in customizations.json"
+      "reason": "Not needed in forge distribution \u2014 attribution in customizations.json"
     },
     {
       "id": "custom-02",
@@ -52,7 +54,7 @@
       "type": "excluded",
       "target": "src/",
       "summary": "Excluded source-of-truth data/scripts directory",
-      "reason": "Skills reference data via resolved symlinks — we copy .claude/skills/ with -L flag"
+      "reason": "Skills reference data via resolved symlinks \u2014 we copy .claude/skills/ with -L flag"
     },
     {
       "id": "custom-06",

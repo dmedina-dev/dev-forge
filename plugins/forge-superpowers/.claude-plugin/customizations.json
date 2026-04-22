@@ -9,11 +9,11 @@
     "check_url": "https://github.com/obra/superpowers/releases"
   },
   "upstream_status": {
-    "last_checked": "2026-04-04",
+    "last_checked": "2026-04-23",
     "latest_ref": "v5.0.7",
-    "latest_commit": "1f20bef3f59b85ad7b52718f822e37c4478a3ff5",
+    "latest_commit": "b7a8f76985f1e93e75dd2f2a3b424dc731bd9d37",
     "has_updates": false,
-    "summary": "Synced to v5.0.7. All 19 customizations re-applied.",
+    "summary": "Latest tag still v5.0.7. 5 upstream commits past tag are README / contributor guidelines only \u2014 no skill/agent/hook changes.",
     "changes": []
   },
   "customizations": [

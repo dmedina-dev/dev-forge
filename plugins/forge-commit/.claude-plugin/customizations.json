@@ -9,11 +9,11 @@
     "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/commit-commands"
   },
   "upstream_status": {
-    "last_checked": "2026-04-11",
+    "last_checked": "2026-04-23",
     "latest_ref": "main",
-    "latest_commit": "9772e13f820002c9730af67a2409702799c7ddc6",
+    "latest_commit": "9afdfd7dc06fad5a924a9e87563f1eb924720221",
     "has_updates": false,
-    "summary": "",
+    "summary": "14 upstream commits since pin, all 'chore: Update CHANGELOG.md'. Zero changes to plugins/commit-commands/.",
     "changes": []
   },
   "customizations": [

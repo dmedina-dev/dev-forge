@@ -8,14 +8,17 @@
     "fetched_at": "2026-04-11",
     "check_url": "https://github.com/anthropics/claude-plugins-official",
     "license": "Apache-2.0",
-    "authors": ["Prithvi Rajasekaran (Anthropic)", "Alexander Bricken (Anthropic)"]
+    "authors": [
+      "Prithvi Rajasekaran (Anthropic)",
+      "Alexander Bricken (Anthropic)"
+    ]
   },
   "upstream_status": {
-    "last_checked": "2026-04-11",
+    "last_checked": "2026-04-23",
     "latest_ref": "main",
-    "latest_commit": "9fc974ef8be9778b19272251709bdf00ae21c259",
+    "latest_commit": "cf62a6c02dc03db88da8eb7c61bdb9fd88da6326",
     "has_updates": false,
-    "summary": "",
+    "summary": "44 upstream commits since pin affect other plugins only; plugins/frontend-design tree hash unchanged (e957aba629...).",
     "changes": []
   },
   "customizations": [
@@ -24,7 +27,7 @@
       "type": "excluded",
       "target": "README.md",
       "summary": "Excluded upstream README",
-      "reason": "Not needed in forge distribution — attribution in customizations.json and SKILL.md comment"
+      "reason": "Not needed in forge distribution \u2014 attribution in customizations.json and SKILL.md comment"
     },
     {
       "id": "custom-02",

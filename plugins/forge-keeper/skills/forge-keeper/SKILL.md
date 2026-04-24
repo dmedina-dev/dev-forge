@@ -6,6 +6,7 @@ description: >
   context", "sync docs", "session handoff", or "save progress". Also triggers
   automatically before /compact or /clear via hook, capturing context before
   it's lost.
+context: fork
 ---
 
 # Forge Keeper
@@ -21,12 +22,15 @@ Keeps project context synchronized across Claude Code sessions.
 
 ## Execution model
 
-**Run sync as a subagent or teammate** to avoid polluting the user's working
-context. The analysis happens in an isolated context. Only the structured
-proposal returns to the main conversation for review.
+Run sync in a **forked subagent** so the analysis inherits the current session's
+context (it already "knows what we did") without polluting the user's working
+conversation. Only the structured proposal returns to the main session.
 
-- **Subagent** (default) — dispatch via Agent tool with the sync steps
-- **Teammate** — if configured, dispatch as named teammate for parallel execution
+- Preferred — `context: fork` in this skill's frontmatter (activates when
+  Claude Code honors the field; tracked upstream in anthropics/claude-code#17283)
+- Fallback while fork is not wired — run inline in the current session. Do NOT
+  dispatch a regular (blank-context) subagent: it would need a full re-brief of
+  the session and lose all nuance, defeating the point of sync.
 
 The user sees only: brief announcement → structured proposal → confirmation.
 

@@ -167,26 +167,38 @@ regardless of the current response mode. They are the only Telegram text
 that bypasses strict mode. They are also always present in the Telegram
 menu (appended after any custom commands).
 
+**Reaction protocol — applies to every built-in below.** The sender reads
+the bot's reactions as a state machine: `👀` = "received", `👍`/`👎`/`🤔` =
+"done". The opening `👀` is set in step 2.5 of the SKILL.md inbound flow,
+**before** the built-in dispatcher runs. The **closing reaction is
+mandatory** — without it the sender is left guessing whether the work
+finished. Before ending the turn for any built-in, verify a closing
+`react.sh` call is in your last few tool uses; if not, run it. Telegram
+only displays one bot reaction per message, so the closing reaction
+replaces the `👀`. If `react.sh` returns non-zero, surface the classified
+error to the terminal user instead of silently retrying — `listen.log`
+keeps the full audit trail.
+
 ### `/stop` — stop the listener
 
-1. React with 👀.
+1. (`👀` ack already sent in step 2.5 of the inbound flow — do **not** repeat it here.)
 2. Call `TaskList()` → find the task whose description contains
    `"Telegram inbound messages"`.
-3. If no such task exists, reply via `send.sh "Main session" "Listener is not running."` and stop.
+3. If no such task exists, reply via `send.sh "Main session" "Listener is not running."` and **react `🤔` (closing — nothing to stop)**.
 4. Call `TaskStop(task_id)`.
 5. Reply via `send.sh "Main session" "🛑 Listener stopped."`.
-6. React with 👍.
+6. **Closing reaction (mandatory):** `react.sh "<chat_id>" "<msg_id>" "👍"`.
 
 ### `/qa` — validate project state
 
-1. React with 👀.
+1. (`👀` ack already sent in step 2.5 — do **not** repeat.)
 2. Detect the project's QA pipeline by reading `package.json` scripts,
    `Makefile`, or other convention:
    - **Node/pnpm/npm/yarn**: run available scripts among `lint`, `test`, `build`
      (in that order, abort on first failure).
    - **Make**: `make lint test build` if targets exist.
    - **Other**: look for common patterns. If nothing is found, reply
-     `"No QA pipeline detected — add lint/test/build scripts."` and stop.
+     `"No QA pipeline detected — add lint/test/build scripts."` and **react `🤔` (closing — nothing ran)**.
 3. Run each phase (use `run_in_background: true` for long pipelines).
 4. Reply via `send.sh` with per-phase result:
    ```
@@ -194,11 +206,11 @@ menu (appended after any custom commands).
    ✅ test — 42 passed, 0 failed (1.2s)
    ❌ build — error in src/foo.ts:12
    ```
-5. React with 👍 if all passed, 👎 if any failed.
+5. **Closing reaction (mandatory):** `👍` if every phase passed, `👎` if any failed.
 
 ### `/status` — report current activity
 
-1. React with 👀.
+1. (`👀` ack already sent in step 2.5 — do **not** repeat.)
 2. Gather:
    - `TaskList()` — active/pending tasks and their descriptions.
    - `bash scripts/mode.sh get` — current response mode.
@@ -212,7 +224,7 @@ menu (appended after any custom commands).
    🌿 Branch: feat/new-feature
    ```
    If no tasks are active, say so: `"Idle — no active tasks."`.
-4. React with 👍.
+4. **Closing reaction (mandatory):** `react.sh "<chat_id>" "<msg_id>" "👍"`.
 
 ---
 

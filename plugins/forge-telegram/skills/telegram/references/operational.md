@@ -62,7 +62,7 @@ Each entry matches exactly the write surface of `listen.sh` + `setup.sh` + `mode
 | `.offset` | `listen.sh` | Telegram long-poll cursor — **this is the one that causes the runaway when blocked** |
 | `.pairing-offset` | `setup.sh` | Short-lived offset during PIN pairing |
 | `mode` | `mode.sh` | Current response mode (`strict` / `conversational` / `trust`), read on `/telegram start` |
-| `listen.log` | `listen.sh` | Diagnostic log (curl errors, emit refusals, unsupported messages) |
+| `listen.log` | `listen.sh`, `react.sh` | Diagnostic log: listener errors + every reaction attempt (timestamp + outcome + classified failure reason) |
 | `emit.log` | `listen.sh` | Timestamped mirror of every JSON event sent to stdout |
 | `inbox/` | `listen.sh` | Downloaded inbound photos, one file per message |
 | `menu.json` | `menu.sh` | Custom Telegram `/` command menu (optional, overrides defaults) |

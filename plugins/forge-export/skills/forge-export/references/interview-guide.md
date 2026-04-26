@@ -17,7 +17,7 @@ can be a single object or an array of objects — both count.
 
 ```json
 { "name": "forge-superpowers", "upstream": { "repo": "obra/superpowers", ... } }
-{ "name": "forge-extended-dev", "upstream": [ { "repo": "..." }, { "repo": "..." } ] }
+{ "name": "forge-deep-review", "upstream": [ { "repo": "..." }, { "repo": "..." } ] }
 ```
 
 ### How to identify native plugins
@@ -55,13 +55,11 @@ Ask the user which to include in the new marketplace.
 |-------------------------|-----------------------------------------|----------------|
 | forge-superpowers       | obra/superpowers @ v5.0.6               | 19             |
 | forge-plugin-dev        | anthropics/claude-code (plugin-dev)     | 0              |
-| forge-extended-dev      | anthropics/claude-code (feature-dev + 2)| 0              |
+| forge-deep-review      | anthropics/claude-code (pr-review-toolkit + code-review) | 0     |
 | forge-hookify           | anthropics/claude-code (hookify)        | 0              |
 | forge-security          | anthropics/claude-code (security)       | 0              |
 | forge-commit            | anthropics/claude-code (commit-commands)| 0              |
-| forge-ralph             | anthropics/claude-code (ralph-wiggum)  | 0              |
 | forge-frontend-design   | anthropics/claude-plugins-official      | 0              |
-| forge-ui-expert         | nextlevelbuilder/ui-ux-pro-max-skill    | 0              |
 | telegram                | anthropics/claude-plugins-official      | 0              |
 
 ### Native (authored in this repo)
@@ -294,7 +292,7 @@ Run dependency validation immediately after plugin selection is finalized
 Read `docs/dependencies.md` from the source repo. The hard dependency is
 documented in the matrix section as `requires`.
 
-Current known hard dependency: **forge-extended-dev requires forge-superpowers**.
+Current known hard dependency: **forge-brainstorming requires forge-superpowers**.
 
 ### Check for missing required plugins
 
@@ -302,7 +300,7 @@ For each selected plugin, check whether any plugin it `requires` is also
 selected. If a required plugin is missing:
 
 ```
-Warning: forge-extended-dev requires forge-superpowers, but forge-superpowers
+Warning: forge-brainstorming requires forge-superpowers, but forge-superpowers
 is not in your selection.
 
 Add forge-superpowers? (yes/no):
@@ -319,7 +317,7 @@ the install order for the generated `install-all.md` command:
 
 1. **Required plugins first** — plugins that others depend on (e.g., forge-superpowers)
 2. **Independent plugins second** — plugins with no requires/required-by relationship
-3. **Dependent plugins last** — plugins that require others (e.g., forge-extended-dev)
+3. **Dependent plugins last** — plugins that require others (e.g., forge-brainstorming)
 
 Within each group, preserve the order from the source marketplace.json.
 
@@ -327,11 +325,11 @@ Example install order output:
 
 ```
 Install order:
-  1. forge-superpowers   (required by forge-extended-dev)
+  1. forge-superpowers   (required by forge-brainstorming)
   2. forge-init          (independent)
   3. forge-keeper        (independent)
   4. forge-commit        (independent)
-  5. forge-extended-dev  (requires forge-superpowers)
+  5. forge-brainstorming (requires forge-superpowers)
 ```
 
 Use this order when generating the `install-all.md` slash command.

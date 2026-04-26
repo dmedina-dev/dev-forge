@@ -19,21 +19,18 @@ dev-forge/
 │   ├── forge-keeper/                  ← context maintenance
 │   ├── forge-superpowers/             ← core skills (curated from obra/superpowers)
 │   ├── forge-plugin-dev/              ← plugin development toolkit
-│   ├── forge-extended-dev/            ← extended workflow (requires forge-superpowers)
+│   ├── forge-deep-review/             ← specialized review agents + automated PR review
 │   ├── forge-hookify/                 ← custom hook rules engine
 │   ├── forge-security/                ← security reminder hooks
 │   ├── forge-commit/                  ← commit/PR commands + marketplace release
-│   ├── forge-ralph/                   ← persistent loop technique
 │   ├── forge-frontend-design/         ← frontend UI/UX design
-│   ├── forge-ui-expert/               ← UI/UX design intelligence (7 skills)
 │   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor, event-driven)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
 │   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
 │   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
-│   ├── forge-executor/               ← wave-based plan executor (requires forge-superpowers)
-│   ├── forge-profiles/               ← plugin profile manager (independent)
-│   └── forge-ui-forge/               ← UI prototyping with per-project registry + overlay annotation
+│   ├── forge-profiles/                ← plugin profile manager (independent)
+│   └── forge-ui-forge/                ← UI prototyping with per-project registry + overlay annotation
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
     └── customizations-pattern.md      ← vendor + customizations pattern
@@ -87,7 +84,7 @@ claude --plugin-dir plugins/forge-init --plugin-dir plugins/forge-keeper
 
 ## Dependencies
 
-Hard dependencies: **forge-extended-dev**, **forge-brainstorming**, and **forge-executor** all require **forge-superpowers**. Full matrix in @docs/dependencies.md.
+Hard dependency: **forge-brainstorming** requires **forge-superpowers**. Full matrix in @docs/dependencies.md.
 
 ## Exemplars
 

@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "1.17.0"
+    "version": "2.0.0"
   },
   "plugins": [
     {
@@ -60,20 +60,15 @@
       }
     },
     {
-      "name": "forge-extended-dev",
-      "description": "Extended development workflow: feature discovery + architecture design (feature-dev) → TDD execution (superpowers) → specialized deep review (pr-review-toolkit). Companion to forge-superpowers.",
+      "name": "forge-deep-review",
+      "description": "Specialized review: 5 deep-review agents (test coverage, silent failures, type design, comments, simplification) + automated PR review with inline GitHub comments. Curated from anthropics/claude-code (pr-review-toolkit + code-review).",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/forge-extended-dev"
+        "path": "plugins/forge-deep-review"
       },
-      "version": "1.0.0",
+      "version": "2.0.0",
       "upstream": [
-        {
-          "repo": "anthropics/claude-code",
-          "ref": "main",
-          "url": "https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev"
-        },
         {
           "repo": "anthropics/claude-code",
           "ref": "main",
@@ -132,21 +127,6 @@
       }
     },
     {
-      "name": "forge-ralph",
-      "description": "Persistent loop technique: keeps Claude working on a task across multiple stop events using self-referential prompts. Curated from anthropics/claude-code.",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/forge-ralph"
-      },
-      "version": "1.0.1",
-      "upstream": {
-        "repo": "anthropics/claude-code",
-        "ref": "main",
-        "url": "https://github.com/anthropics/claude-code/tree/main/plugins/ralph-wiggum"
-      }
-    },
-    {
       "name": "forge-frontend-design",
       "description": "Frontend design skill for distinctive, production-grade UI/UX. Avoids generic AI aesthetics. Curated from anthropics/claude-plugins-official.",
       "source": {
@@ -159,21 +139,6 @@
         "repo": "anthropics/claude-plugins-official",
         "ref": "main",
         "url": "https://github.com/anthropics/claude-plugins-official"
-      }
-    },
-    {
-      "name": "forge-ui-expert",
-      "description": "UI/UX design intelligence: 67 styles, 96 palettes, 57 font pairings, 25 chart types, 13 tech stacks. Curated from nextlevelbuilder/ui-ux-pro-max-skill.",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/forge-ui-expert"
-      },
-      "version": "1.0.0",
-      "upstream": {
-        "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
-        "ref": "main",
-        "url": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
       }
     },
     {
@@ -223,16 +188,6 @@
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-brainstorming"
-      },
-      "version": "1.0.0"
-    },
-    {
-      "name": "forge-executor",
-      "description": "Wave-based plan executor: hybrid validation (global + per-wave), sequential TDD execution, persistent checkpoints, manual rollback. Orchestrates multi-wave Superpowers plans with specialized sub-agents.",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/dmedina-dev/dev-forge.git",
-        "path": "plugins/forge-executor"
       },
       "version": "1.0.0"
     },

@@ -18,7 +18,7 @@ For each eligible plugin, check upstream for new versions using `gh api` (primar
 Plugin                  Current     Latest      Status
 ────────────────────────────────────────────────────────────
 forge-superpowers       v5.0.6      v5.1.0      ⚡ 2 releases ahead
-forge-extended-dev      v2.3.0      v2.3.0      ✓ up to date
+forge-deep-review       v2.3.0      v2.3.0      ✓ up to date
 forge-hookify           v1.0.0      v1.1.0      ⚡ 1 release ahead  ⚠ 1 conflict
 ```
 

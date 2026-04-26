@@ -89,7 +89,7 @@ See `references/phase-orchestration.md` for:
 - `superpowers:verification-before-completion` — Phase 6 pre-PR verification
 - `superpowers:finishing-a-development-branch` — Phase 6 integration options
 
-**Complements:** forge-extended-dev — user can choose between `/brainstorming` (persistent teammates that accumulate context across phases) or `/feature-dev` + manual phases (ephemeral subagents, fresh context each dispatch)
+**Complements:** `superpowers:brainstorming` — user chooses between `/brainstorming` (persistent teammates that accumulate context across phases) or superpowers' inline brainstorming (single-turn ideation, no persistent state)
 
 ## Command
 

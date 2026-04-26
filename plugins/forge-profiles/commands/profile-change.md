@@ -53,7 +53,7 @@ to activate only the plugins defined in the target profile.
 
 **Uninstall (N):**
 - forge-brainstorming
-- forge-extended-dev
+- forge-deep-review
 
 **Keep (N):**
 = forge-superpowers

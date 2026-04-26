@@ -34,14 +34,13 @@ Which plugins depend on or complement each other.
 - 1 command: /create-plugin (8-phase guided workflow)
 - Install when developing plugins, uninstall when done (heavy context footprint)
 
-### forge-extended-dev
-- **Requires forge-superpowers** — provides TDD execution, verification, debugging, git worktrees, finishing workflow
-- Curated from anthropics/claude-code: feature-dev (discovery/design) + pr-review-toolkit (specialized review)
-- 2 commands: /feature-dev (discovery → architecture → handoff), /deep-review (5 specialized agents)
-- 7 agents: code-explorer, code-architect, comment-analyzer, pr-test-analyzer, silent-failure-hunter, type-design-analyzer, code-simplifier
-- 1 skill: extended-dev-workflow (master flow documentation)
-- Customizations: removed duplicate code-reviewers, generalized Anthropic internals
-- Complements forge-keeper (context maintenance during extended workflows)
+### forge-deep-review
+- **Independent** — specialized review agents + automated PR review
+- Curated from anthropics/claude-code: pr-review-toolkit (specialized review agents) + code-review (automated PR review)
+- 2 commands: /deep-review (5 specialized agents), /pr-review (automated GitHub PR review with inline comments)
+- 5 agents: comment-analyzer, pr-test-analyzer, silent-failure-hunter, type-design-analyzer, code-simplifier
+- Customizations: excluded duplicate code-reviewers, generalized Anthropic internals, dropped feature-dev workflow (use superpowers brainstorming + writing-plans)
+- Complements forge-superpowers (run /deep-review after superpowers TDD execution)
 
 ### forge-hookify
 - **Independent** — custom hook rules engine, works standalone
@@ -61,12 +60,6 @@ Which plugins depend on or complement each other.
 - **Independent** — commit and PR commands, works standalone
 - Curated from anthropics/claude-code (plugins/commit-commands) with customizations
 - 3 commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup)
-
-### forge-ralph
-- **Independent** — persistent loop technique, works standalone
-- Curated from anthropics/claude-code (plugins/ralph-wiggum) with customizations
-- Stop hook + setup script for self-referential loop
-- 3 commands: /ralph-loop (start), /cancel-ralph (stop), /ralph-help
 
 ### forge-telegram
 - **Independent** — Telegram listener + sender, works standalone
@@ -97,23 +90,13 @@ Which plugins depend on or complement each other.
 - Guides: Context7 (library docs), Serena (LSP navigation), XRAY (structural analysis)
 - MCP servers run independently from .claude/settings.json after setup
 
-### forge-executor
-- **Requires forge-superpowers** — provides writing-plans, TDD, verification, finishing, worktrees
-- Native plugin — wave-based plan executor with hybrid validation and checkpoints
-- 1 command: /execute-plan (with --skip-global-validation, --resume-from-wave, --dry-run flags)
-- 4 agents: superpowers-orchestrator (opus), flow-coherence-validator (sonnet), plan-auditor (sonnet), plan-antagonist (sonnet)
-- 1 skill: executor-workflow (trigger + reference docs)
-- Execution sub-agents (BackendImplementer, FrontendImplementer, Configurator, InfraArchitect, Reviewer, Tester, Analyst) are dispatched by the orchestrator via generic Agent tool
-- Complements forge-brainstorming (brainstorming produces plans, executor runs them as waves)
-- Complements forge-commit (executor can use /commit for final PR)
-
 ### forge-brainstorming
 - **Requires forge-superpowers** — provides writing-plans, TDD, verification, finishing, worktrees
 - Native plugin — full-lifecycle teammate orchestration with 5 persistent agents
 - 1 command: /brainstorming (6-phase flow with 4 gates)
 - 5 agents: scout (sonnet), architect (opus), builder (inherit), reviewer (inherit), closer (inherit)
 - 1 skill: brainstorming-workflow (trigger + reference docs)
-- Complements forge-extended-dev (user chooses between teammate or subagent workflow)
+- Complements forge-superpowers:brainstorming (user chooses between persistent teammates or inline single-turn ideation)
 - Complements forge-commit (closer can use /commit-push-pr if available)
 
 ### forge-profiles
@@ -125,26 +108,23 @@ Which plugins depend on or complement each other.
 ## Current plugin matrix
 
 ```
-Plugin                    Requires            Complements         Independent of
+Plugin                    Requires            Complements             Independent of
 ──────────────────────────────────────────────────────────────────────────────────
-forge-init                -                   forge-keeper        everything else
-forge-keeper              -                   forge-init          everything else
-forge-superpowers         -                   forge-keeper        everything else
-forge-plugin-dev          -                   -                   everything else
-forge-extended-dev        forge-superpowers   forge-keeper        everything else
-forge-hookify             -                   -                   everything else
-forge-security            -                   -                   everything else
-forge-commit              -                   -                   everything else
-forge-ralph               -                   -                   everything else
-forge-frontend-design     -                   -                   everything else
-forge-ui-expert           -                   forge-frontend-design everything else
-forge-telegram            -                   -                   everything else
-forge-proactive-qa        -                   forge-telegram, /loop  everything else
-forge-export              -                   -                   everything else
-forge-context-mcp         -                   -                   everything else
-forge-executor            forge-superpowers   forge-brainstorming, forge-commit everything else
-forge-brainstorming       forge-superpowers   forge-extended-dev, forge-commit  everything else
-forge-profiles            -                   -                   everything else
+forge-init                -                   forge-keeper            everything else
+forge-keeper              -                   forge-init              everything else
+forge-superpowers         -                   forge-keeper            everything else
+forge-plugin-dev          -                   -                       everything else
+forge-deep-review         -                   forge-superpowers       everything else
+forge-hookify             -                   -                       everything else
+forge-security            -                   -                       everything else
+forge-commit              -                   -                       everything else
+forge-frontend-design     -                   -                       everything else
+forge-telegram            -                   -                       everything else
+forge-proactive-qa        -                   forge-telegram, /loop   everything else
+forge-export              -                   -                       everything else
+forge-context-mcp         -                   -                       everything else
+forge-brainstorming       forge-superpowers   forge-commit            everything else
+forge-profiles            -                   -                       everything else
 ```
 
 ## Rules for dependencies

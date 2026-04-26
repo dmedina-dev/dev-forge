@@ -123,7 +123,7 @@ Example — forge-hookify (upstream in a subdirectory):
 }
 ```
 
-For plugins with multiple upstreams (e.g., forge-extended-dev), copy the `upstream` array verbatim from the source marketplace.json.
+For plugins with multiple upstreams (e.g., forge-deep-review), copy the `upstream` array verbatim from the source marketplace.json.
 
 #### Variant B: Native plugin (copied into new repo)
 
@@ -395,9 +395,9 @@ Lists ONLY included plugins. Splits into:
 ### Dependency ordering
 
 Install order in Step 4:
-1. Required plugins first (e.g., forge-superpowers before forge-extended-dev)
+1. Required plugins first (e.g., forge-superpowers before forge-deep-review)
 2. All other independent plugins
-3. Dependent plugins last (e.g., forge-extended-dev after forge-superpowers)
+3. Dependent plugins last (e.g., forge-deep-review after forge-superpowers)
 
 ### Steps structure
 

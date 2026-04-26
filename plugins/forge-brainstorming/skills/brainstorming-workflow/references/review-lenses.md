@@ -2,7 +2,7 @@
 
 5 specialized review protocols for the reviewer teammate's deep review mode (Phase 5). Each lens focuses on one quality dimension. The reviewer can dispatch these as parallel sub-agents or apply them sequentially.
 
-These protocols are adapted from forge-extended-dev's specialized agents (pr-test-analyzer, silent-failure-hunter, type-design-analyzer, comment-analyzer, code-simplifier) for use as reviewer instructions rather than standalone agent definitions.
+These protocols are adapted from forge-deep-review's specialized agents (pr-test-analyzer, silent-failure-hunter, type-design-analyzer, comment-analyzer, code-simplifier) for use as reviewer instructions rather than standalone agent definitions.
 
 ---
 

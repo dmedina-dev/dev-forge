@@ -17,9 +17,9 @@ Scan every plugin directory to find which ones have upstream sources to check.
 { "origin": { "type": "github", "repo": "obra/superpowers", "ref": "v5.0.6", ... } }
 ```
 
-**Multi-origin plugins** (`origins` key, array) — e.g., forge-extended-dev:
+**Multi-origin plugins** (`origins` key, array) — e.g., forge-deep-review:
 ```json
-{ "origins": [ { "repo": "anthropics/claude-code", "path": "plugins/feature-dev", "ref": "main" }, ... ] }
+{ "origins": [ { "repo": "anthropics/claude-code", "path": "plugins/pr-review-toolkit", "ref": "main" }, ... ] }
 ```
 
 **Native plugins** (`origin.type: "native"`) — e.g., forge-proactive-qa:
@@ -77,7 +77,7 @@ A ref that matches a branch name (main, master, etc.) is a branch ref.
 ```bash
 gh api repos/{owner}/{repo}/commits/{branch} --jq '{sha: .sha, date: .commit.committer.date, message: .commit.message}'
 ```
-Example for forge-extended-dev (checking `anthropics/claude-code`, branch `main`):
+Example for forge-deep-review (checking `anthropics/claude-code`, branch `main`):
 ```bash
 gh api repos/anthropics/claude-code/commits/main --jq '{sha: .sha, date: .commit.committer.date, message: .commit.message}'
 ```
@@ -90,9 +90,9 @@ Returns the current commit SHA for the branch tip.
 
 **Determine if updates exist:** compare current `commit` SHA against latest SHA. If different and `commit` field is non-empty → `has_updates: true`. If current `commit` is empty, record the latest SHA but treat as "unknown — needs baseline commit recorded".
 
-### Subpath repos (forge-extended-dev pattern)
+### Subpath repos (forge-deep-review pattern)
 
-When `path` is non-empty (e.g., `"path": "plugins/feature-dev"`), there is no per-subdirectory release. Check the repo-level latest commit and note the subpath:
+When `path` is non-empty (e.g., `"path": "plugins/pr-review-toolkit"`), there is no per-subdirectory release. Check the repo-level latest commit and note the subpath:
 
 ```bash
 gh api repos/anthropics/claude-code/commits/main --jq '{sha: .sha, date: .commit.committer.date}'
@@ -100,7 +100,7 @@ gh api repos/anthropics/claude-code/commits/main --jq '{sha: .sha, date: .commit
 
 To find commits that touched the specific subpath (more precise):
 ```bash
-gh api "repos/anthropics/claude-code/commits?path=plugins/feature-dev&sha=main&per_page=1" --jq '.[0] | {sha: .sha, date: .commit.committer.date, message: .commit.message}'
+gh api "repos/anthropics/claude-code/commits?path=plugins/pr-review-toolkit&sha=main&per_page=1" --jq '.[0] | {sha: .sha, date: .commit.committer.date, message: .commit.message}'
 ```
 
 ### Multi-origin plugins
@@ -119,18 +119,16 @@ Plugin Update Status — 2026-03-31
 Plugin                  Upstream                     Current    Latest     Status
 ─────────────────────── ──────────────────────────── ────────── ────────── ──────
 forge-superpowers       obra/superpowers             v5.0.6     v5.1.0     ⚡
-forge-extended-dev      anthropics/claude-code       main       main       ✓
+forge-deep-review       anthropics/claude-code       main       main       ✓
 forge-hookify           anthropics/claude-code       main       main       ✓
-forge-ralph             anthropics/claude-code       main       main       ✓
 forge-security          anthropics/claude-code       main       main       ✓
 forge-commit            anthropics/claude-code       main       main       ✓
-forge-frontend-design   anthropics/claude-code       main       main       ✓
-forge-ui-expert         anthropics/claude-code       main       main       ✓
+forge-frontend-design   anthropics/claude-plugins-official  main  main     ✓
 forge-telegram          —                            —          —          ⊘ (native)
 forge-proactive-qa      —                            —          —          ⊘ (native)
 forge-keeper            —                            —          —          ⊘ (native)
 ═══════════════════════════════════════════════════════════════════════
-⚡ 1 plugin has updates   ✓ 7 up to date   ⊘ 3 skipped
+⚡ 1 plugin has updates   ✓ 5 up to date   ⊘ 3 skipped
 ```
 
 **Status icons:**
@@ -200,7 +198,7 @@ gh api repos/{owner}/{repo}/compare/{old_sha}...{new_sha} --jq '.files[].filenam
 When the subpath is non-empty, filter files to only those under the subpath:
 ```bash
 gh api "repos/anthropics/claude-code/compare/{old_sha}...{new_sha}" \
-  --jq '.files[].filename | select(startswith("plugins/feature-dev/"))'
+  --jq '.files[].filename | select(startswith("plugins/pr-review-toolkit/"))'
 ```
 
 **Local alternative (when `.upstream/` exists):** If the upstream clone is already cached from
@@ -389,22 +387,18 @@ feat({plugin-name}): update to {new-ref} from {old-ref}
 
 ## Multi-Origin Plugins
 
-For plugins that use `origins` (array) instead of `origin` (singular), such as forge-extended-dev:
+For plugins that use `origins` (array) instead of `origin` (singular), such as forge-deep-review:
 
 ### Checking
 
 Check each origin independently using the method for its `ref` type. Present results grouped by plugin, with each origin on its own line:
 
 ```
-forge-extended-dev (3 origins)
-  anthropics/claude-code @ plugins/feature-dev (main)
-    Latest commit: abc1234 (2026-04-10) — "Add async tool support"
-    ⚡ Updates available — 3 commits since fetch
-    ⚠ commands/feature-dev.md — conflicts with custom-03 (modified: superpowers handoff)
-
+forge-deep-review (2 origins)
   anthropics/claude-code @ plugins/pr-review-toolkit (main)
     Latest commit: abc1234 (2026-04-10) — "Add async tool support"
-    ✓ Up to date
+    ⚡ Updates available — 3 commits since fetch
+    ⚠ agents/silent-failure-hunter.md — conflicts with custom-07 (modified: removed Anthropic-internal tooling refs)
 
   anthropics/claude-code @ plugins/code-review (main)
     Latest commit: abc1234 (2026-04-10) — "Add async tool support"
@@ -426,4 +420,4 @@ Then once for the whole plugin:
 6. Update tracking for all origins (Step 6)
 7. Commit (Step 7)
 
-Multi-origin customization entries have an `"origin"` field (e.g., `"origin": "feature-dev"`) that identifies which source they apply to. Only cross-reference a customization against changes from its named origin, not all origins.
+Multi-origin customization entries have an `"origin"` field (e.g., `"origin": "pr-review-toolkit"`) that identifies which source they apply to. Only cross-reference a customization against changes from its named origin, not all origins.

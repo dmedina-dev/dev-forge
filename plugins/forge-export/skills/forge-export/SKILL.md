@@ -42,7 +42,7 @@ See `references/interview-guide.md` § Plugin classification.
 Present the detected plugins in a categorized table (external vs native) showing name, type, and
 customizations count. Ask which to include. Default: all.
 
-Validate dependencies — if forge-extended-dev is selected without forge-superpowers, warn and offer
+Validate dependencies — if forge-brainstorming is selected without forge-superpowers, warn and offer
 to add forge-superpowers automatically.
 
 See `references/interview-guide.md` § Plugin selection and § Dependency validation.

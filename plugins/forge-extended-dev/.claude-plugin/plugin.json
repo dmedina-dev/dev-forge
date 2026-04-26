@@ -1,9 +1,0 @@
-{
-  "name": "forge-extended-dev",
-  "description": "Extended development workflow: discovery + architecture (feature-dev) → TDD execution (superpowers) → specialized review (pr-review-toolkit). Companion plugin to forge-superpowers.",
-  "version": "1.0.0",
-  "author": {
-    "name": "dmedina",
-    "email": "me@dmedina.dev"
-  }
-}

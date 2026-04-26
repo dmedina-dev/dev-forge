@@ -104,14 +104,13 @@ After agents complete, summarize:
 /deep-review all parallel
 ```
 
-## Integration with Extended Dev Workflow
+## Integration
 
-This command is Phase C of the extended development workflow:
+`/deep-review` runs pre-push, locally, covering 5 quality dimensions. Companion commands:
 
-1. **Phase A**: `/feature-dev` — Discovery, exploration, architecture design
-2. **Phase B**: superpowers — TDD planning and execution with intermediate code reviews
-3. **Phase C**: `/deep-review all` — Specialized quality review (tests, errors, types, comments, simplification)
-4. **Phase D**: `/pr-review <PR> --comment` — Automated PR review with inline GitHub comments
+- `superpowers:requesting-code-review` — intermediate code review during implementation
+- `/deep-review all` (this command, pre-push) — specialized quality review across 5 dimensions
+- `/pr-review <PR> --comment` (this plugin, post-push) — automated PR review with inline GitHub comments
 
 The general code-reviewer from superpowers handles intermediate reviews during implementation.
 `/deep-review` adds specialized depth that general review can't provide:

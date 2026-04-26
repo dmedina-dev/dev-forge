@@ -1,0 +1,9 @@
+{
+  "name": "forge-deep-review",
+  "description": "Specialized review: 5 deep-review agents (test coverage, silent failures, type design, comments, simplification) + automated PR review with inline GitHub comments.",
+  "version": "2.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  }
+}

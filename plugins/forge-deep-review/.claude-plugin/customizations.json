@@ -3,15 +3,6 @@
     {
       "type": "github",
       "repo": "anthropics/claude-code",
-      "path": "plugins/feature-dev",
-      "ref": "main",
-      "commit": "9772e13f820002c9730af67a2409702799c7ddc6",
-      "fetched_at": "2026-04-11",
-      "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/feature-dev"
-    },
-    {
-      "type": "github",
-      "repo": "anthropics/claude-code",
       "path": "plugins/pr-review-toolkit",
       "ref": "main",
       "commit": "9772e13f820002c9730af67a2409702799c7ddc6",
@@ -33,34 +24,10 @@
     "latest_ref": "main",
     "latest_commit": "9afdfd7dc06fad5a924a9e87563f1eb924720221",
     "has_updates": false,
-    "summary": "14 upstream commits since pin, all 'chore: Update CHANGELOG.md'. Zero changes to feature-dev / pr-review-toolkit / code-review.",
+    "summary": "14 upstream commits since pin, all 'chore: Update CHANGELOG.md'. Zero changes to pr-review-toolkit / code-review.",
     "changes": []
   },
   "customizations": [
-    {
-      "id": "custom-01",
-      "type": "excluded",
-      "origin": "feature-dev",
-      "target": "agents/code-reviewer.md",
-      "summary": "Excluded feature-dev code-reviewer agent",
-      "reason": "Superpowers provides intermediate code reviews via requesting-code-review skill. No need for duplicate general reviewer."
-    },
-    {
-      "id": "custom-02",
-      "type": "excluded",
-      "origin": "feature-dev",
-      "target": "README.md",
-      "summary": "Excluded upstream README",
-      "reason": "Plugin has its own workflow documentation in extended-dev-workflow skill."
-    },
-    {
-      "id": "custom-03",
-      "type": "modified",
-      "origin": "feature-dev",
-      "target": "commands/feature-dev.md",
-      "summary": "Replaced phases 5-7 with superpowers handoff",
-      "reason": "Original phase 5 (implementation) replaced with superpowers:writing-plans \u2192 subagent-driven-dev TDD execution. Original phase 6 (quality review) replaced with /deep-review. Phase 7 simplified to use superpowers:finishing-a-development-branch."
-    },
     {
       "id": "custom-04",
       "type": "excluded",
@@ -83,7 +50,7 @@
       "origin": "pr-review-toolkit",
       "target": "commands/deep-review.md",
       "summary": "Renamed review-pr to deep-review, removed code-reviewer from available agents",
-      "reason": "Renamed for clarity in extended workflow. Reduced from 6 to 5 agents \u2014 code-reviewer excluded (custom-04). Added integration docs showing how deep-review fits as Phase C."
+      "reason": "Renamed for clarity. Reduced from 6 to 5 agents — code-reviewer excluded (custom-04)."
     },
     {
       "id": "custom-07",
@@ -102,20 +69,12 @@
       "reason": "Original hardcoded ES modules, function keyword preference, React patterns, explicit return types. Now defers to project's own CLAUDE.md standards."
     },
     {
-      "id": "custom-09",
-      "type": "added",
-      "origin": "forge",
-      "target": "skills/extended-dev-workflow/SKILL.md",
-      "summary": "Added master workflow documentation skill",
-      "reason": "New skill that documents how feature-dev discovery, superpowers execution, deep-review validation, and pr-review automation connect into a unified flow."
-    },
-    {
       "id": "custom-10",
       "type": "modified",
       "origin": "code-review",
       "target": "commands/pr-review.md",
-      "summary": "Renamed code-review to pr-review, integrated as Phase D of extended-dev workflow",
-      "reason": "Original standalone plugin renamed to fit the 4-phase workflow naming. Removed hardcoded anthropics/claude-code link format. Added Phase D integration docs."
+      "summary": "Renamed code-review to pr-review",
+      "reason": "Renamed for clarity. Removed hardcoded anthropics/claude-code link format."
     },
     {
       "id": "custom-11",
@@ -123,7 +82,15 @@
       "origin": "code-review",
       "target": "README.md",
       "summary": "Excluded upstream README",
-      "reason": "Plugin has its own workflow documentation in extended-dev-workflow skill."
+      "reason": "Plugin has its own workflow documentation."
+    },
+    {
+      "id": "custom-12",
+      "type": "removed",
+      "origin": "feature-dev",
+      "target": "ENTIRE feature-dev origin",
+      "summary": "Dropped feature-dev origin entirely (Phase A)",
+      "reason": "Removed in v2.0.0 simplification — superpowers:brainstorming + superpowers:writing-plans cover discovery and architecture design. forge-extended-dev plugin renamed to forge-deep-review and scoped to specialized review only."
     }
   ]
 }

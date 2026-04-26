@@ -1,7 +1,7 @@
 ---
 # Curated from: anthropics/claude-code (plugins/code-review) — Author: Boris Cherny (Anthropic)
-# Customized: renamed to pr-review, integrated as Phase D of extended-dev workflow,
-#   terminal-only by default, inline comments require github_inline_comment MCP server
+# Customized: renamed to pr-review, terminal-only by default,
+#   inline comments require github_inline_comment MCP server
 description: "Automated PR review — bugs + CLAUDE.md compliance, terminal output"
 argument-hint: "[PR-number-or-url] [--comment]"
 allowed-tools: ["Bash(gh issue view:*)", "Bash(gh search:*)", "Bash(gh issue list:*)", "Bash(gh pr comment:*)", "Bash(gh pr diff:*)", "Bash(gh pr view:*)", "Bash(gh pr list:*)", "mcp__github_inline_comment__create_inline_comment"]
@@ -11,7 +11,7 @@ allowed-tools: ["Bash(gh issue view:*)", "Bash(gh search:*)", "Bash(gh issue lis
 
 Automated code review for pull requests using multiple specialized agents with confidence-based scoring. Results are shown in the terminal. Optionally posts inline GitHub comments if `--comment` is passed and the `github_inline_comment` MCP server is configured.
 
-Use this AFTER `/deep-review` (Phase C) when the PR is pushed and ready for final automated validation.
+Use this AFTER `/deep-review` when the PR is pushed and ready for final automated validation.
 
 **Arguments:** "$ARGUMENTS"
 
@@ -133,16 +133,15 @@ Do NOT flag these in steps 4 and 5:
 /pr-review https://github.com/owner/repo/pull/42 --comment
 ```
 
-## Integration with Extended Dev Workflow
+## Integration
 
-This command is **Phase D** of the extended development workflow:
+`/pr-review` is the post-push automated review. Companion commands:
 
-1. **Phase A**: `/feature-dev` — Discovery, exploration, architecture design
-2. **Phase B**: superpowers — TDD planning and execution with intermediate code reviews
-3. **Phase C**: `/deep-review all` — Specialized quality review (tests, errors, types, comments, simplification)
-4. **Phase D**: `/pr-review <PR> --comment` — Automated PR review with inline GitHub comments
+- `superpowers:requesting-code-review` — intermediate code review during implementation
+- `/deep-review all` (this plugin, pre-push) — specialized quality review (tests, errors, types, comments, simplification)
+- `/pr-review <PR> --comment` (this plugin, post-push) — automated PR review with inline GitHub comments
 
-**Phase C vs Phase D:**
+**Local vs PR:**
 - `/deep-review` is pre-push, runs locally, covers 5 quality dimensions
 - `/pr-review` is post-push, posts to GitHub, focuses on bugs + CLAUDE.md compliance
 

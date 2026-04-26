@@ -203,13 +203,13 @@
     },
     {
       "name": "forge-ui-forge",
-      "description": "UI prototyping: iterative HTML screen variations, click-to-annotate overlay (click for point pins, Shift+drag for area selection), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures. Produces framework-agnostic specs for downstream implementation.",
+      "description": "UI prototyping: iterative HTML screen variations, click-to-annotate overlay (click for point pins, Shift+drag for area selection), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures. Produces framework-agnostic specs for downstream implementation. Plus live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp).",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-ui-forge"
       },
-      "version": "0.3.0"
+      "version": "0.4.0"
     }
   ]
 }

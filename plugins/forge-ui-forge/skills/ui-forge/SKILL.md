@@ -311,6 +311,65 @@ This skill handles `serve`, `stop`, `status` subcommands for the dev server life
 | `stop` | Kill server by PID from `.ui-forge/.server.pid`. |
 | `status` | Check if server is running. |
 | `refresh` | Force-copy plugin assets (overlay.js) into `.ui-forge/assets/`, overwriting. Config and data untouched. |
+| `live` | Start live overlay proxy in front of an existing dev server. Requires `pip install aiohttp`. |
+| `stop-live` | Kill live proxy by PID from `.ui-forge/.live-server.pid`. |
+| `status-live` | Check if live proxy is running. |
+
+<!-- ui-forge:live:start -->
+
+## Live mode — overlay over an existing dev server
+
+Use when you want to annotate the **real running application** (any stack: Vite, Next, Rails, Django, Phoenix, ...) the same way you annotate prototypes — without modifying the app's source. The live proxy sits in front of your dev server, injects `overlay.js` into HTML responses, and collects pins in `.ui-forge/live/<session-id>/`.
+
+**Requires `aiohttp`** — install once with `pip install aiohttp`. Prototype mode keeps working without it.
+
+**What this is NOT (v1):** Claude does **not** auto-edit `src/` from live-mode pins. Pins land as JSON; you decide when and how to apply them. (Auto-apply is a v2 follow-up.)
+
+### Starting the proxy
+
+```
+Monitor: bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/live.sh" --target http://localhost:3000
+```
+
+Optional flags:
+- `--port 4270` (default — coexists with the prototype server on 4269 if both are running)
+- `--name <slug>` (default: ISO timestamp; sets the directory name under `.ui-forge/live/`)
+
+The proxy prints one startup line:
+
+```
+[ui-forge] live serving http://127.0.0.1:4270 → http://localhost:3000 (session=2026-04-27T143052)
+```
+
+Open `http://127.0.0.1:4270` in the browser — your app loads identically (HMR included via WebSocket forwarding) plus the overlay FAB in the corner.
+
+### Feedback flow
+
+1. User annotates → clicks 🚀.
+2. Monitor delivers `[ui-forge] live round=N session=<id> host=<host> path=<path> ...`.
+3. Read `.ui-forge/live/<session-id>/latest.json` → get the round filename.
+4. Read the round JSON (or `python3 .../show-pin-live.py <session-id> --round N`) → decide what to do (edit `src/`, refine spec, plan a change). The skill is a feedback collector; the action is yours.
+
+### Stopping / status
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/stop-live.sh"
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/status-live.sh"
+```
+
+Both target `.ui-forge/.live-server.pid`. Stopping is idempotent. Closing the proxy removes the overlay end-to-end — there is no code change in the consumer app, nothing to leak to deployment.
+
+### Limitations (v1)
+
+- Upstream must be **HTTP** (no HTTPS upstream targets in v1).
+- One target per `live` invocation. Run multiple proxies on different ports for multiple targets.
+- Authentication is forwarded as `aiohttp.ClientSession` does by default (cookies, auth headers). Custom auth proxies are out of scope.
+
+### Rollback
+
+The live mode lives entirely under `scripts/live/`, gated in `overlay.js` by `window.UIFORGE_MODE === 'live'`, and bracketed in this SKILL.md by `<!-- ui-forge:live:start -->` / `<!-- ui-forge:live:end -->`. The single squash commit `feat(ui-forge): live overlay proxy mode` introduced everything; `git revert <sha>` removes the feature without touching prototype mode.
+
+<!-- ui-forge:live:end -->
 
 ## Quick checklist when the skill activates
 

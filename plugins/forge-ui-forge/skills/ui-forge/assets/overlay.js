@@ -45,9 +45,15 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:pins`;
-  const SCENARIO_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:scenario`;
-  const FILTER_KEY = `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}:round-filter`;
+  const IS_LIVE = window.UIFORGE_MODE === 'live';
+  const LIVE_HOST = window.UIFORGE_LIVE_HOST || 'unknown-host';
+  const LIVE_SESSION = window.UIFORGE_SESSION_ID || 'unknown-session';
+  const KEY_BASE = IS_LIVE
+    ? `uiforge:live:${LIVE_HOST}`
+    : `uiforge:${window.UIFORGE_SCREEN_ID || 'unknown'}`;
+  const STORAGE_KEY = `${KEY_BASE}:pins`;
+  const SCENARIO_KEY = `${KEY_BASE}:scenario`;
+  const FILTER_KEY = `${KEY_BASE}:round-filter`;
   const ROUNDS_KEY = STORAGE_KEY + ':rounds';
   const IS_SERVED = location.protocol.startsWith('http');
 
@@ -438,7 +444,7 @@
 
     panel.innerHTML = ''
       + '<header>'
-      + '<h2>ui-forge \u00B7 ' + escapeHtml(window.UIFORGE_SCREEN_ID || 'screen') + '</h2>'
+      + '<h2>ui-forge \u00B7 ' + escapeHtml(IS_LIVE ? ('live · ' + LIVE_HOST) : (window.UIFORGE_SCREEN_ID || 'screen')) + '</h2>'
       + '<button id="uiforge-close" title="Cerrar (P)">\u00D7</button>'
       + '</header>'
       + '<details style="margin-bottom:12px;font-size:11px;color:#94a3b8">'
@@ -457,10 +463,12 @@
       + '<hr style="border-color:#334155;margin:6px 0">'
       + '<div>\u25CF opaco = pendiente \u00B7 \u25CF tenue = enviado en ronda anterior</div>'
       + '</div></details>'
-      + '<div><label style="font-size:11px;color:#94a3b8">Escenario</label>'
-      + '<select id="uiforge-scenario">'
-      + scenarios.map(function(s) { return '<option value="' + s + '"' + (s === currentScenario ? ' selected' : '') + '>' + s + '</option>'; }).join('')
-      + '</select></div>'
+      + (!IS_LIVE
+          ? '<div><label style="font-size:11px;color:#94a3b8">Escenario</label>'
+            + '<select id="uiforge-scenario">'
+            + scenarios.map(function(s) { return '<option value="' + s + '"' + (s === currentScenario ? ' selected' : '') + '>' + s + '</option>'; }).join('')
+            + '</select></div>'
+          : '')
       + '<div style="margin-top:8px"><label style="font-size:11px;color:#94a3b8">Ronda</label>'
       + '<select id="uiforge-round-filter">'
       + '<option value="all"' + (roundFilter === 'all' ? ' selected' : '') + '>Todos (' + pins.length + ')</option>'
@@ -1140,6 +1148,11 @@
   }
 
   function applyScenario() {
+    if (IS_LIVE) {
+      // Live mode renders the consumer's own app — no scenarios, no render().
+      setTimeout(renderPins, 50);
+      return;
+    }
     if (typeof window.render !== 'function') {
       console.warn('[ui-forge] window.render(data) no definida');
       return;
@@ -1159,16 +1172,26 @@
 
   function buildPayload(round) {
     var newPins = pins.filter(function(p) { return !p.sentInRound; });
-    return {
-      screen: window.UIFORGE_SCREEN_ID,
+    var common = {
       round: round,
       exportedAt: new Date().toISOString(),
-      scenario: currentScenario,
       pinCount: pins.length,
       newPinCount: newPins.length,
       newPinIds: newPins.map(function(p) { return p.id; }),
       pins: pins,
     };
+    if (IS_LIVE) {
+      return Object.assign(common, {
+        mode: 'live',
+        sessionId: LIVE_SESSION,
+        host: LIVE_HOST,
+        path: window.UIFORGE_LIVE_PATH || location.pathname,
+      });
+    }
+    return Object.assign(common, {
+      screen: window.UIFORGE_SCREEN_ID,
+      scenario: currentScenario,
+    });
   }
 
   function bumpRound() {
@@ -1241,7 +1264,7 @@
   }
 
   function setupSSE() {
-    if (!IS_SERVED) return;
+    if (!IS_SERVED || IS_LIVE) return;
     var es = new EventSource('/forge/reload');
     es.addEventListener('reload', function() {
       console.log('[ui-forge] hot-reload triggered');

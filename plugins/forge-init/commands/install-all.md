@@ -1,8 +1,10 @@
 ---
-description: Install all dev-forge working plugins. Configuration plugins (forge-init, forge-plugin-dev, forge-context-mcp, forge-export) are shown separately — install them on demand. Resolves dependencies and lets user exclude plugins.
+description: Install all dev-forge working plugins. Configuration plugins (forge-context-mcp, forge-export, forge-init, forge-plugin-dev) are shown separately — install them on demand. Resolves dependencies and lets user exclude plugins.
 ---
 
 Install all dev-forge **working** plugins — the daily driver set.
+
+> Generated from `.claude-plugin/marketplace.json` by `scripts/generate-install-all.sh`. Do not hand-edit; run the script and commit the diff.
 
 ## Plugin catalog
 
@@ -15,15 +17,15 @@ Always-on plugins for daily development work.
 | forge-keeper | Context maintenance: sync, status, recall, segment-doc + hooks | - |
 | forge-superpowers | TDD, debugging, parallel agents, code review, worktrees, plans | - |
 | forge-deep-review | Specialized review agents + automated PR review | - |
-| forge-brainstorming | Teammate-driven full lifecycle with 5 persistent agents | forge-superpowers |
-| forge-commit | Git commit and PR commands | - |
-| forge-security | Security reminder hooks (9 vulnerability patterns) | - |
 | forge-hookify | Custom hook rules engine with .local.md rules | - |
-| forge-profiles | Plugin profile manager — switch plugin sets per work mode | - |
+| forge-security | Security reminder hooks (9 vulnerability patterns) | - |
+| forge-commit | Git commit and PR commands | - |
 | forge-frontend-design | Distinctive, production-grade UI/UX design | - |
-| forge-ui-forge | Iterative UI prototyping with click-to-annotate overlay | - |
 | forge-telegram | Telegram bridge — listener + sender (bash + Monitor) | - |
 | forge-proactive-qa | Autonomous Playwright QA agent (Telegram-notified) | - |
+| forge-brainstorming | Teammate-driven full lifecycle with 5 persistent agents | forge-superpowers |
+| forge-profiles | Plugin profile manager — switch plugin sets per work mode | - |
+| forge-ui-forge | Iterative UI prototyping + live overlay over an existing dev server | - |
 
 ### Configuration plugins (NOT installed by this command)
 
@@ -45,7 +47,7 @@ List plugins already installed in this project to avoid reinstalling.
 
 ### Step 2: Resolve dependencies
 
-- **forge-brainstorming requires forge-superpowers** — install superpowers first
+- **forge-brainstorming requires forge-superpowers** — install forge-superpowers first
 - All other working plugins are independent
 
 ### Step 3: Present install plan
@@ -56,23 +58,24 @@ List plugins already installed in this project to avoid reinstalling.
 Already installed: [list or "none"]
 
 ### Will install (in order):
-1. forge-keeper — context maintenance
-2. forge-superpowers — core skills library
-3. forge-brainstorming — teammate-driven lifecycle (requires forge-superpowers ✓)
-4. forge-deep-review — specialized review agents + PR automation
-5. forge-commit — commit/PR commands
-6. forge-security — security hooks
-7. forge-hookify — custom hook rules
-8. forge-profiles — plugin profile manager
-9. forge-frontend-design — UI/UX design
-10. forge-ui-forge — UI prototyping
-11. forge-telegram — Telegram bridge
-12. forge-proactive-qa — autonomous QA agent
+1. forge-keeper — Context maintenance: sync, status, recall, segment-doc + hooks
+2. forge-superpowers — TDD, debugging, parallel agents, code review, worktrees, plans
+3. forge-deep-review — Specialized review agents + automated PR review
+4. forge-hookify — Custom hook rules engine with .local.md rules
+5. forge-security — Security reminder hooks (9 vulnerability patterns)
+6. forge-commit — Git commit and PR commands
+7. forge-frontend-design — Distinctive, production-grade UI/UX design
+8. forge-telegram — Telegram bridge — listener + sender (bash + Monitor)
+9. forge-proactive-qa — Autonomous Playwright QA agent (Telegram-notified)
+10. forge-brainstorming — Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers ✓)
+11. forge-profiles — Plugin profile manager — switch plugin sets per work mode
+12. forge-ui-forge — Iterative UI prototyping + live overlay over an existing dev server
 
 ### Not included (configuration plugins — install on demand):
-- forge-plugin-dev → /plugin install forge-plugin-dev (for plugin development)
-- forge-context-mcp → /plugin install forge-context-mcp (for MCP setup)
-- forge-export → /plugin install forge-export (for marketplace forking)
+- forge-init → /plugin install forge-init (New project)
+- forge-plugin-dev → /plugin install forge-plugin-dev (Developing plugins)
+- forge-context-mcp → /plugin install forge-context-mcp (Setting up codebase intelligence)
+- forge-export → /plugin install forge-export (Forking dev-forge for another org)
 
 Want to exclude any working plugins? Otherwise proceed.
 ```
@@ -81,9 +84,18 @@ The user may exclude plugins from the working set. Adjust the plan.
 
 ### Step 4: Install in order
 
-1. forge-superpowers first (dependency for forge-brainstorming)
-2. All other independent plugins
-3. forge-brainstorming last
+1. forge-keeper
+2. forge-superpowers (dependency first)
+3. forge-deep-review
+4. forge-hookify
+5. forge-security
+6. forge-commit
+7. forge-frontend-design
+8. forge-telegram
+9. forge-proactive-qa
+10. forge-brainstorming
+11. forge-profiles
+12. forge-ui-forge
 
 For each:
 ```
@@ -93,23 +105,24 @@ For each:
 ### Step 5: Post-install summary
 
 ```
-Dev Forge — [N] working plugins installed
+Dev Forge — 12 working plugins installed
 
 Working:
   forge-keeper ✓
   forge-superpowers ✓
-  forge-brainstorming ✓
   forge-deep-review ✓
-  forge-commit ✓
-  forge-security ✓
   forge-hookify ✓
-  forge-profiles ✓
+  forge-security ✓
+  forge-commit ✓
   forge-frontend-design ✓
-  forge-ui-forge ✓
   forge-telegram ✓
   forge-proactive-qa ✓
+  forge-brainstorming ✓
+  forge-profiles ✓
+  forge-ui-forge ✓
 
 Configuration (install when needed):
+  forge-init → /plugin install forge-init
   forge-plugin-dev → /plugin install forge-plugin-dev
   forge-context-mcp → /plugin install forge-context-mcp
   forge-export → /plugin install forge-export

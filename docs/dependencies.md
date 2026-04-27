@@ -133,3 +133,46 @@ forge-profiles            -                   -                       everything
 2. **If you need another plugin**, document it here AND in the plugin's SKILL.md description
 3. **Complements** are soft — mention in docs but don't enforce
 4. **Requires** are hard — plugin should warn at activation if dependency is missing
+
+## marketplace.json schema extensions
+
+Beyond the standard Claude Code marketplace fields (`name`, `description`, `source`, `version`), dev-forge adds two **optional** fields per plugin entry to make consumer-facing constraints machine-readable:
+
+### `dependencies.required` (array of plugin names)
+
+Lists hard dependencies. Used by `/forge-init:install-all` to resolve the install order so a consumer cannot end up with a plugin that fails on first activation. Mirrors the **requires** column in the matrix above.
+
+```json
+{
+  "name": "forge-brainstorming",
+  "version": "1.0.1",
+  "dependencies": {
+    "required": ["forge-superpowers"]
+  }
+}
+```
+
+If you add a hard dependency here, also update the **requires** column in `## Current plugin matrix` above so the doc stays consistent with the catalog.
+
+### `writes_outside_project_root` (array of paths)
+
+Lists paths the plugin writes to OUTSIDE the consumer's project root — typically `~/.claude/channels/<plugin>/`. The install flow surfaces these so the consumer knows:
+
+1. The path may need to be added to `sandbox.filesystem.allowWrite` in `.claude/settings.local.json` (the project's CLAUDE.md gotcha section explains why).
+2. On uninstall, the consumer should manually delete the directory to clean up state and credentials.
+
+```json
+{
+  "name": "forge-telegram",
+  "version": "1.2.0",
+  "writes_outside_project_root": [
+    "~/.claude/channels/telegram/"
+  ]
+}
+```
+
+Plugins that only read (not write) external paths do NOT declare this — declaring it implies state ownership.
+
+### Forward compatibility
+
+These fields are dev-forge-specific extensions; the upstream Claude Code marketplace schema does not define them. Tooling that doesn't recognize them will ignore them — they are additive metadata, not blocking constraints. Consumer-facing enforcement currently lives in `/forge-init:install-all`; future automation may also use them (for example, an uninstall hook that warns about residual state).

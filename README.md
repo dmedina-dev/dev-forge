@@ -94,6 +94,34 @@ Install when needed, uninstall after. Don't consume context when not in use.
 - Dependencies documented in `docs/dependencies.md`
 - Remove any plugin to free context window space
 
+## Upgrading
+
+The marketplace is versioned (`metadata.version` in `marketplace.json`) and so is each plugin. **A version bump invalidates the consumer's plugin cache.** Read [`CHANGELOG.md`](CHANGELOG.md) before upgrading — it lists every release with a `Migration` block when a plugin was renamed, removed, or changed in a breaking way.
+
+**To pull the latest catalog into a session:**
+
+```
+/reload-plugins
+```
+
+This re-reads `marketplace.json` and reloads any plugin whose version is already cached at the same number. **It does not pull a *newer* version**: that requires the `/plugin` UI flow (`/plugin update <name>`) or a fresh session.
+
+**For breaking changes** (a plugin you had installed was removed or renamed — for example the v2.0.0 prune of `forge-executor` / `forge-ui-expert` / `forge-ralph` and the rename `forge-extended-dev` → `forge-deep-review`):
+
+1. Check `CHANGELOG.md` for the matching `## v{X.Y.Z}` section and follow the `Migration` steps.
+2. `/plugin uninstall <old-name>` — removes the cached plugin you no longer use.
+3. `/plugin install <new-name>` — installs the replacement, if any.
+4. Replace any pinned slash-commands in your scripts/aliases (the changelog lists the new command paths).
+
+**Pinning a known-good version:** use a git tag in your local marketplace clone if you maintain one (`git checkout v2.0.0 -- .claude-plugin/marketplace.json`). The marketplace itself does not currently support per-install version pinning via the `/plugin` UI; if you need to roll back, downgrade the whole marketplace ref.
+
+**When new versions ship:**
+- `MAJOR` plugin bumps mean breaking changes — read the `CHANGELOG.md` migration section before upgrading.
+- `MINOR` bumps add features without breaking anything — safe to update at your convenience.
+- `PATCH` bumps are bug or doc fixes — safe to update.
+
+The full bump policy lives in [`docs/versioning.md`](docs/versioning.md).
+
 ## Attribution
 
 Curated plugins retain their original authorship. No claim of original authorship is made for curated content.

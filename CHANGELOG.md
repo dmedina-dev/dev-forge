@@ -4,6 +4,33 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.1.1 — 2026-04-27
+
+Release-pipeline hardening from a marketplace audit. Pure docs + tooling — no plugin behavior changed.
+
+**Plugins bumped:**
+- `forge-init`: `1.0.2` → `1.0.3` (patch — `install-all.md` regenerated from `marketplace.json` and now reflects forge-ui-forge's live mode in its description; ordering rebuilt with hard-deps-first)
+
+**Marketplace:** `2.1.0` → `2.1.1` (patch — mirrors forge-init).
+
+**New repo-level files:**
+- [`CHANGELOG.md`](CHANGELOG.md) — this file.
+- [`docs/versioning.md`](docs/versioning.md) — semver policy for plugins and the marketplace, plus update-check cadence.
+- [`scripts/generate-install-all.sh`](scripts/generate-install-all.sh) — regenerates `plugins/forge-init/commands/install-all.md` from `marketplace.json` so the install plan never diverges from the catalog. Idempotent. Errors loud if a plugin lacks a short-label entry.
+
+**`marketplace.json` schema additions** (additive, no migration needed):
+- `dependencies.required` — array of plugin names that must be installed alongside this plugin. Currently set on `forge-brainstorming → forge-superpowers`.
+- `writes_outside_project_root` — array of paths a plugin owns outside the consumer's project root. Currently set on `forge-telegram → ~/.claude/channels/telegram/`.
+
+Both fields are documented in `docs/dependencies.md` "marketplace.json schema extensions". Tooling that doesn't recognize them ignores them.
+
+**Doc adds:**
+- README gains an "Upgrading" section with concrete steps for cache refresh, breaking-change migration, and version pinning.
+
+**Breaking changes:** none.
+
+---
+
 ## v2.1.0 — 2026-04-27
 
 Headline: forge-ui-forge gains a "live mode" — a reverse proxy that injects the annotation overlay into an existing dev server's HTML responses, so any running app (Vite / Next / Rails / Django / …) can be annotated without source changes.

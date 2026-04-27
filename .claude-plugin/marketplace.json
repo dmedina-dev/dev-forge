@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.1.0"
+    "version": "2.1.1"
   },
   "plugins": [
     {
@@ -17,7 +17,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-init"
       },
-      "version": "1.0.2"
+      "version": "1.0.3"
     },
     {
       "name": "forge-keeper",

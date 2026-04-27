@@ -4,6 +4,35 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.2.1 — 2026-04-27
+
+**Bugfix — marketplace was unreadable to Claude Code's `/plugin` UI.**
+
+The `dependencies` field added to `forge-brainstorming` in v2.1.1 used the shape `{"required": [...]}` (object), assuming it was a dev-forge custom extension that unrecognising tooling would ignore. It is **not** an extension — `dependencies` is a reserved field in Claude Code's marketplace schema, and the validator expects a flat array of plugin name strings. Adding the marketplace via `/plugin marketplace add dmedina-dev/dev-forge` failed with:
+
+```
+Failed to parse marketplace file at .../marketplace.json:
+Invalid schema: plugins.13.dependencies: Invalid input: expected array, received object
+```
+
+(Plugin index 13 = `forge-brainstorming` in the catalog order.)
+
+**Fix:** rewrote the entry as `"dependencies": ["forge-superpowers"]`. Both the dependency-resolution semantics and the doc in `docs/dependencies.md` § "marketplace.json schema fields" updated.
+
+**Plugins bumped:** none — the change is metadata in `marketplace.json`, no plugin's own contents changed.
+
+**Marketplace:** `2.2.0` → `2.2.1` (patch — schema fix).
+
+If you tried `/plugin marketplace add` against v2.2.0 and it failed, retry it now. If you hit a stale cached clone, remove it first:
+
+```bash
+rm -rf ~/.claude/plugins/marketplaces/*dev-forge*
+```
+
+Then `/plugin marketplace add dmedina-dev/dev-forge` will fetch the fixed v2.2.1 cleanly.
+
+---
+
 ## v2.2.0 — 2026-04-27
 
 Adds a reusable plugin-rename migration helper to `forge-init`.

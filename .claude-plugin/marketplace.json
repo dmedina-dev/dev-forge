@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.2.0"
+    "version": "2.2.1"
   },
   "plugins": [
     {
@@ -193,9 +193,7 @@
         "path": "plugins/forge-brainstorming"
       },
       "version": "1.0.1",
-      "dependencies": {
-        "required": ["forge-superpowers"]
-      }
+      "dependencies": ["forge-superpowers"]
     },
     {
       "name": "forge-profiles",

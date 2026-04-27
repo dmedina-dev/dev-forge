@@ -134,29 +134,25 @@ forge-profiles            -                   -                       everything
 3. **Complements** are soft — mention in docs but don't enforce
 4. **Requires** are hard — plugin should warn at activation if dependency is missing
 
-## marketplace.json schema extensions
+## marketplace.json schema fields used by dev-forge
 
-Beyond the standard Claude Code marketplace fields (`name`, `description`, `source`, `version`), dev-forge adds two **optional** fields per plugin entry to make consumer-facing constraints machine-readable:
+### `dependencies` (array of plugin names) — **native Claude Code field**
 
-### `dependencies.required` (array of plugin names)
-
-Lists hard dependencies. Used by `/forge-init:install-all` to resolve the install order so a consumer cannot end up with a plugin that fails on first activation. Mirrors the **requires** column in the matrix above.
+Lists hard dependencies. **Must be a flat array of strings** — Claude Code's marketplace schema validator rejects any other shape (object, nested) with `Invalid input: expected array, received object` and refuses to load the marketplace. Mirrors the **requires** column in the matrix above.
 
 ```json
 {
   "name": "forge-brainstorming",
   "version": "1.0.1",
-  "dependencies": {
-    "required": ["forge-superpowers"]
-  }
+  "dependencies": ["forge-superpowers"]
 }
 ```
 
-If you add a hard dependency here, also update the **requires** column in `## Current plugin matrix` above so the doc stays consistent with the catalog.
+> **History:** v2.1.1 introduced this field as `{"required": [...]}` (object form, treating it as a dev-forge custom extension). Claude Code's UI rejected the marketplace at install time. v2.2.1 corrected to the flat-array form. If you add a hard dependency, keep the **requires** column in the matrix above in sync.
 
-### `writes_outside_project_root` (array of paths)
+### `writes_outside_project_root` (array of paths) — **dev-forge extension**
 
-Lists paths the plugin writes to OUTSIDE the consumer's project root — typically `~/.claude/channels/<plugin>/`. The install flow surfaces these so the consumer knows:
+Lists paths the plugin writes to OUTSIDE the consumer's project root — typically `~/.claude/channels/<plugin>/`. Surfaces in the install flow so the consumer knows:
 
 1. The path may need to be added to `sandbox.filesystem.allowWrite` in `.claude/settings.local.json` (the project's CLAUDE.md gotcha section explains why).
 2. On uninstall, the consumer should manually delete the directory to clean up state and credentials.
@@ -173,6 +169,4 @@ Lists paths the plugin writes to OUTSIDE the consumer's project root — typical
 
 Plugins that only read (not write) external paths do NOT declare this — declaring it implies state ownership.
 
-### Forward compatibility
-
-These fields are dev-forge-specific extensions; the upstream Claude Code marketplace schema does not define them. Tooling that doesn't recognize them will ignore them — they are additive metadata, not blocking constraints. Consumer-facing enforcement currently lives in `/forge-init:install-all`; future automation may also use them (for example, an uninstall hook that warns about residual state).
+This field is a dev-forge-specific extension; Claude Code's schema validator ignores unknown fields, so it's safe. (The `dependencies` field is NOT one of those — it's a reserved name with a strict shape, learnt the hard way at v2.2.1.)

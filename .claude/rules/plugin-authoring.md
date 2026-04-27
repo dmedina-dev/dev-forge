@@ -11,6 +11,7 @@ globs: plugins/**
 - Hook scripts must use `${CLAUDE_PLUGIN_ROOT}` for paths, never relative paths
 - Hook scripts must guarantee exit 0 — use `trap 'exit 0' ERR` or equivalent
 - JSON files must validate with `python3 -m json.tool`
+- Before pushing changes to `.claude-plugin/marketplace.json` or any plugin's `plugin.json`, run `bash scripts/marketplace-health.sh` — `python3 -m json.tool` only validates JSON syntax, not Claude Code's marketplace schema. The health script catches reserved-field shape errors (e.g. `dependencies` must be a flat array of strings, not an object — see CLAUDE.md gotcha), version drift between plugin.json and marketplace.json, missing plugin paths, broken dependency references, and stale `install-all.md`
 - When modifying marketplace.json, keep source URLs as https (not git@ssh)
 - Skills curated from external sources (superpowers, anthropic) must note origin at top of SKILL.md
 - When updating from upstream, diff against local customizations before overwriting

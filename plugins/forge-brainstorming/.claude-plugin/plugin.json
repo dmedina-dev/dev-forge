@@ -1,7 +1,7 @@
 {
   "name": "forge-brainstorming",
   "description": "Full-lifecycle teammate orchestration: discovery, design, planning, TDD execution, deep review, and PR — single /brainstorming command with 5 persistent named teammates.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "dmedina",
     "email": "me@dmedina.dev"

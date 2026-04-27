@@ -1,6 +1,6 @@
 {
   "name": "forge-export",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Exports a dev-forge marketplace into a new standalone repository. Interview-driven: select plugins, apply customizations, generate complete marketplace structure. Designed to be uninstalled after use.",
   "author": {
     "name": "dmedina",

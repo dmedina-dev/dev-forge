@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.0.0"
+    "version": "2.1.0"
   },
   "plugins": [
     {
@@ -17,7 +17,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-init"
       },
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     {
       "name": "forge-keeper",
@@ -27,7 +27,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-keeper"
       },
-      "version": "1.3.0"
+      "version": "1.3.1"
     },
     {
       "name": "forge-superpowers",
@@ -179,7 +179,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-export"
       },
-      "version": "1.1.1"
+      "version": "1.1.2"
     },
     {
       "name": "forge-brainstorming",
@@ -189,7 +189,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-brainstorming"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "forge-profiles",
@@ -199,7 +199,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-profiles"
       },
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "forge-ui-forge",

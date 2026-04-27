@@ -34,7 +34,7 @@ value when not actively being used.
 
 | Plugin | Purpose | When to install |
 |--------|---------|-----------------|
-| forge-init | Project bootstrapper | New project → `/plugin install forge-init` → `/forge-init:init` → uninstall |
+| forge-init | Project bootstrapper + migrate-from-forge helper | New project → `/plugin install forge-init` → `/forge-init:init` → uninstall |
 | forge-plugin-dev | Plugin development toolkit | Developing plugins → `/plugin install forge-plugin-dev` → build → uninstall |
 | forge-context-mcp | MCP server setup guide (Context7, Serena, XRAY) | Setting up codebase intelligence → configure → uninstall |
 | forge-export | Marketplace export wizard | Forking dev-forge for another org → export → uninstall |

@@ -6,18 +6,18 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.1.1"
+    "version": "2.2.0"
   },
   "plugins": [
     {
       "name": "forge-init",
-      "description": "Two-step project bootstrapper: runs native /init, then layers conventions.",
+      "description": "Two-step project bootstrapper: runs native /init, then layers conventions. Also ships /forge-init:migrate-from-forge as a reusable plugin-rename helper.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-init"
       },
-      "version": "1.0.3"
+      "version": "1.1.0"
     },
     {
       "name": "forge-keeper",

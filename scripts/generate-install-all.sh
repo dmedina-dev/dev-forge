@@ -58,7 +58,7 @@ SHORT_LABELS = {
     "forge-ui-forge":        "Iterative UI prototyping + live overlay over an existing dev server",
     "forge-telegram":        "Telegram bridge — listener + sender (bash + Monitor)",
     "forge-proactive-qa":    "Autonomous Playwright QA agent (Telegram-notified)",
-    "forge-init":            "Project bootstrapper",
+    "forge-init":            "Project bootstrapper + migrate-from-forge helper",
     "forge-plugin-dev":      "Plugin development toolkit",
     "forge-context-mcp":     "MCP server setup guide (Context7, Serena, XRAY)",
     "forge-export":          "Marketplace export wizard",

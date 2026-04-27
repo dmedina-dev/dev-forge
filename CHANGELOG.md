@@ -4,6 +4,45 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.2.0 — 2026-04-27
+
+Adds a reusable plugin-rename migration helper to `forge-init`.
+
+**Plugins bumped:**
+- `forge-init`: `1.0.3` → `1.1.0` (minor — new `/forge-init:migrate-from-forge` command + `scripts/migrate-from-forge.sh`)
+
+**Marketplace:** `2.1.1` → `2.2.0` (mirrors forge-init).
+
+### What it does
+
+```
+/forge-init:migrate-from-forge
+```
+
+A reusable helper for migrating a consumer's `~/.claude/settings.json` `enabledPlugins` map across a plugin rename. Currently scaffolded for a hypothetical `forge-* → df-*` rename:
+
+1. Dry-runs first — shows which plugins are currently enabled, which will be renamed, and which will be dropped (plugins removed from the marketplace earlier).
+2. After confirmation, rewrites `~/.claude/settings.json` (timestamped backup at `settings.json.bak.YYYYMMDDTHHMMSSZ`).
+3. Updates `.claude/settings.local.json` if it has matching allowlist tokens.
+4. Prints the slash-command block (`/plugin uninstall ...` + `/plugin install ...`) for the user to paste — `/plugin install` is interactive in Claude Code, so the file rewrite alone isn't enough; the cache also needs the new entries pulled.
+
+### Status: template, not currently active
+
+A real `forge-* → df-*` rename was prepared (and pushed as v3.0.0/v3.1.0) on 2026-04-27 then immediately reverted. The `df-*` target plugins do not exist in this marketplace. The script's hardcoded `RENAMES` and `REMOVED` maps still encode the abandoned rename — if you ever do a real plugin rename in this marketplace, edit those maps in `plugins/forge-init/scripts/migrate-from-forge.sh` first, then run the command.
+
+### Rollback (if you do run it on real data)
+
+The script never modifies in-place without backup:
+
+```bash
+cp ~/.claude/settings.json.bak.<timestamp> ~/.claude/settings.json
+cp .claude/settings.local.json.bak.<timestamp> .claude/settings.local.json
+```
+
+**Breaking changes:** none.
+
+---
+
 ## v2.1.1 — 2026-04-27
 
 Release-pipeline hardening from a marketplace audit. Pure docs + tooling — no plugin behavior changed.

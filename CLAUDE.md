@@ -30,7 +30,8 @@ dev-forge/
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
 │   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
 │   ├── forge-profiles/                ← plugin profile manager (independent)
-│   └── forge-ui-forge/                ← UI prototyping with per-project registry + overlay annotation
+│   ├── forge-ui-forge/                ← UI prototyping with per-project registry + overlay annotation
+│   └── forge-mattpocock/              ← alternative skills framework (curated from mattpocock/skills)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
     └── customizations-pattern.md      ← vendor + customizations pattern
@@ -61,7 +62,7 @@ dev-forge/
 
 ## External plugin customizations
 
-External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles) don't need customizations.json.
+External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles, forge-ui-forge) don't need customizations.json. External plugins currently in the marketplace: forge-superpowers (obra/superpowers), forge-plugin-dev / forge-deep-review / forge-hookify / forge-security / forge-commit (anthropics/claude-code), forge-frontend-design (anthropics/claude-plugins-official), and forge-mattpocock (mattpocock/skills).
 
 ## Conventions
 

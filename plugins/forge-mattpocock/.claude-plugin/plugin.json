@@ -1,0 +1,23 @@
+{
+  "name": "forge-mattpocock",
+  "description": "Engineering & productivity skills curated from mattpocock/skills: grill-me, grill-with-docs, to-prd, tdd, diagnose, improve-codebase-architecture, zoom-out, caveman. An alternative skill framework to forge-superpowers.",
+  "version": "1.0.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "tdd",
+    "debugging",
+    "diagnose",
+    "grilling",
+    "planning",
+    "architecture",
+    "deep-modules",
+    "caveman",
+    "alternative-to-superpowers"
+  ]
+}

@@ -26,6 +26,7 @@ plugins — install all or pick what you need.
 /plugin install forge-ui-forge        # iterative UI prototyping with per-project registry
 /plugin install forge-telegram        # Telegram listener + sender (bash + Monitor)
 /plugin install forge-proactive-qa    # autonomous Playwright QA agent (Telegram-notified)
+/plugin install forge-mattpocock      # alternative skills framework (mattpocock/skills)
 ```
 
 ## Working plugins
@@ -49,6 +50,7 @@ forge-keeper commands:
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
 | **forge-superpowers** | TDD, debugging, parallel agents, code review, worktrees, plans | Skills-based (auto-triggered) |
+| **forge-mattpocock** | Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman. Coexists with forge-superpowers | Skills-based (auto-triggered) |
 | **forge-deep-review** | Specialized review agents (tests, errors, types, comments, simplification) + automated PR review with inline GitHub comments | `/deep-review`, `/pr-review` |
 | **forge-brainstorming** | Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers) | `/brainstorming` |
 
@@ -149,6 +151,14 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 | Plugin | Original plugin | Original author |
 |--------|----------------|-----------------|
 | forge-frontend-design | [frontend-design](https://github.com/anthropics/claude-plugins-official) | Prithvi Rajasekaran, Alexander Bricken (Anthropic) |
+
+### [mattpocock/skills](https://github.com/mattpocock/skills)
+
+Original author: **Matt Pocock** ([@mattpocock](https://github.com/mattpocock))
+
+| Plugin | Upstream | Pinned ref |
+|--------|----------|------------|
+| forge-mattpocock | [skills](https://github.com/mattpocock/skills) | main @ b56795b |
 
 ### Customizations
 

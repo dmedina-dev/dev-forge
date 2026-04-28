@@ -56,6 +56,7 @@ SHORT_LABELS = {
     "forge-profiles":        "Plugin profile manager — switch plugin sets per work mode",
     "forge-frontend-design": "Distinctive, production-grade UI/UX design",
     "forge-ui-forge":        "Iterative UI prototyping + live overlay over an existing dev server",
+    "forge-mattpocock":      "Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman",
     "forge-telegram":        "Telegram bridge — listener + sender (bash + Monitor)",
     "forge-proactive-qa":    "Autonomous Playwright QA agent (Telegram-notified)",
     "forge-init":            "Project bootstrapper + migrate-from-forge helper",
@@ -88,7 +89,7 @@ disposable_names = [n for n in plugins if n in DISPOSABLE]
 # Sort working in install order: dependencies first, then independent.
 def sort_working(names):
     by_name = {n: plugins[n] for n in names}
-    deps = {n: set((by_name[n].get("dependencies") or {}).get("required", [])) for n in names}
+    deps = {n: set(list(by_name[n].get("dependencies") or [])) for n in names}
     ordered, seen = [], set()
     def visit(n):
         if n in seen: return
@@ -108,7 +109,7 @@ def describe(name):
 
 
 def requires(name):
-    return ", ".join((plugins[name].get("dependencies") or {}).get("required", [])) or "-"
+    return ", ".join(plugins[name].get("dependencies") or []) or "-"
 
 
 lines = []
@@ -190,7 +191,7 @@ lines.append("")
 lines.append("### Step 4: Install in order")
 lines.append("")
 for i, n in enumerate(working_ordered, start=1):
-    note = " (dependency first)" if any(n in (plugins[m].get("dependencies") or {}).get("required", []) for m in working_ordered) else ""
+    note = " (dependency first)" if any(n in (plugins[m].get("dependencies") or []) for m in working_ordered) else ""
     lines.append(f"{i}. {n}{note}")
 lines.append("")
 lines.append("For each:")

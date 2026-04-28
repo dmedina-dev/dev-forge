@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.2.1"
+    "version": "2.3.0"
   },
   "plugins": [
     {
@@ -17,7 +17,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-init"
       },
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "forge-keeper",
@@ -204,6 +204,21 @@
         "path": "plugins/forge-profiles"
       },
       "version": "1.1.1"
+    },
+    {
+      "name": "forge-mattpocock",
+      "description": "Engineering & productivity skills curated from mattpocock/skills: grill-me, grill-with-docs, to-prd, tdd, diagnose, improve-codebase-architecture, zoom-out, caveman. An alternative skill framework to forge-superpowers.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-mattpocock"
+      },
+      "version": "1.0.0",
+      "upstream": {
+        "repo": "mattpocock/skills",
+        "ref": "main",
+        "url": "https://github.com/mattpocock/skills"
+      }
     },
     {
       "name": "forge-ui-forge",

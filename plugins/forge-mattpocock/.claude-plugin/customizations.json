@@ -1,0 +1,133 @@
+{
+  "origin": {
+    "type": "github",
+    "repo": "mattpocock/skills",
+    "path": "",
+    "ref": "main",
+    "commit": "b56795bed1236302f42f61449210bf50cdbb8859",
+    "fetched_at": "2026-04-28",
+    "check_url": "https://github.com/mattpocock/skills/commits/main"
+  },
+  "upstream_status": {
+    "last_checked": "2026-04-28",
+    "latest_ref": "main",
+    "latest_commit": "b56795bed1236302f42f61449210bf50cdbb8859",
+    "has_updates": false,
+    "summary": "Initial fetch — pinned at HEAD of main. Upstream has no tags/releases.",
+    "changes": []
+  },
+  "customizations": [
+    {
+      "id": "custom-01",
+      "type": "excluded",
+      "target": "skills/personal/",
+      "summary": "Excluded personal-use skills",
+      "reason": "Tied to Matt Pocock's own setup, not promoted for redistribution per upstream CLAUDE.md"
+    },
+    {
+      "id": "custom-02",
+      "type": "excluded",
+      "target": "skills/deprecated/",
+      "summary": "Excluded deprecated skills bucket",
+      "reason": "Upstream marks these as no longer used"
+    },
+    {
+      "id": "custom-03",
+      "type": "excluded",
+      "target": "skills/misc/",
+      "summary": "Excluded misc bucket — not part of curated subset",
+      "reason": "User selected only 6 skills (grill-me, grill-with-docs, to-prd, tdd, diagnose, triage)"
+    },
+    {
+      "id": "custom-04",
+      "type": "excluded",
+      "target": "skills/engineering/setup-matt-pocock-skills/",
+      "summary": "Excluded upstream setup skill",
+      "reason": "Each ported skill is self-contained. Setup info (canonical triage labels, issue-tracker assumptions) is inlined in the skills that need it (triage). to-prd no longer references an issue tracker at all."
+    },
+    {
+      "id": "custom-05",
+      "type": "excluded",
+      "target": "skills/engineering/to-issues/",
+      "summary": "Excluded — bound to GitHub issues",
+      "reason": "Out of scope for this curation; user only requested the 6 skills above"
+    },
+    {
+      "id": "custom-06",
+      "type": "modified",
+      "target": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "summary": "Added on second-pass review. Re-pointed CONTEXT.md / CONTEXT-FORMAT.md references at forge-keeper docs structure (docs/glossary.md / GLOSSARY-FORMAT.md). LANGUAGE.md and DEEPENING.md copied unmodified; INTERFACE-DESIGN.md had one CONTEXT.md mention, now generic.",
+      "reason": "Completes the engineering trinity (build → diagnose → improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
+    },
+    {
+      "id": "custom-07",
+      "type": "added",
+      "target": "skills/zoom-out/SKILL.md",
+      "summary": "Included unmodified on second-pass review",
+      "reason": "Tiny skill (4 lines of body) that fills the 'help me understand this area' niche which the rest of the framework doesn't cover"
+    },
+    {
+      "id": "custom-08",
+      "type": "excluded",
+      "target": "skills/engineering/qa/",
+      "summary": "Not in selected subset",
+      "reason": "User did not request this skill — forge-proactive-qa already covers QA in dev-forge"
+    },
+    {
+      "id": "custom-09",
+      "type": "added",
+      "target": "skills/caveman/SKILL.md",
+      "summary": "Included unmodified on second-pass review",
+      "reason": "Productivity skill: ultra-compressed communication mode. Self-contained, opt-in via explicit triggers ('caveman mode' / 'be brief'); no risk of accidental activation"
+    },
+    {
+      "id": "custom-09b",
+      "type": "excluded",
+      "target": "skills/productivity/write-a-skill/",
+      "summary": "Excluded — overlaps with claude-plugins-official/skill-creator",
+      "reason": "skill-creator (already used in this account) is the more sophisticated of the two. Two skills competing for the same triggers worsens activation for both."
+    },
+    {
+      "id": "custom-09c",
+      "type": "excluded",
+      "target": "skills/misc/",
+      "summary": "Excluded misc bucket (git-guardrails, migrate-to-shoehorn, scaffold-exercises, setup-pre-commit)",
+      "reason": "git-guardrails-claude-code overlaps with forge-security + forge-hookify (the latter exists precisely to author rules like this). setup-pre-commit is Husky/JS-only, too narrow for dev-forge's multi-stack profile. migrate-to-shoehorn and scaffold-exercises are Pocock-specific tooling (TS test library and course scaffolding)."
+    },
+    {
+      "id": "custom-10",
+      "type": "modified",
+      "target": "skills/grill-with-docs/SKILL.md",
+      "summary": "Adapted to forge-keeper documentation structure",
+      "reason": "Upstream targets CONTEXT.md / CONTEXT-MAP.md. Dev Forge projects center docs around CLAUDE.md (root + zoned), .claude/rules/, docs/exemplars.md, docs/adr/, and (lazy) docs/glossary.md. The skill now grills against that layout."
+    },
+    {
+      "id": "custom-11",
+      "type": "removed",
+      "target": "skills/grill-with-docs/CONTEXT-FORMAT.md",
+      "summary": "Removed — replaced by GLOSSARY-FORMAT.md aligned with forge-keeper docs",
+      "reason": "Forge-keeper keeps domain language in docs/glossary.md (lazy), separate from CLAUDE.md's conventions/architecture role (which is line-limited)"
+    },
+    {
+      "id": "custom-12",
+      "type": "modified",
+      "target": "skills/to-prd/SKILL.md",
+      "summary": "Removed all GitHub / issue-tracker assignment; output is a wave-organized plan saved to docs/plans/",
+      "reason": "User explicitly requested no GitHub assignment and plans organized by waves like forge-superpowers (parallel tasks within a wave, sequential between waves)"
+    },
+    {
+      "id": "custom-13",
+      "type": "excluded",
+      "target": "skills/engineering/triage/",
+      "summary": "Excluded triage skill — fundamentally an issue-tracker workflow",
+      "reason": "User opted out: without an issue tracker pumping work in, the skill has nothing to triage. The state machine and AGENT-BRIEF / OUT-OF-SCOPE patterns are independently useful but not bundled here."
+    },
+    {
+      "id": "custom-14",
+      "type": "added",
+      "target": "README.md",
+      "summary": "Added README with attribution to Matt Pocock and per-skill manifest",
+      "reason": "Required by dev-forge curation conventions"
+    }
+  ]
+}

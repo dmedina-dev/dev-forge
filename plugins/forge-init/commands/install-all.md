@@ -25,6 +25,7 @@ Always-on plugins for daily development work.
 | forge-proactive-qa | Autonomous Playwright QA agent (Telegram-notified) | - |
 | forge-brainstorming | Teammate-driven full lifecycle with 5 persistent agents | forge-superpowers |
 | forge-profiles | Plugin profile manager — switch plugin sets per work mode | - |
+| forge-mattpocock | Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman | - |
 | forge-ui-forge | Iterative UI prototyping + live overlay over an existing dev server | - |
 
 ### Configuration plugins (NOT installed by this command)
@@ -69,7 +70,8 @@ Already installed: [list or "none"]
 9. forge-proactive-qa — Autonomous Playwright QA agent (Telegram-notified)
 10. forge-brainstorming — Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers ✓)
 11. forge-profiles — Plugin profile manager — switch plugin sets per work mode
-12. forge-ui-forge — Iterative UI prototyping + live overlay over an existing dev server
+12. forge-mattpocock — Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman
+13. forge-ui-forge — Iterative UI prototyping + live overlay over an existing dev server
 
 ### Not included (configuration plugins — install on demand):
 - forge-init → /plugin install forge-init (New project)
@@ -95,7 +97,8 @@ The user may exclude plugins from the working set. Adjust the plan.
 9. forge-proactive-qa
 10. forge-brainstorming
 11. forge-profiles
-12. forge-ui-forge
+12. forge-mattpocock
+13. forge-ui-forge
 
 For each:
 ```
@@ -105,7 +108,7 @@ For each:
 ### Step 5: Post-install summary
 
 ```
-Dev Forge — 12 working plugins installed
+Dev Forge — 13 working plugins installed
 
 Working:
   forge-keeper ✓
@@ -119,6 +122,7 @@ Working:
   forge-proactive-qa ✓
   forge-brainstorming ✓
   forge-profiles ✓
+  forge-mattpocock ✓
   forge-ui-forge ✓
 
 Configuration (install when needed):

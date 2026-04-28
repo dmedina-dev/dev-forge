@@ -105,6 +105,14 @@ Which plugins depend on or complement each other.
 - 3 commands: /profile-create, /profile-list, /profile-change
 - Profiles stored in .claude/settings.local.json (gitignored, personal)
 
+### forge-mattpocock
+- **Independent** — alternative skills framework, works standalone
+- Curated from mattpocock/skills (pinned at HEAD of main, no upstream tags)
+- 8 skills: grill-me, grill-with-docs, to-prd, tdd, diagnose, improve-codebase-architecture, zoom-out, caveman
+- Adaptations: grill-with-docs and improve-codebase-architecture rewired to forge-keeper docs structure (CLAUDE.md / .claude/rules/ / docs/glossary.md / docs/adr/); to-prd outputs wave-organized plans to docs/plans/ (no GitHub assignment); zoom-out and caveman are unmodified
+- Excluded by design (justifications in customizations.json): triage / to-issues (issue-tracker workflows), write-a-skill (overlaps with skill-creator), git-guardrails (overlaps with forge-security + forge-hookify), setup-pre-commit (JS-only), migrate-to-shoehorn / scaffold-exercises (niche)
+- Coexists with forge-superpowers (no skill-name collisions). Side-by-side alternative to compare
+
 ## Current plugin matrix
 
 ```
@@ -125,6 +133,7 @@ forge-export              -                   -                       everything
 forge-context-mcp         -                   -                       everything else
 forge-brainstorming       forge-superpowers   forge-commit            everything else
 forge-profiles            -                   -                       everything else
+forge-mattpocock          -                   forge-keeper            everything else
 ```
 
 ## Rules for dependencies

@@ -61,6 +61,12 @@ Which plugins depend on or complement each other.
 - Curated from anthropics/claude-code (plugins/commit-commands) with customizations
 - 3 commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup)
 
+### forge-frontend-design
+- **Independent** — frontend design skill, works standalone
+- Curated from anthropics/claude-plugins-official (frontend-design)
+- Skill-based: triggers automatically on UI/UX design tasks, focused on distinctive, production-grade aesthetics over generic AI defaults
+- Complements forge-ui-forge (design philosophy + iterative HTML prototyping form a natural pair, but each works alone)
+
 ### forge-telegram
 - **Independent** — Telegram listener + sender, works standalone
 - Native plugin (no upstream) — bash scripts + Haiku teammate using the `Monitor` tool
@@ -113,6 +119,15 @@ Which plugins depend on or complement each other.
 - Excluded by design (justifications in customizations.json): triage / to-issues (issue-tracker workflows), write-a-skill (overlaps with skill-creator), git-guardrails (overlaps with forge-security + forge-hookify), setup-pre-commit (JS-only), migrate-to-shoehorn / scaffold-exercises (niche)
 - Coexists with forge-superpowers (no skill-name collisions). Side-by-side alternative to compare
 
+### forge-ui-forge
+- **Independent** — UI prototyping toolkit, works standalone
+- Native plugin (no upstream)
+- 1 skill + subcommands: serve, stop, status, refresh
+- Iterative HTML screen variations, click-to-annotate overlay (point pins on click, area selection on Shift+drag), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures under `.ui-forge/`
+- Live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp)
+- Produces framework-agnostic specs for downstream implementation
+- Complements forge-frontend-design (philosophy + prototyping form a natural pair)
+
 ## Current plugin matrix
 
 ```
@@ -134,6 +149,7 @@ forge-context-mcp         -                   -                       everything
 forge-brainstorming       forge-superpowers   forge-commit            everything else
 forge-profiles            -                   -                       everything else
 forge-mattpocock          -                   forge-keeper            everything else
+forge-ui-forge            -                   forge-frontend-design   everything else
 ```
 
 ## Rules for dependencies

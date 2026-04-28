@@ -120,6 +120,10 @@ Each entry in `changes[]`:
 - **`modified`** — upstream content changed (trigger adjustments, config tweaks)
 - **`added`** — new content not in upstream (custom scripts, extra references)
 
+### Document exclusions explicitly
+
+When curating a subset of a multi-skill upstream, list **every excluded skill** as its own entry with a concrete reason — overlap with an existing dev-forge plugin, JS-only narrowness, niche tooling, GitHub-tracker dependency, etc. This makes second-pass review tractable: the question "why didn't we take X?" gets a written answer instead of a re-debate. See `plugins/forge-mattpocock/.claude-plugin/customizations.json` for a worked example (8 included, 8 excluded, each with a one-line reason).
+
 ## Update check flow
 
 ### Quick check: "Are there updates?"

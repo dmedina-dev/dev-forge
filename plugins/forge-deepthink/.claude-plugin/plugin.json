@@ -1,0 +1,19 @@
+{
+  "name": "forge-deepthink",
+  "description": "Structured deep-thinking protocol invoked via /deepthink — pre-filled 7-slot interview, audit-ready response with red-team, pre-mortem, and assumption audit. Stays active for the whole session with auto-compression checkpoints.",
+  "version": "0.1.0",
+  "author": {
+    "name": "dmedina",
+    "email": "me@dmedina.dev"
+  },
+  "repository": "https://github.com/dmedina-dev/dev-forge",
+  "license": "MIT",
+  "keywords": [
+    "deep-thinking",
+    "protocol",
+    "red-team",
+    "pre-mortem",
+    "honesty",
+    "decision-support"
+  ]
+}

@@ -31,7 +31,8 @@ dev-forge/
 │   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
 │   ├── forge-profiles/                ← plugin profile manager (independent)
 │   ├── forge-ui-forge/                ← UI prototyping with per-project registry + overlay annotation
-│   └── forge-mattpocock/              ← alternative skills framework (curated from mattpocock/skills)
+│   ├── forge-mattpocock/              ← alternative skills framework (curated from mattpocock/skills)
+│   └── forge-deepthink/               ← structured /deepthink protocol (independent)
 └── docs/
     ├── dependencies.md                ← dependency map between plugins
     └── customizations-pattern.md      ← vendor + customizations pattern

@@ -1,0 +1,33 @@
+{
+  "skill_name": "deep-think",
+  "evals": [
+    {
+      "id": 1,
+      "name": "high-stakes-architecture",
+      "prompt": "User invocation: `/deepthink Estoy decidiendo entre Postgres con particionado por rango de fecha vs sharding por user_id para nuestra tabla user_events. Volumen actual 50M filas/mes, creciendo ~30% YoY. Equipo de 4 engineers, todos backend Go, sin DBAs. Estamos en AWS (RDS Postgres single-instance hoy). El feedback que tengo es que sharding nos da escalado pero introduce mucha complejidad operacional; particionado es más simple pero hay quien dice que no escala. Necesito decidir esta semana porque bloquea el roadmap de Q3.`\n\nApply the deep-think protocol to this prompt as defined in the skill. Run the pre-filled 7-slot interview, then **assume the user replied 'ok' to confirm all slots**, and produce the full response with all 7 sections. The user's preferred output format for slot 7 (unless your inference contradicts it): a clear recommendation in 2-3 sentences, followed by a 4-row table comparing trade-offs, then 3 concrete next steps.",
+      "expected_output": "Full deep-think protocol response: 7-slot interview (with high-quality, specific suggestions for each slot — e.g., role should reference Postgres+OLTP scaling, not 'database expert'), followed by all 7 sections. Section 4 must follow the format spec (2-3 sentence recommendation + 4-row trade-off table + 3 next steps). Pre-mortem must be concrete to OLTP/Postgres failure modes, not generic. Assumption audit at the end.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "fatal-flaw-plan",
+      "prompt": "User invocation: `/deepthink Mi plan: somos una startup de 5 personas con $200K en banco y $30K MRR creciendo 8% mes a mes. Voy a contratar 50 ingenieros el próximo trimestre para acelerar el roadmap y capturar el mercado antes de que entre un competidor grande. Quiero validar el plan.`\n\nApply the deep-think protocol. Run the pre-filled 7-slot interview, then **assume the user replied 'ok'**, and produce the full response with all 7 sections. Honor the honesty discipline: if the plan has a fatal flaw, surface it in section 1 or 2, not buried in section 5. The user explicitly opted in to direct feedback.",
+      "expected_output": "Full protocol response. The fatal flaw (cash will run out in ~2 months given the burn implied by 50 hires vs $200K in bank and $30K MRR) MUST be surfaced in section 1 (context confirmation) or section 2 (reasoning), NOT first appearing in section 5 (red team). Section 4 (recommendation) must NOT sycophantically endorse the plan as-is. Pre-mortem is concrete (cash runway, hiring/onboarding capacity, integration-engineering bottlenecks).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "critique-only-with-format",
+      "prompt": "User invocation: `/deepthink Destruye esta idea, no me sugieras alternativa. Plan: vamos a migrar de Postgres a MongoDB para escalar mejor nuestro producto SaaS B2B. El equipo está convencido. Output format: 5 bullets máximo, cada bullet ≤ 20 palabras.`\n\nApply the deep-think protocol. Run the pre-filled interview, **assume user replied 'ok'**, then produce the full response. Note: this is a critique-only request — adapt sections accordingly (per the 'Adapting the protocol' guidance in the skill). Honor the explicit output format in section 4.",
+      "expected_output": "Sections 1, 5, 6 are the main event (per skill guidance for critique-only). Section 4 is a one-liner stating no alternative is being recommended. Section 5 (red team) is substantive — concrete MongoDB-vs-Postgres failure modes for B2B SaaS (joins, transactions, schema-on-read for relational data, ops complexity). The 5-bullet/≤20-words format constraint applies to section 4 OR section 5 (use judgment). Skipped sections must be briefly mentioned ('Skipping X — reason').",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "trivial-question-bypass",
+      "prompt": "User invocation: `/deepthink ¿Cuál es la sintaxis de list comprehension en Python con un condicional?`\n\nApply the deep-think protocol. The skill explicitly says: 'Quick factual questions — even if the user types /deepthink, gently note esto no necesita deep-think, te respondo normal and answer directly.' Test that judgment is applied here.",
+      "expected_output": "Output must NOT run the 7-slot interview. Output must explicitly note something like 'esto no necesita deep-think, te respondo normal' (or equivalent in the conversation language). Output must answer the question directly with the Python syntax (e.g., `[x for x in items if x > 0]`). Total response should be brief — a few lines, not a 7-section essay.",
+      "files": []
+    }
+  ]
+}

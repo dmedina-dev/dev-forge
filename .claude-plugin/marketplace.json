@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.3.0"
+    "version": "2.4.0"
   },
   "plugins": [
     {
@@ -229,6 +229,16 @@
         "path": "plugins/forge-ui-forge"
       },
       "version": "0.4.0"
+    },
+    {
+      "name": "forge-deepthink",
+      "description": "Structured deep-thinking protocol invoked via the /deepthink slash command. Pre-filled 7-slot interview, then audit-ready response with visible reasoning, confidence-tagged assumptions, devil's-advocate red team, scope-locked recommendation in user-specified format, 6-month pre-mortem, and final assumption audit with validation steps. Stays active for the rest of the session with auto-compression checkpoints every ~5-6 turns.",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/dmedina-dev/dev-forge.git",
+        "path": "plugins/forge-deepthink"
+      },
+      "version": "0.1.0"
     }
   ]
 }

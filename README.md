@@ -27,6 +27,7 @@ plugins — install all or pick what you need.
 /plugin install forge-telegram        # Telegram listener + sender (bash + Monitor)
 /plugin install forge-proactive-qa    # autonomous Playwright QA agent (Telegram-notified)
 /plugin install forge-mattpocock      # alternative skills framework (mattpocock/skills)
+/plugin install forge-deepthink       # structured /deepthink protocol (audit-ready answers)
 ```
 
 ## Working plugins
@@ -53,6 +54,7 @@ forge-keeper commands:
 | **forge-mattpocock** | Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman. Coexists with forge-superpowers | Skills-based (auto-triggered) |
 | **forge-deep-review** | Specialized review agents (tests, errors, types, comments, simplification) + automated PR review with inline GitHub comments | `/deep-review`, `/pr-review` |
 | **forge-brainstorming** | Teammate-driven full lifecycle with 5 persistent agents (requires forge-superpowers) | `/brainstorming` |
+| **forge-deepthink** | Structured deep-thinking protocol — 7-slot pre-filled interview, then audit-ready answer with reasoning, confidence-tagged assumptions, red team, pre-mortem, and validation steps. Stays active for the session | `/deepthink` |
 
 ### Utility
 

@@ -57,6 +57,7 @@ SHORT_LABELS = {
     "forge-frontend-design": "Distinctive, production-grade UI/UX design",
     "forge-ui-forge":        "Iterative UI prototyping + live overlay over an existing dev server",
     "forge-mattpocock":      "Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman",
+    "forge-deepthink":       "Structured /deepthink protocol — pre-filled 7-slot interview, audit-ready response with red team, pre-mortem, and assumption audit",
     "forge-telegram":        "Telegram bridge — listener + sender (bash + Monitor)",
     "forge-proactive-qa":    "Autonomous Playwright QA agent (Telegram-notified)",
     "forge-init":            "Project bootstrapper + migrate-from-forge helper",

@@ -128,6 +128,14 @@ Which plugins depend on or complement each other.
 - Produces framework-agnostic specs for downstream implementation
 - Complements forge-frontend-design (philosophy + prototyping form a natural pair)
 
+### forge-deepthink
+- **Independent** — structured deep-thinking protocol, native plugin, no upstream
+- 1 slash command (`/deepthink`) that invokes 1 skill (`deep-think`) via the Skill tool
+- Slash-command-only trigger by design: the skill description is anti-trigger to prevent activation on natural-language phrases like "be brutally honest" or "razonamiento profundo"
+- Three-phase pipeline: pre-filled 7-slot interview → audit-ready response (sections 1-7: context confirmation, reasoning, assumptions w/ confidence, recommendation in user format, red team, pre-mortem, assumption audit) → auto-compression checkpoint every ~5-6 turns
+- Stays active for the rest of the session once invoked, until the user says "exit deepthink" / "stop deep mode"
+- Complements forge-keeper (audit-ready outputs benefit from session logs) and forge-superpowers:requesting-code-review (use after a /deepthink decision before merging)
+
 ## Current plugin matrix
 
 ```
@@ -150,6 +158,7 @@ forge-brainstorming       forge-superpowers   forge-commit            everything
 forge-profiles            -                   -                       everything else
 forge-mattpocock          -                   forge-keeper            everything else
 forge-ui-forge            -                   forge-frontend-design   everything else
+forge-deepthink           -                   forge-keeper            everything else
 ```
 
 ## Rules for dependencies

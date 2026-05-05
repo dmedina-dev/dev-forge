@@ -27,6 +27,7 @@ Always-on plugins for daily development work.
 | forge-profiles | Plugin profile manager — switch plugin sets per work mode | - |
 | forge-mattpocock | Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman | - |
 | forge-ui-forge | Iterative UI prototyping + live overlay over an existing dev server | - |
+| forge-deepthink | Structured /deepthink protocol — pre-filled 7-slot interview, audit-ready response with red team, pre-mortem, and assumption audit | - |
 
 ### Configuration plugins (NOT installed by this command)
 
@@ -72,6 +73,7 @@ Already installed: [list or "none"]
 11. forge-profiles — Plugin profile manager — switch plugin sets per work mode
 12. forge-mattpocock — Alternative skills framework: grill / to-prd (waves) / tdd / diagnose / improve-architecture / zoom-out / caveman
 13. forge-ui-forge — Iterative UI prototyping + live overlay over an existing dev server
+14. forge-deepthink — Structured /deepthink protocol — pre-filled 7-slot interview, audit-ready response with red team, pre-mortem, and assumption audit
 
 ### Not included (configuration plugins — install on demand):
 - forge-init → /plugin install forge-init (New project)
@@ -99,6 +101,7 @@ The user may exclude plugins from the working set. Adjust the plan.
 11. forge-profiles
 12. forge-mattpocock
 13. forge-ui-forge
+14. forge-deepthink
 
 For each:
 ```
@@ -108,7 +111,7 @@ For each:
 ### Step 5: Post-install summary
 
 ```
-Dev Forge — 13 working plugins installed
+Dev Forge — 14 working plugins installed
 
 Working:
   forge-keeper ✓
@@ -124,6 +127,7 @@ Working:
   forge-profiles ✓
   forge-mattpocock ✓
   forge-ui-forge ✓
+  forge-deepthink ✓
 
 Configuration (install when needed):
   forge-init → /plugin install forge-init

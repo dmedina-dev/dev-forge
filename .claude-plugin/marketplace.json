@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.4.0"
+    "version": "2.5.0"
   },
   "plugins": [
     {
@@ -37,10 +37,10 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-superpowers"
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "upstream": {
         "repo": "obra/superpowers",
-        "ref": "v5.0.6",
+        "ref": "v5.1.0",
         "url": "https://github.com/obra/superpowers"
       }
     },
@@ -52,7 +52,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-plugin-dev"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",
@@ -67,7 +67,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-deep-review"
       },
-      "version": "2.0.0",
+      "version": "2.0.1",
       "upstream": [
         {
           "repo": "anthropics/claude-code",
@@ -89,7 +89,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-hookify"
       },
-      "version": "1.0.1",
+      "version": "1.0.2",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",
@@ -104,7 +104,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-security"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",
@@ -119,7 +119,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-commit"
       },
-      "version": "1.1.1",
+      "version": "1.1.2",
       "upstream": {
         "repo": "anthropics/claude-code",
         "ref": "main",
@@ -134,7 +134,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-frontend-design"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "anthropics/claude-plugins-official",
         "ref": "main",
@@ -213,7 +213,7 @@
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-mattpocock"
       },
-      "version": "1.0.0",
+      "version": "1.0.1",
       "upstream": {
         "repo": "mattpocock/skills",
         "ref": "main",

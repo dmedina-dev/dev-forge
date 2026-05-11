@@ -4,16 +4,16 @@
     "repo": "mattpocock/skills",
     "path": "",
     "ref": "main",
-    "commit": "b56795bed1236302f42f61449210bf50cdbb8859",
-    "fetched_at": "2026-04-28",
+    "commit": "9f2e0bd0ea776eb6372eb81fa8a4a47814a8404a",
+    "fetched_at": "2026-05-11",
     "check_url": "https://github.com/mattpocock/skills/commits/main"
   },
   "upstream_status": {
-    "last_checked": "2026-04-28",
+    "last_checked": "2026-05-11",
     "latest_ref": "main",
-    "latest_commit": "b56795bed1236302f42f61449210bf50cdbb8859",
+    "latest_commit": "9f2e0bd0ea776eb6372eb81fa8a4a47814a8404a",
     "has_updates": false,
-    "summary": "Initial fetch — pinned at HEAD of main. Upstream has no tags/releases.",
+    "summary": "Reviewed 18 upstream commits since prior pin (b56795be → 9f2e0bd0). Kept all local customizations: upstream changes to skills/engineering/grill-with-docs/SKILL.md and skills/engineering/to-prd/SKILL.md were minor wording / structural-section additions on top of the original upstream form; our local adaptations (custom-10, custom-12) target a different documentation layout (dev-forge docs/glossary.md / docs/plans/), so the upstream evolution is not absorbable without re-doing the adaptation. New upstream skills (prototype, handoff, in-progress/review, in-progress/writing-*) are excluded — see custom-15 through custom-20. No conflicts on excluded skills.",
     "changes": []
   },
   "customizations": [
@@ -128,6 +128,69 @@
       "target": "README.md",
       "summary": "Added README with attribution to Matt Pocock and per-skill manifest",
       "reason": "Required by dev-forge curation conventions"
+    },
+    {
+      "id": "custom-15",
+      "type": "excluded",
+      "target": "skills/engineering/prototype/",
+      "summary": "Excluded new prototype skill (introduced 2026-05-06)",
+      "reason": "Interactive design exploration overlaps with forge-ui-forge, which is already the dev-forge tool for prototyping screens, registry components, and per-project mock fixtures with hot-reload annotation. Two skills competing on prototyping triggers worsens activation for both."
+    },
+    {
+      "id": "custom-16",
+      "type": "excluded",
+      "target": "skills/productivity/handoff/",
+      "summary": "Excluded new handoff skill (introduced 2026-05-06)",
+      "reason": "Agent transition documentation overlaps with forge-keeper:sync + docs/sessions/ logs, which already capture session handoffs in dev-forge. Different mental model — handoff writes a single file targeted at the next agent, forge-keeper persists structured session entries."
+    },
+    {
+      "id": "custom-17",
+      "type": "excluded",
+      "target": "skills/in-progress/review/",
+      "summary": "Excluded new in-progress review skill (introduced 2026-05-10)",
+      "reason": "Two-axis code review overlaps with forge-deep-review (5 specialist review agents) and forge-superpowers requesting-code-review. Adding a third reviewer worsens trigger competition without adding a perspective dev-forge doesn't already cover."
+    },
+    {
+      "id": "custom-18",
+      "type": "excluded",
+      "target": "skills/in-progress/writing-fragments/",
+      "summary": "Excluded in-progress writing-fragments skill",
+      "reason": "Marked in-progress upstream; niche writing-workflow tool (capture initial user prompts as fragments) not aligned with dev-forge's engineering-oriented plugin set"
+    },
+    {
+      "id": "custom-19",
+      "type": "excluded",
+      "target": "skills/in-progress/writing-beats/",
+      "summary": "Excluded in-progress writing-beats skill",
+      "reason": "Marked in-progress upstream; writing-workflow tool, not engineering-oriented"
+    },
+    {
+      "id": "custom-20",
+      "type": "excluded",
+      "target": "skills/in-progress/writing-shape/",
+      "summary": "Excluded in-progress writing-shape skill",
+      "reason": "Marked in-progress upstream; writing-workflow tool, not engineering-oriented"
+    },
+    {
+      "id": "custom-21",
+      "type": "excluded",
+      "target": ".out-of-scope/",
+      "summary": "Excluded upstream out-of-scope notes (added during 2026-04 → 2026-05 window)",
+      "reason": "Upstream project's own audit trail of rejected skill ideas; not part of curated skill content"
+    },
+    {
+      "id": "custom-22",
+      "type": "excluded",
+      "target": "scripts/",
+      "summary": "Excluded upstream scripts/ (link-skills.sh, list-skills.sh)",
+      "reason": "Upstream maintainer tooling for managing skill symlinks across mattpocock's monorepo; dev-forge's marketplace structure handles plugin discovery differently"
+    },
+    {
+      "id": "custom-23",
+      "type": "excluded",
+      "target": ".claude-plugin/plugin.json (upstream version)",
+      "summary": "Replaced with dev-forge plugin metadata (name: forge-mattpocock, dev-forge author/repo, dev-forge-tracked version)",
+      "reason": "Each dev-forge plugin is published under the forge-* namespace with its own author/version. Standard renaming pattern applied to every external plugin in this marketplace."
     }
   ]
 }

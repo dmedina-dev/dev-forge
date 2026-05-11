@@ -21,7 +21,7 @@ Which plugins depend on or complement each other.
 
 ### forge-superpowers
 - **Independent** — core skills library, works standalone
-- Curated from obra/superpowers v5.0.6 with customizations (see `.claude-plugin/customizations.json`)
+- Curated from obra/superpowers v5.1.0 with customizations (see `.claude-plugin/customizations.json`)
 - 12 skills: brainstorming, TDD, debugging, parallel agents, code review, worktrees, plans, etc.
 - Skills reference each other internally but each works independently
 - Complements forge-keeper (debugging/TDD workflows benefit from context maintenance)

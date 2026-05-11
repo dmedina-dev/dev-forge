@@ -3,17 +3,17 @@
     "type": "github",
     "repo": "obra/superpowers",
     "path": "",
-    "ref": "v5.0.7",
-    "commit": "1f20bef3f59b85ad7b52718f822e37c4478a3ff5",
-    "fetched_at": "2026-04-04",
+    "ref": "v5.1.0",
+    "commit": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
+    "fetched_at": "2026-05-11",
     "check_url": "https://github.com/obra/superpowers/releases"
   },
   "upstream_status": {
-    "last_checked": "2026-04-23",
-    "latest_ref": "v5.0.7",
-    "latest_commit": "b7a8f76985f1e93e75dd2f2a3b424dc731bd9d37",
+    "last_checked": "2026-05-11",
+    "latest_ref": "v5.1.0",
+    "latest_commit": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
     "has_updates": false,
-    "summary": "Latest tag still v5.0.7. 5 upstream commits past tag are README / contributor guidelines only \u2014 no skill/agent/hook changes.",
+    "summary": "Applied v5.0.7 → v5.1.0. 10 skill files refreshed (worktree rewrites, requesting-code-review absorbs deleted agent persona, systematic-debugging + plans + subagent-driven-development updates). README refreshed. Deleted local copies of 3 deprecated slash-command stubs (/brainstorm, /execute-plan, /write-plan) and standalone agents/code-reviewer.md to mirror upstream removals. Local customizations preserved on hooks/hooks.json (custom-13), hooks/session-start (custom-14), skills/brainstorming/SKILL.md (custom-12), and .claude-plugin/plugin.json (custom-28).",
     "changes": []
   },
   "customizations": [
@@ -106,14 +106,14 @@
       "type": "modified",
       "target": "hooks/hooks.json",
       "summary": "Removed Cursor platform detection from session-start hook",
-      "reason": "Only using Claude Code, simplified hook command path"
+      "reason": "Only using Claude Code, simplified hook command path. Upstream v5.1.0 changed this file to invoke hooks/run-hook.cmd (Windows-style runner); we explicitly kept the direct bash invocation since custom-09 excludes run-hook.cmd"
     },
     {
       "id": "custom-14",
       "type": "modified",
       "target": "hooks/session-start",
       "summary": "Removed multi-platform detection, Claude Code only",
-      "reason": "Stripped Cursor/fallback platform branches, kept only Claude Code output format"
+      "reason": "Stripped Cursor/Copilot platform branches and the using-superpowers content injection (custom-11 removed that skill). Kept only Claude Code SessionStart output format"
     },
     {
       "id": "custom-15",
@@ -149,6 +149,48 @@
       "target": "CODE_OF_CONDUCT.md",
       "summary": "Excluded upstream code of conduct",
       "reason": "Not relevant to plugin functionality"
+    },
+    {
+      "id": "custom-20",
+      "type": "excluded",
+      "target": "AGENTS.md",
+      "summary": "Excluded marketplace-level AI agent contributor guidelines (added v5.1.0)",
+      "reason": "Targets contributors submitting PRs to obra/superpowers, not relevant in a downstream dev-forge consumer"
+    },
+    {
+      "id": "custom-21",
+      "type": "excluded",
+      "target": "CLAUDE.md",
+      "summary": "Excluded marketplace-level CLAUDE.md (added v5.1.0; symlinks AGENTS.md upstream)",
+      "reason": "Upstream contributor guidance for the obra/superpowers repo itself; dev-forge has its own project-level CLAUDE.md"
+    },
+    {
+      "id": "custom-22",
+      "type": "excluded",
+      "target": "assets/",
+      "summary": "Excluded upstream branding assets (added v5.1.0)",
+      "reason": "Project branding (icons, SVG) for the upstream marketplace listing, not needed in vendored skills"
+    },
+    {
+      "id": "custom-23",
+      "type": "excluded",
+      "target": "scripts/sync-to-codex-plugin.sh",
+      "summary": "Excluded Codex plugin mirror tooling (added v5.1.0)",
+      "reason": "Upstream maintainer tooling for mirroring superpowers into the OpenAI Codex plugin marketplace, irrelevant downstream"
+    },
+    {
+      "id": "custom-24",
+      "type": "excluded",
+      "target": ".version-bump.json",
+      "summary": "Excluded upstream version-bump tooling config",
+      "reason": "Maintainer-only release tooling; we use dev-forge's own /release flow"
+    },
+    {
+      "id": "custom-25",
+      "type": "modified",
+      "target": ".claude-plugin/plugin.json",
+      "summary": "Renamed plugin (superpowers → forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
+      "reason": "Each dev-forge plugin is published independently under the forge-* namespace; version is tracked at the dev-forge marketplace level, not aligned to upstream releases"
     }
   ]
 }

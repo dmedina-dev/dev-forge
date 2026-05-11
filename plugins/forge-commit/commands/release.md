@@ -18,7 +18,7 @@ Do NOT proceed with the steps below unless the file exists.
 - Latest git tag: !`git describe --tags --abbrev=0 2>/dev/null || echo "none"`
 - Current marketplace version: !`python3 -c "import json; print(json.load(open('.claude-plugin/marketplace.json'))['metadata']['version'])"`
 - Changed plugin directories since last tag (or all if no tags): !`TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo ""); if [ -n "$TAG" ]; then git diff --name-only "$TAG"..HEAD -- plugins/ | cut -d/ -f1-2 | sort -u; else echo "No tags — all plugins are new"; git diff --name-only HEAD~10..HEAD -- plugins/ | cut -d/ -f1-2 | sort -u; fi`
-- Current plugin versions: !`for f in plugins/*/.claude-plugin/plugin.json; do echo "$(dirname $(dirname $f)): $(python3 -c "import json; print(json.load(open('$f'))['version'])" 2>/dev/null)"; done`
+- Current plugin versions: !`python3 -c "import json, glob, os; rows = sorted(glob.glob('plugins/*/.claude-plugin/plugin.json')); print('\n'.join('{}: {}'.format(os.path.dirname(os.path.dirname(f)), json.load(open(f))['version']) for f in rows) or '(no plugins found)')"`
 - Recent commits since last tag: !`TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo ""); if [ -n "$TAG" ]; then git log --oneline "$TAG"..HEAD; else git log --oneline -15; fi`
 
 ## Your task
@@ -55,14 +55,23 @@ Increment the marketplace `metadata.version` in `.claude-plugin/marketplace.json
 
 Run `python3 -m json.tool` on both `.claude-plugin/marketplace.json` and each modified `plugin.json` to ensure valid JSON.
 
-Then verify version consistency:
+Then verify version consistency (single Python process — avoids shell-glob fragility under zsh's `nomatch` and reads marketplace.json once instead of N times):
 ```bash
-for f in plugins/*/.claude-plugin/plugin.json; do
-  NAME=$(python3 -c "import json; print(json.load(open('$f'))['name'])")
-  V_PLUGIN=$(python3 -c "import json; print(json.load(open('$f'))['version'])")
-  V_MARKET=$(python3 -c "import json; d=json.load(open('.claude-plugin/marketplace.json')); print(next((p['version'] for p in d['plugins'] if p['name']=='"$NAME"'), 'NOT_FOUND'))")
-  if [ "$V_PLUGIN" != "$V_MARKET" ]; then echo "MISMATCH: $NAME plugin=$V_PLUGIN marketplace=$V_MARKET"; else echo "OK: $NAME v$V_PLUGIN"; fi
-done
+python3 <<'EOF'
+import json, glob, sys
+market_versions = {p['name']: p['version'] for p in json.load(open('.claude-plugin/marketplace.json'))['plugins']}
+all_ok = True
+for f in sorted(glob.glob('plugins/*/.claude-plugin/plugin.json')):
+    plugin = json.load(open(f))
+    name, vp = plugin['name'], plugin['version']
+    vm = market_versions.get(name, 'NOT_FOUND')
+    if vp != vm:
+        print(f'MISMATCH: {name} plugin={vp} marketplace={vm}')
+        all_ok = False
+    else:
+        print(f'OK: {name} v{vp}')
+sys.exit(0 if all_ok else 1)
+EOF
 ```
 
 ### 6. Commit and tag

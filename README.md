@@ -136,7 +136,7 @@ Original author: **Jesse Vincent** ([@obra](https://github.com/obra))
 
 | Plugin | Upstream | Version |
 |--------|----------|---------|
-| forge-superpowers | [superpowers](https://github.com/obra/superpowers) | v5.0.6 |
+| forge-superpowers | [superpowers](https://github.com/obra/superpowers) | v5.1.0 |
 
 ### [anthropics/claude-code](https://github.com/anthropics/claude-code)
 
@@ -160,7 +160,7 @@ Original author: **Matt Pocock** ([@mattpocock](https://github.com/mattpocock))
 
 | Plugin | Upstream | Pinned ref |
 |--------|----------|------------|
-| forge-mattpocock | [skills](https://github.com/mattpocock/skills) | main @ b56795b |
+| forge-mattpocock | [skills](https://github.com/mattpocock/skills) | main @ 9f2e0bd |
 
 ### Customizations
 

@@ -175,8 +175,8 @@ Always-available (http:// and file://):
   - `replace-with-registry` 🟣 — this block should be replaced by an existing registry component
   - `token-issue` 🟠 — wrong token used, missing token, or value inconsistency
   - `data-issue` 🔴 — mock data unrealistic / missing field / missing edge case
-  - `logic-rule` 🩷 — business rule or validation (invariant the UI must respect)
-  - `state-transition` 🩵 — temporal/sequential behavior (`X → Y on trigger, after timing`)
+  - `logic-rule` ⚙️ — business rule or validation (invariant the UI must respect) · pin colour `#ec4899`
+  - `state-transition` 🔄 — temporal/sequential behavior (`X → Y on trigger, after timing`) · pin colour `#06b6d4`
 - Panel side-bar, editable comments, per-pin type dropdown.
 - 📋 clipboard + ⬇ download as fallback export.
 - localStorage persistence.

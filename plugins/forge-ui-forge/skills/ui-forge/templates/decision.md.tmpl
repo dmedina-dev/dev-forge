@@ -1,0 +1,51 @@
+# Decision — {{SCREEN_TITLE}}
+
+> Screen ID: `{{SCREEN_ID}}`
+> Date: {{DECISION_DATE}}
+
+## Winning variant
+
+**{{WINNING_VARIANT_ID}}** — {{WINNING_VARIANT_NAME}}
+
+{{WHY_THIS_ONE_WON}}
+
+<!-- 2-4 sentences. What made this variant the right one for this screen's brief?
+     Frame it in terms of the brief's priorities (hierarchy, primary affordance,
+     information density, user flow), not aesthetic preference. -->
+
+## Borrowed from other variants
+
+{{MIX_BORROWED_PIECES}}
+
+<!-- Optional. If the final composition stitched pieces from multiple variants
+     (e.g. "kept the header from V03, the empty-state from V07"), list them here.
+     Drop the section entirely if the winner was used unmodified. -->
+
+## Rejected variants
+
+{{REJECTED_VARIANTS_LIST}}
+
+<!-- For each rejected variant, ONE line on why. Don't write a full review per variant;
+     the point is a future reader who asks "why didn't we pick V05?" gets a one-line
+     answer. Format:
+       - V01 — too dense, primary KPI lost in the noise
+       - V03 — header layout strong but body sacrificed scannability
+       - V05 — variant of V04 with no structural difference (wallpaper)
+       - V12 — interesting empty-state, but doesn't scale past 20 transactions
+     Group runs of "wallpaper" variants together when applicable. -->
+
+## What this decision does NOT decide
+
+{{OUT_OF_DECISION_SCOPE}}
+
+<!-- Optional. If the user explicitly deferred something ("we'll figure out the
+     mobile breakpoint later", "filter UI is out of scope for this screen"),
+     name it here so it doesn't get assumed-resolved by readers. -->
+
+## References
+
+- Variations file: `screens/{{SCREEN_ID}}/01-variations.html`
+- Forge iteration: `screens/{{SCREEN_ID}}/02-forge.html`
+- Feedback rounds: `screens/{{SCREEN_ID}}/feedback/round-*.json`
+- Distilled output: `screens/{{SCREEN_ID}}/output/screen.html`
+- Spec: `screens/{{SCREEN_ID}}/output/screen-spec.md`

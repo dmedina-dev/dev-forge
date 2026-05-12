@@ -57,6 +57,87 @@ Fixtures referenced:
 
 <!-- Screen-level orchestration. Filter changes that refetch, modal flows, navigation transitions. -->
 
+## Behavior
+
+<!--
+  Behavioral spec — the WHAT-it-DOES, complementary to the visual States section above.
+  Populated in Phase 4 from:
+   - The brief and (optional) Phase 1.5 `data/behavior.md` skeleton
+   - Pin distillation: `state-transition` pins → § State transitions; `logic-rule` pins → § Business rules + § Validations
+   - The mutation-related fields of `data/scenarios/*.json` (loading/error variants imply transitions)
+
+  Heuristic for splitting logic-rule pins:
+   - Comment starts with "validación:" / "validation:" OR mentions a specific named field → § Validations
+   - Otherwise → § Business rules
+
+  Subsection any of these that aren't applicable — drop the empty ones, don't leave placeholders.
+-->
+
+### State transitions
+
+{{STATE_TRANSITIONS}}
+
+<!-- Format: `from → to (on <trigger>, after <timing/condition>)`.
+     Example:
+       - `loading → loaded (on data.fetched)`
+       - `loaded → error (on data.fetchFailed)`
+       - `idle → submitting (on form.submit)`
+       - `submitting → success (on api.200)` · navigates to `/orders/{id}`
+       - `submitting → error (on api.4xx|5xx)` · keeps form, shows inline message
+     Mermaid stateDiagram-v2 is acceptable when transitions are non-linear.
+-->
+
+### Business rules
+
+{{BUSINESS_RULES}}
+
+<!-- Numbered list of invariants the UI must respect.
+     Example:
+       1. Selling requires an open position in the same ticker.
+       2. Single-order amount over 10000 EUR triggers 2FA confirmation.
+       3. Markets are read-only outside trading hours (09:00–17:30 CET).
+-->
+
+### Validations
+
+{{VALIDATIONS}}
+
+<!-- Per-field constraints. Format: `field: rules (separated by commas)`.
+     Example:
+       - amount: required, positive, ≤ portfolioBalance
+       - ticker: required, must exist in fixtures/tickers.json
+       - notes: optional, ≤ 280 chars
+-->
+
+### Mutation contracts
+
+{{MUTATION_CONTRACTS}}
+
+<!-- For each user-driven mutation:
+       <action-name>:
+         preconditions: <what must be true>
+         effects: <what happens on the server / local state>
+         success path: <UI consequence on 2xx>
+         error path: <UI consequence on 4xx/5xx>
+     Example:
+       submitOrder:
+         preconditions: form.valid, balance ≥ amount
+         effects: POST /orders {ticker, amount}
+         success: navigate to /orders/{id}, toast "Order placed"
+         error: inline message on form, no navigation
+-->
+
+### Conditional rendering
+
+{{CONDITIONAL_RENDERING}}
+
+<!-- Rules beyond the static scenarios in States. Format: `if <condition> → <render>`.
+     Example:
+       - if transactions.length > 100 → render pagination (page size 50)
+       - if portfolio.flagged → render compliance banner above header
+       - if user.role !== "trader" → hide quick-trade panel
+-->
+
 ## Data contract
 
 ```json

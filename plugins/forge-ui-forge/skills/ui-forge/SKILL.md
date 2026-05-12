@@ -1,7 +1,7 @@
 ---
 name: ui-forge
 description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Includes hot-reload dev server with SSE — user annotates in the browser, clicks 🚀 Send to Claude, Claude regenerates HTML, browser reloads automatically. Subcommands for the dev server lifecycle: "ui-forge serve" (start), "ui-forge stop", "ui-forge status". Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with hot-reload annotation overlay — user clicks 🚀 to send pins, Claude regenerates, browser auto-reloads via SSE, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, iterating on visual interfaces before writing production code, starting/stopping the ui-forge server, or sending feedback from the overlay. Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
-version: 0.2.0
+version: 0.5.0
 ---
 
 # ui-forge
@@ -95,6 +95,31 @@ On first run, briefly ask whether to adjust the default tokens before moving on.
 
 5. If during generation a dataset emerges that's clearly reusable (e.g., a market-indices list, a country list), **ask before promoting** it to `registry/fixtures/`.
 
+### Phase 1.5 — Behavior skeleton (optional, only for stateful screens)
+
+<!-- Curated influence: mattpocock/skills · skills/engineering/prototype/LOGIC.md · MIT.
+     Adapted: instead of generating a runnable terminal TUI for the state model
+     (mattpocock's approach), we capture the same concerns declaratively in a
+     markdown skeleton that the user/LLM refines through Phases 2-4. This keeps
+     the flow HTML+Tailwind-only and avoids adding a new runtime to ui-forge.
+     If you need an executable logic prototype, a sibling forge-logic-prototype
+     plugin is the right place for it. -->
+
+**Activate this phase only when the screen has non-trivial logic.** Signals: wizard, multi-step form, dashboard with real-time updates, screen with state machine (loading → loaded → error → retry), form with cross-field validations, mutation-heavy screen (POST/PATCH/DELETE).
+
+For read-only screens, simple displays, and one-shot forms, **skip this phase** — Phase 4's `## Behavior` section captures what little is needed from the pins.
+
+If activated, generate `screens/<id>/data/behavior.md` from the brief with placeholders for:
+- **State transitions** — `from → to (on <trigger>, after <timing>)`
+- **Business rules** — invariants the UI must respect (cross-field, domain-level)
+- **Validations** — per-field constraints (`required`, ranges, format)
+- **Mutation contracts** — for each user-driven write: preconditions, effects, success path, error path
+- **Conditional rendering** — rules beyond static scenarios (`if N > 100 → render pagination`)
+
+Pre-fill from the brief; let the user refine. Phase 2 variants can reference this skeleton when generating affordances (a button labeled "Submit" is empty without knowing its mutation contract). Phase 4 distillation reads from both the pins AND this file to populate `screen-spec.md` § Behavior.
+
+`behavior.md` is **input**, not output — `screen-spec.md` § Behavior is the canonical artifact after distillation.
+
 ### Phase 2 — Variation exploration with catalog awareness
 
 1. Do an explicit reuse analysis against `registry/manifest.json`. Phrase it like:
@@ -104,7 +129,13 @@ On first run, briefly ask whether to adjust the default tokens before moving on.
 
 3. Reused components stay fixed across variations; the new bits and the overall composition are what vary.
 
-4. Output the file path and tell the user: *"Elige id ganador o `mix: 3+7`"*.
+4. **Variants must be structurally different** — different layout, different information hierarchy, different primary affordance. Different colours or copy alone is not a variant; it's wallpaper. If two drafts come out too similar, redo one with explicit "do not use a card grid" / "primary affordance must move" guidance. See the anti-pattern below.
+
+5. The variations file ships with two browse modes:
+   - **Grid scroll** (default) — vertical stack of cards, good for compare-everything.
+   - **Focus mode** — full-size single variant with `←` / `→` keyboard navigation and a floating switcher. Toggle via the `Focus mode (F)` button in the sticky nav, or press `F`. `Esc` exits. This is the mode for "I want to feel variant 4 at its real size before judging".
+
+6. Output the file path and tell the user: *"Elige id ganador o `mix: 3+7`"*.
 
 ### Phase 3 — Annotation (hot-reload loop)
 
@@ -138,7 +169,14 @@ When served over http:// (via serve.py), the overlay gains hot-reload features:
 
 Always-available (http:// and file://):
 - Click any element while annotating → prompt → pin capturing `{id, selector, x, y, viewport, comment, type, scenario, timestamp}`.
-- `type` ∈ `{change, extract-as-component, replace-with-registry, token-issue, data-issue}` — color-coded pins.
+- `type` is one of **7 pin types**, all color-coded:
+  - `change` 🔵 — cosmetic / visual / catch-all
+  - `extract-as-component` 🟢 — promote this block to the registry as a new component
+  - `replace-with-registry` 🟣 — this block should be replaced by an existing registry component
+  - `token-issue` 🟠 — wrong token used, missing token, or value inconsistency
+  - `data-issue` 🔴 — mock data unrealistic / missing field / missing edge case
+  - `logic-rule` 🩷 — business rule or validation (invariant the UI must respect)
+  - `state-transition` 🩵 — temporal/sequential behavior (`X → Y on trigger, after timing`)
 - Panel side-bar, editable comments, per-pin type dropdown.
 - 📋 clipboard + ⬇ download as fallback export.
 - localStorage persistence.
@@ -165,13 +203,21 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
 
 1. Generate `output/screen.html` — **strip everything between the overlay markers**, inline `mock.json` as the only data source, self-contained.
 
-2. Generate `output/screen-spec.md` from `templates/screen-spec.md.tmpl` (see spec format below).
+2. Generate `output/screen-spec.md` from `templates/screen-spec.md.tmpl`. The template includes a `## Behavior` section that you populate by distilling pins + (if present) `data/behavior.md`:
+   - **`state-transition` pins** → § State transitions
+   - **`logic-rule` pins** → split between § Business rules and § Validations using this heuristic:
+     - Comment starts with `validación:` / `validation:` OR mentions a specific named field (`amount: ...`, `email must ...`) → § Validations
+     - Otherwise (cross-field invariant, domain rule) → § Business rules
+   - **§ Mutation contracts** and **§ Conditional rendering** are populated from the brief + scenarios + any matching pins (typically `change` or `logic-rule` pins describing forms / submit flows / conditional UI).
+   - Drop empty subsections entirely — don't leave placeholders for behavior that doesn't apply.
 
-3. Identify component candidates from two signals:
+3. Generate `output/decision.md` from `templates/decision.md.tmpl`. Capture the **reasoning**, not just the result: which variant won and why (one paragraph), which pieces were mixed in from other variants (if applicable), and a one-line rejection reason per discarded variant. Future readers asking "why does this screen look like this?" need this file — `screen.html` alone doesn't answer it. Skip the file only if Phase 2 generated a single variant (nothing to decide between).
+
+4. Identify component candidates from two signals:
    - **Strong:** pins with `type: extract-as-component` from Phase 3.
    - **Heuristic:** cohesive semantic blocks that repeat or are clearly standalone.
 
-4. Present candidates to the user for confirmation:
+5. Present candidates to the user for confirmation:
    ```
    Componentes nuevos:
      - [pin] header-with-filters → marcado por ti
@@ -182,13 +228,13 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
      - market-indices → 8 índices con valores. ¿Promuevo a registry/fixtures/?
    ```
 
-5. For each approved candidate:
+6. For each approved candidate:
    - New component → `registry/components/<id>/v1/{component.html, spec.md}`.
    - Modified component → `registry/components/<id>/v{N+1}/` — **never overwrite** a prior version.
    - New fixture → `registry/fixtures/<name>.json` + update `fixtures/index.json`.
    - Update `registry/manifest.json` (`usedInScreens`, `currentVersion`, timestamps).
 
-6. Write `output/components-used.json`:
+7. Write `output/components-used.json`:
    ```json
    {
      "screen": "portfolio-overview",
@@ -199,7 +245,7 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
    }
    ```
 
-7. Regenerate `registry/catalog.html` from `templates/catalog.html.tmpl`.
+8. Regenerate `registry/catalog.html` from `templates/catalog.html.tmpl`.
 
 ### Phase 5 — Handoff
 
@@ -233,6 +279,9 @@ The frontend implementation agent consumes:
 ## Interactions
 <events and behavior>
 
+## Behavior (screen specs only)
+<state transitions · business rules · validations · mutation contracts · conditional rendering. Populated by distilling `state-transition` and `logic-rule` pins plus the optional Phase 1.5 `data/behavior.md`. Drop subsections that don't apply — don't leave empty placeholders.>
+
 ## Data contract
 <JSON shape + types; reference schema.json or a fixture>
 
@@ -253,6 +302,7 @@ Use the templates (`component-spec.md.tmpl`, `screen-spec.md.tmpl`) as scaffolds
 
 ## Anti-patterns — avoid these
 
+- **Don't ship wallpaper variants.** "Three slightly-tweaked card grids isn't a UI prototype, it's wallpaper" (paraphrased from mattpocock/skills · prototype/UI.md). Variants must disagree on structure — different layout, different information hierarchy, or different primary affordance. Different colour, copy, or padding alone is a tweak, not a variant. If two drafts come out too similar, redo one with explicit "do not use a card grid" / "primary affordance must move" guidance.
 - **Don't promote everything to a component.** One-off pieces → `screenLocal`. Componentitis is worse than a bit of duplication.
 - **Don't bump a version without confirmation.** `v{N+1}` is an explicit decision, always ask.
 - **Don't use tokens that aren't in `tokens.json`.** If one is missing, propose adding it first, then use it.
@@ -278,10 +328,11 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 
 | File | Purpose |
 |------|---------|
-| `variations.html.tmpl` | Phase 2 grid of variants |
+| `variations.html.tmpl` | Phase 2 grid of variants + focus mode (`←` `→` `F` `Esc`) |
 | `forge.html.tmpl` | Phase 3 annotated forge HTML shell |
 | `component-spec.md.tmpl` | Phase 4 component spec scaffold |
-| `screen-spec.md.tmpl` | Phase 4 screen spec scaffold |
+| `screen-spec.md.tmpl` | Phase 4 screen spec scaffold (includes `## Behavior` section) |
+| `decision.md.tmpl` | Phase 4 decision record — winning variant, mix sources, rejection rationale |
 | `catalog.html.tmpl` | Phase 4 registry gallery |
 | `tokens.default.json` | Default Tailwind-ish token set seeded on bootstrap |
 
@@ -377,8 +428,9 @@ The live mode lives entirely under `scripts/live/`, gated in `overlay.js` by `wi
 2. Read `registry/manifest.json`, `registry/tokens.json`, `registry/fixtures/index.json`.
 3. Freeze the brief at `screens/<id>/brief.md`.
 4. Generate schema + scenarios with domain-plausible data.
-5. Propose reuse vs. new design explicitly against the manifest.
-6. Generate variations → user chooses → forge.
-7. Iterate via round-NN JSON paste loop.
-8. On "approved": distill, promote components/fixtures with confirmation, regenerate catalog.
-9. Hand off the spec package. Stop before `src/`.
+5. **Stateful screen?** (wizard, state machine, mutation-heavy, complex validations) → also generate `data/behavior.md` skeleton (Phase 1.5). Read-only displays skip this.
+6. Propose reuse vs. new design explicitly against the manifest.
+7. Generate variations → user chooses (grid scroll or focus mode with `←` `→`) → forge.
+8. Iterate via round-NN JSON paste loop. New pin types: `logic-rule` for business rules / validations; `state-transition` for temporal behaviors.
+9. On "approved": distill (`screen.html` + `screen-spec.md` with `## Behavior` + `decision.md`), promote components/fixtures with confirmation, regenerate catalog.
+10. Hand off the spec package. Stop before `src/`.

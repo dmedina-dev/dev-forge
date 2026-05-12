@@ -63,6 +63,8 @@
     'replace-with-registry': { color: '#8b5cf6', label: 'Usar de cat\u00E1logo' },
     'token-issue': { color: '#f59e0b', label: 'Problema de token' },
     'data-issue': { color: '#ef4444', label: 'Problema de datos' },
+    'logic-rule': { color: '#ec4899', label: 'Regla de negocio' },
+    'state-transition': { color: '#06b6d4', label: 'Transici\u00F3n de estado' },
   };
 
   let pins = [];

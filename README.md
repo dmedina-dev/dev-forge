@@ -162,6 +162,18 @@ Original author: **Matt Pocock** ([@mattpocock](https://github.com/mattpocock))
 |--------|----------|------------|
 | forge-mattpocock | [skills](https://github.com/mattpocock/skills) | main @ 9f2e0bd |
 
+#### Curated ideas adapted into other plugins
+
+Some upstream skills inspired discrete additions in **other** dev-forge plugins (instead of being vendored whole into `forge-mattpocock`). Attribution lives next to the code that absorbed the idea (HTML comment at the top of the file), but for discoverability:
+
+| Idea from mattpocock | Landed in | Adaptation |
+|---|---|---|
+| `skills/productivity/handoff` — compact a conversation into a resumption note | `forge-keeper` → `/forge-keeper:handoff` | Writes to `docs/sessions/YYYY-MM-DD-HHMM-handoff-<slug>.md` so `/forge-keeper:recall` can find it later (upstream uses `$TMPDIR`); adds git branch + last-commit context; positioned explicitly as the *light* counterpart to `/forge-keeper:sync` |
+| `skills/engineering/prototype/UI.md` — "wallpaper variants" anti-pattern | `forge-ui-forge` → SKILL.md anti-patterns | Same insight, phrased for our 12-variant default: structural disagreement (layout / hierarchy / primary affordance) is what makes a variant, not colour or copy |
+| `skills/engineering/prototype/UI.md` — floating bottom bar with `← →` keyboard navigation between variants | `forge-ui-forge` → `templates/variations.html.tmpl` focus mode | Toggle alongside the existing grid view (`F` key); preserved the upstream's keyboard semantics (`← →` `Esc`, ignore when typing in inputs) |
+| `skills/engineering/prototype/*` — "capture the answer somewhere durable" | `forge-ui-forge` → `templates/decision.md.tmpl` + new Phase 4 step | Generates `output/decision.md` with the winning variant rationale, mix sources, and one-line rejection per discarded variant |
+| `skills/engineering/prototype/LOGIC.md` — separate logic-from-UI prototyping | `forge-ui-forge` → Phase 1.5 optional `behavior.md` skeleton + `## Behavior` section in `screen-spec.md` template + new pin types `logic-rule` / `state-transition` | Adapted: kept ui-forge's HTML+Tailwind constraint (no terminal TUI runtime), captured the same logic concerns declaratively through pins → distillation. Stand-alone logic-first prototyping could land later as a sibling `forge-logic-prototype` plugin |
+
 ### Customizations
 
 All curated plugins include a `.claude-plugin/customizations.json` documenting every change from upstream:

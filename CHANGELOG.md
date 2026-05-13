@@ -4,6 +4,107 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.6.0 — 2026-05-12
+
+Curates two ideas from `mattpocock/skills` into existing dev-forge plugins instead of vendoring whole — a lightweight session handoff command in forge-keeper, and a deep enrichment of forge-ui-forge to capture **behavior/logic**, not just visual design. Plus a small post-tag patch (no version bump) swapping heart emojis (🩷🩵) for functional symbols (⚙️🔄) in the new ui-forge pin types.
+
+**Plugins bumped:**
+- `forge-keeper`: `1.3.1` → `1.4.0` (minor — new `/forge-keeper:handoff [optional focus]` command. Light counterpart to `/forge-keeper:sync`: writes a concise resumption note to `docs/sessions/YYYY-MM-DD-HHMM-handoff-<slug>.md` with goal / current state / open threads / next steps / skills to invoke / refs, without touching CLAUDE.md or rules. Idea curated from mattpocock/skills · `productivity/handoff` (MIT), adapted to land in dev-forge's session-log directory so `/forge-keeper:recall` finds handoffs too)
+- `forge-ui-forge`: `0.4.0` → `0.5.0` (minor — behavior/logic capture):
+  - **Anti-pattern "wallpaper variants"** added to SKILL.md — variants must disagree on structure (layout / hierarchy / primary affordance), not just colour or copy.
+  - **Phase 1.5 optional** `data/behavior.md` skeleton for stateful screens (wizards, state machines, mutation-heavy). Inspired by mattpocock's `prototype/LOGIC.md` but adapted to ui-forge's HTML+Tailwind-only constraint (declarative markdown, no terminal TUI runtime).
+  - **`screen-spec.md.tmpl`** extended with `## Behavior` section (State transitions · Business rules · Validations · Mutation contracts · Conditional rendering). Distilled in Phase 4 from pins + optional behavior.md.
+  - **`variations.html.tmpl`** focus-mode added: full-size single variant with `←` / `→` keyboard navigation, `F` to toggle, `Esc` to exit. Coexists with the default grid scroll.
+  - **`overlay.js`** gained 2 new pin types: `logic-rule` (⚙️ pink `#ec4899`) for business rules + per-field validations, `state-transition` (🔄 cyan `#06b6d4`) for temporal/sequential behaviors. Total now 7. `validation` was explicitly **not** added as a separate type because it's a subset of `logic-rule`; Phase 4 distillation splits them by heuristic.
+  - **`decision.md.tmpl`** new — Phase 4 captures the *rationale*: winning variant + one-paragraph why + mix sources + one-line rejection per discarded variant.
+
+**Marketplace:** `2.5.0` → `2.6.0` (minor — mirrors highest plugin bump).
+
+**README:** new "Curated ideas adapted into other plugins" subsection in the mattpocock attribution block, documenting all 5 absorbed ideas so the inspiration trail is discoverable even when the code lives outside `forge-mattpocock`.
+
+**Breaking changes:** none.
+
+**Post-tag (commit `e556b35`, no version bump):** swapped heart emojis (🩷🩵) for functional symbols (⚙️🔄) in the forge-ui-forge pin types listing. Pink and cyan don't exist as Unicode circles, so hearts were the disambiguator; gears and cycles carry semantic weight beyond colour and don't introduce a casual tone in the skill description. Cosmetic only.
+
+---
+
+## v2.5.0 — 2026-05-11
+
+Upstream sync sweep — applies obra/superpowers v5.0.7 → v5.1.0 (real content changes), refreshes the origin pins on the 6 anthropic-derived plugins (bookkeeping only — none of the 165 upstream commits touched vendored content), and fixes a latent zsh-glob bug in `/forge-commit:release` that aborted the slash command before reaching its task body.
+
+**Plugins bumped:**
+- `forge-superpowers`: `1.0.0` → `1.1.0` (minor — applied obra/superpowers v5.0.7 → v5.1.0. 10 skill files refreshed: worktree rewrites in `using-git-worktrees` and `finishing-a-development-branch`, the deleted upstream agent's persona absorbed into `requesting-code-review/code-reviewer.md`, plus updates to executing-plans, writing-plans, subagent-driven-development, systematic-debugging. 4 deprecated files deleted to mirror upstream removals: `commands/{brainstorm,execute-plan,write-plan}.md` and `agents/code-reviewer.md`. README refreshed. 6 new customization entries documenting the new excluded paths (`AGENTS.md`, `CLAUDE.md`, `assets/`, `scripts/sync-to-codex-plugin.sh`, `.version-bump.json`) and the canonical plugin.json rename)
+- `forge-commit`: `1.1.1` → `1.1.2` (patch — fixed `/forge-commit:release` aborting with `(eval):1: no matches found: plugins/*/.claude-plugin/plugin.json` before reaching the task body. Cause: zsh `eval` rejects shell-glob expansion in slash-command `!`backtick`` context loaders even when files exist. Replaced the line-21 context loader and the step-5 verification block with `python3 -c "import glob; ..."` — single process, portable, side-steps zsh's `nomatch`)
+- `forge-deep-review`: `2.0.0` → `2.0.1` (patch — bookkeeping: both origins refreshed to anthropics/claude-code `main @ fdfbc06`; 37 upstream commits since prior pin, 0 touched the vendored plugin paths)
+- `forge-frontend-design`: `1.0.0` → `1.0.1` (patch — bookkeeping: origin commit refreshed to anthropics/claude-plugins-official `main @ fe8f813`; 128 upstream commits, 0 touched `plugins/frontend-design/`. Latent bug fixed: `origin.path` was `frontend-design` — should always have been `plugins/frontend-design` to match upstream layout)
+- `forge-hookify`: `1.0.1` → `1.0.2` (patch — bookkeeping: commit pin refresh)
+- `forge-mattpocock`: `1.0.0` → `1.0.1` (patch — review-only: 18 upstream commits inspected, kept local divergences. Upstream changes to `grill-with-docs/SKILL.md` and `to-prd/SKILL.md` are minor wording on top of the original upstream form, while our local customizations target a different documentation layout (docs/glossary.md, docs/plans/) — not absorbable without redoing the adaptation. 9 new customization entries documenting 6 excluded upstream skills with reasons)
+- `forge-plugin-dev`: `1.0.0` → `1.0.1` (patch — bookkeeping: commit pin refresh)
+- `forge-security`: `1.0.0` → `1.0.1` (patch — bookkeeping: commit pin refresh)
+
+**Marketplace:** `2.4.0` → `2.5.0` (minor — driven by forge-superpowers minor).
+
+**Breaking changes:** none for dev-forge consumers. **Upstream-driven removal** for users of legacy superpowers slash commands: `/brainstorm`, `/execute-plan`, `/write-plan` (deprecated stubs) and the standalone `superpowers:code-reviewer` named agent are gone. The skills themselves (`brainstorming`, `executing-plans`, `writing-plans`, `requesting-code-review`) remain and work as before — invoke them via the Skill tool or by name. Any in-house tooling that dispatched `Task (superpowers:code-reviewer)` should switch to `Task (general-purpose)` with the prompt template at `skills/requesting-code-review/code-reviewer.md`.
+
+**Upstream pin state post-release:**
+- `obra/superpowers`: `v5.1.0` (`f2cbfbe`)
+- `anthropics/claude-code`: `main @ fdfbc06`
+- `anthropics/claude-plugins-official`: `main @ fe8f813`
+- `mattpocock/skills`: `main @ 9f2e0bd`
+
+---
+
+## v2.4.0 — 2026-05-06
+
+Adds `forge-deepthink` — structured deep-thinking protocol triggered exclusively by the `/deepthink` slash command. Anti-trigger description by design so the skill never activates on natural-language phrases like "be brutally honest" or "razonamiento profundo".
+
+**New plugin:**
+- `forge-deepthink`: `0.1.0` — three-phase pipeline:
+  1. Pre-filled 7-slot interview confirming context (problem, success criteria, constraints, etc.).
+  2. Audit-ready response with sections 1-7: context confirmation, visible reasoning, confidence-tagged assumptions, recommendation in user-specified format, devil's-advocate red team, 6-month pre-mortem, take-home assumption audit with concrete weekly validation steps.
+  3. Auto-compression checkpoints every ~5-6 turns once the protocol is active for the session.
+
+Iterated through 2 rounds of subagent-based evals (4 test cases, 100% structural pass rate). Iter-2 added Tightness discipline (1-2 sentences max per slot), Section-7 dedup (label-reference + concrete weekly validation step), and reframed the why-this-exists toward **structure** (audit trail) over **honesty** (Claude already does that).
+
+**Plugins bumped:** none beyond the new `forge-deepthink`.
+
+**Marketplace:** `2.3.0` → `2.4.0` (minor — new plugin = new feature surface for consumers, not a fix). 17 → **18 plugins** total (14 working, 4 configuration).
+
+**Docs:** README, CLAUDE.md tree, dependencies.md (section + matrix), `install-all.md` (regenerated via `scripts/generate-install-all.sh`) all in sync. `.gitignore` picks up `plugins/*-workspace/` so eval scratch space stays local.
+
+**Breaking changes:** none.
+
+---
+
+## v2.3.0 — 2026-04-28
+
+Adds `forge-mattpocock` — an alternative skills framework curated from mattpocock/skills (Matt Pocock, MIT). Coexists with `forge-superpowers`; no skill-name collisions.
+
+**New plugin:**
+- `forge-mattpocock`: `1.0.0` — 8 skills bundled:
+  - `grill-me` · `grill-with-docs` — relentless interview to stress-test plans (the docs variant grills against the project's domain glossary / CLAUDE.md / `.claude/rules/` / `docs/adr/`)
+  - `to-prd` — synthesize the current conversation into a wave-organized plan saved to `docs/plans/` (heavily adapted from upstream's GitHub-issue-tracker version)
+  - `tdd` — red-green-refactor loop with deep-modules orientation
+  - `diagnose` — disciplined diagnosis loop for hard bugs and perf regressions (reproduce → minimise → hypothesise → instrument → fix → regression-test)
+  - `improve-codebase-architecture` — find deepening opportunities informed by `docs/glossary.md` and `docs/adr/`
+  - `zoom-out` · `caveman` — small productivity helpers
+  - 8 upstream skills explicitly excluded with per-skill reasons in `customizations.json` (personal/, deprecated/, misc/, setup-matt-pocock-skills, to-issues, qa, write-a-skill, triage)
+
+**Plugins bumped:**
+- `forge-init`: `1.1.0` → `1.1.1` (patch — `install-all.md` regenerated to include forge-mattpocock)
+
+**Other:**
+- `scripts/generate-install-all.sh` — fixed latent dependencies-shape bug (was reading `{required: [...]}` from the pre-v2.2.1 schema; now reads the flat array correctly so the forge-brainstorming dependency renders).
+- README, CLAUDE.md, `docs/dependencies.md` updated to reflect the new plugin and Matt Pocock attribution.
+
+**Marketplace:** `2.2.1` → `2.3.0` (minor — new plugin).
+
+**Breaking changes:** none.
+
+**Post-release docs sync** (commit `05a71c6`): `docs/dependencies.md` gained the missing forge-frontend-design and forge-ui-forge sections (pre-existing drift, not from this release); a new CLAUDE.md gotcha about schema-shape changes requiring an audit of every reader in `scripts/`; the canonical format for external-skill origin attribution pinned in `.claude/rules/plugin-authoring.md` as a single-line HTML comment after the YAML frontmatter.
+
+---
+
 ## v2.2.1 — 2026-04-27
 
 **Bugfix — marketplace was unreadable to Claude Code's `/plugin` UI.**

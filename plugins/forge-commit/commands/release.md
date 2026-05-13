@@ -51,6 +51,19 @@ Increment the marketplace `metadata.version` in `.claude-plugin/marketplace.json
 - If any plugin had a minor bump → minor
 - If only patches → patch
 
+### 4b. Update CHANGELOG.md
+
+Prepend a new `## vX.Y.Z — YYYY-MM-DD` entry at the top of `CHANGELOG.md` (right after the `> Format:` line). This is **not optional** — every release commit MUST land a CHANGELOG entry. Backfilling later is harder than writing now: the session has fresh context for design rationale, breaking-change migration steps, and upstream pin state. Skipping accumulates doc debt that becomes hard to recover.
+
+Each entry contains:
+1. **One-line summary** (what changed at the user level).
+2. **`Plugins bumped:`** list in `name: old → new (level — one-line reason)` format. Group identical bookkeeping bumps; spell out anything user-facing.
+3. **`Marketplace:`** `old → new (level — why)`.
+4. **`Breaking changes:`** line — `none` if applicable, otherwise a `### Migration` block with explicit `/plugin uninstall`, `/plugin install`, and command-rename steps.
+5. **For upstream syncs**: `Upstream pin state post-release:` block listing the new commit/ref for each touched origin.
+
+Match the voice and structure of existing entries — terse summary, lists not paragraphs where possible. Look at the latest existing entry as a template.
+
 ### 5. Validate
 
 Run `python3 -m json.tool` on both `.claude-plugin/marketplace.json` and each modified `plugin.json` to ensure valid JSON.
@@ -76,8 +89,10 @@ EOF
 
 ### 6. Commit and tag
 
+The `git add` MUST include `CHANGELOG.md` alongside the version-bump files — otherwise the release commit lands without the changelog entry and the documentation drifts.
+
 ```bash
-git add .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json
+git add .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json CHANGELOG.md
 git commit -m "release: dev-forge v{new_marketplace_version}
 
 Plugins updated:

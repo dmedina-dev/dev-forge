@@ -30,6 +30,16 @@ if not UI_FORGE.is_dir():
     sys.exit(1)
 
 PID_FILE = UI_FORGE / ".server.pid"
+
+# Plugin-served overlay: when serve.sh exports UIFORGE_PLUGIN_DIR, we override
+# /assets/overlay.js to stream the plugin's current copy instead of the per-
+# project bootstrap copy at .ui-forge/assets/overlay.js. This means an overlay
+# bump in the plugin is picked up by every running serve.py without users
+# running refresh-assets.sh per project. file:// access still resolves the
+# relative path to the bootstrap copy, so that fallback path is unchanged.
+_plugin_dir_env = os.environ.get("UIFORGE_PLUGIN_DIR", "").strip()
+PLUGIN_OVERLAY = (Path(_plugin_dir_env) / "assets" / "overlay.js") if _plugin_dir_env else None
+
 sse_clients = []
 sse_lock = threading.Lock()
 mtime_cache = {}
@@ -88,8 +98,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/forge/reload":
             self._handle_sse()
+        elif self.path == "/assets/overlay.js" and PLUGIN_OVERLAY is not None and PLUGIN_OVERLAY.is_file():
+            self._serve_plugin_overlay()
         else:
             super().do_GET()
+
+    def _serve_plugin_overlay(self):
+        # Stream the plugin's current overlay.js — readers on http:// always
+        # get the freshest copy without per-project refresh-assets.sh.
+        try:
+            body = PLUGIN_OVERLAY.read_bytes()
+        except Exception:
+            # Plugin copy unreadable for any reason → fall back to the static
+            # handler so the per-project bootstrap copy is served instead.
+            super().do_GET()
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", "application/javascript")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def _handle_feedback(self):
         try:
@@ -221,6 +250,8 @@ def main():
         parts.append(f"catalog={url}/{catalog.relative_to(UI_FORGE)}")
     if not screens and not catalog.exists():
         parts.append("no screens yet")
+    if PLUGIN_OVERLAY is not None and PLUGIN_OVERLAY.is_file():
+        parts.append(f"overlay=plugin")
     print("[ui-forge] " + " | ".join(parts), flush=True)
 
     try:

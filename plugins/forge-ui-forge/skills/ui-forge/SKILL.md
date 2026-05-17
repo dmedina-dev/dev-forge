@@ -1,7 +1,7 @@
 ---
 name: ui-forge
 description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Includes hot-reload dev server with SSE — user annotates in the browser, clicks 🚀 Send to Claude, Claude regenerates HTML, browser reloads automatically. Subcommands for the dev server lifecycle: "ui-forge serve" (start), "ui-forge stop", "ui-forge status". Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with hot-reload annotation overlay — user clicks 🚀 to send pins, Claude regenerates, browser auto-reloads via SSE, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, iterating on visual interfaces before writing production code, starting/stopping the ui-forge server, or sending feedback from the overlay. Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
-version: 0.5.0
+version: 0.6.0
 ---
 
 # ui-forge
@@ -20,6 +20,32 @@ Iterative prototyping workflow that lives entirely under `<project>/.ui-forge/`.
 - Visual bug fixes on existing production code
 - Point CSS edits
 - When an externally-approved design (Figma, Zeplin) is ready to implement directly
+
+## Precedence charter
+
+Every turn touches one or more of three axes — **visual**, **behavior**, **data** — over a workflow scaffold. When two layers disagree, follow this precedence. Phase 2 drift ("variants that differ in color but not structure"), Phase 3 axis-confusion ("user pinned a behavior but I tweaked CSS"), and Phase 4 spec leaks ("a field appears in the spec that isn't in the schema") usually come from skipping one of these rules.
+
+| # | Rule | Wins over |
+|---|---|---|
+| 1 | **Workflow wins over speed.** Phases that say "ask before X" gate the next step. Skipping Phase 1.5 on a stateful screen, or Phase 4 confirmation on a new component, is never authorized by user pressure. | "andá ya", "no preguntes", "rápido" |
+| 2 | **Catalog before invention.** If `registry/manifest.json` has a plausible candidate, propose reuse explicitly *before* designing new. State the reuse decision in writing — implicit reuse drifts to silent reinvention. | "creo que sería distinto", "mejor uno nuevo" |
+| 3 | **Schema is the data contract.** A field that appears in HTML must exist in `data/schema.json`. If a variant needs a new field: modify schema → regenerate `mock.json` → render. Never inline data into HTML. | "lo necesito ya en el render" |
+| 4 | **Behavior contract is authoritative for temporal logic.** Phase 2 affordances must reflect `behavior.md` when present — a "Save" button without a declared mutation is ambiguous, not decorative. | "se entiende el botón sin contrato" |
+| 5 | **Tokens are authoritative for visual primitives.** Color, spacing, type, radii, shadows come from `registry/tokens.json`. Missing token → propose adding it to `tokens.json` first, then use it. Never inline hex or magic px. | "queda mejor con #fafafa raw" |
+| 6 | **Pins are diffs, not full restatements.** A Phase 3 feedback round describes deltas against the current `02-forge.html`. Don't relitigate decisions from prior rounds unless an explicit pin reopens them. | "ya que estamos lo refactoreo todo" |
+| 7 | **Brief defines scope.** What's outside the frozen `brief.md` stays out — even when it "would make sense to add". Scope creep belongs in a sibling screen brief, not in the current one. | "aprovecho que estoy acá y meto..." |
+
+### Phase opening: lock-in line
+
+At the start of each phase, post a short lock-in line so the user can intercept misreads **before** any generation happens. Format:
+
+```
+[ui-forge] phase=<n> workflow=<phase-name>
+  manifest=<read|n/a>  brief=<frozen|pending>  schema=<validated|drafting|n/a>
+  behavior=<n/a|skeleton-loaded|distilled>  tokens=<source>  axis=<visual|behavior|data|mixed>
+```
+
+If any field is wrong, the user corrects and you re-emit before doing the work. This is cheap — one line of output — and prevents 90% of "I generated 12 variants but the schema was missing a field" rounds.
 
 ## On-disk layout
 

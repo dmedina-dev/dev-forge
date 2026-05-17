@@ -278,10 +278,14 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
 The frontend implementation agent consumes:
 - `screens/<id>/output/screen-spec.md` — what to build
 - `screens/<id>/output/components-used.json` — what catalog pieces are needed
+- `screens/<id>/output/decision.md` — which variant won and why
 - `screens/<id>/data/schema.json` — data contract for the screen
+- `screens/<id>/data/mock.json` + `scenarios/*.json` — materialized data for happy / empty / loading / error / edge paths
 - `registry/components/<id>/<version>/spec.md` — per-component spec
 - `registry/tokens.json` — tokens to map to the stack's token system
 - `registry/fixtures/*.json` — fixtures for tests/storybook if relevant
+
+For the **full output data model** — exact schemas, relationships between artifacts, invariants Phase 4 guarantees, versioning policy, and what is deliberately not in the bundle — see [`references/output-data-model.md`](references/output-data-model.md). That document is the contract a downstream consumer reads to build the screen without ever touching ui-forge again.
 
 **This skill never writes to `src/` (or any equivalent). Handoff is the boundary.**
 
@@ -380,7 +384,7 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 
 ## Subcommands
 
-This skill handles `serve`, `stop`, `status` subcommands for the dev server lifecycle — similar to forge-telegram's start/stop pattern. See `references/subcommands.md` for the full command reference with exact bash snippets.
+This skill handles `serve`, `stop`, `status` subcommands for the dev server lifecycle — similar to forge-telegram's start/stop pattern. See `references/subcommands.md` for the full command reference with exact bash snippets, and `references/output-data-model.md` for the canonical schema of the Phase 5 handoff bundle.
 
 | Subcommand | Action |
 |------------|--------|

@@ -20,6 +20,8 @@ Sharpens forge-ui-forge in two directions: a **precedence charter** that tells t
 
 **Breaking changes:** none. `UIFORGE_PLUGIN_DIR` is purely opt-in (absence leaves the static handler path unchanged). The precedence charter is descriptive — Claude already operated this way most of the time; the charter just gives it explicit handles. The output-data-model reference adds no new artifacts; it documents the existing Phase 5 bundle shape.
 
+**Post-tag (no version bump):** attributed the inspiration source — both the precedence charter and the output-data-model reference are adapted from patterns in [`nexu-io/open-design`](https://github.com/nexu-io/open-design) (`composeSystemPrompt`'s layered prompt with precedence rules, and `packages/contracts`' canonical shared shapes). Added a `Curated influence:` HTML comment at the top of each file that absorbed an idea, and a new `### [nexu-io/open-design]` subsection in README alongside the existing mattpocock attribution block. No code or skill behavior changes — pure attribution.
+
 ---
 
 ## v2.6.0 — 2026-05-12

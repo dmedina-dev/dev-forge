@@ -174,6 +174,19 @@ Some upstream skills inspired discrete additions in **other** dev-forge plugins 
 | `skills/engineering/prototype/*` — "capture the answer somewhere durable" | `forge-ui-forge` → `templates/decision.md.tmpl` + new Phase 4 step | Generates `output/decision.md` with the winning variant rationale, mix sources, and one-line rejection per discarded variant |
 | `skills/engineering/prototype/LOGIC.md` — separate logic-from-UI prototyping | `forge-ui-forge` → Phase 1.5 optional `behavior.md` skeleton + `## Behavior` section in `screen-spec.md` template + new pin types `logic-rule` / `state-transition` | Adapted: kept ui-forge's HTML+Tailwind constraint (no terminal TUI runtime), captured the same logic concerns declaratively through pins → distillation. Stand-alone logic-first prototyping could land later as a sibling `forge-logic-prototype` plugin |
 
+### [nexu-io/open-design](https://github.com/nexu-io/open-design)
+
+Original authors: **nexu-io** ([@nexu-io](https://github.com/nexu-io)) and contributors. MIT.
+
+No upstream plugin is vendored — Open Design is a full product (Next.js + Node daemon + Electron, 16 coding-agent CLIs, 72 design systems), not a Claude Code skill collection. Ideas were adapted into existing dev-forge plugins.
+
+#### Curated ideas adapted into other plugins
+
+| Idea from Open Design | Landed in | Adaptation |
+|---|---|---|
+| `apps/daemon/src/prompts/system.ts` (`composeSystemPrompt`) — layered system prompt with **precedence rules written into the prompt itself** (e.g. "brand wins on color, skill wins on workflow") | `forge-ui-forge` → SKILL.md `## Precedence charter` + per-phase "lock-in line" | Adapted: replaced Open Design's brand/skill/craft layer model with ui-forge's three-axis model (visual/behavior/data + workflow meta), wrote 7 ui-forge-specific rules each naming the rebuttal they override ("andá ya", "queda mejor con #fafafa raw"), added a ui-forge-native phase-opening lock-in line so the user intercepts misreads before generation |
+| `packages/contracts` + `apps/daemon/src/{skills,design-systems}.ts` — canonical, separately-versioned contract for every shape that crosses the web/daemon boundary | `forge-ui-forge` → `references/output-data-model.md` | Adapted: ui-forge has no runtime contracts layer (everything is filesystem JSON + markdown), so the contract lives as a markdown reference travelling next to the skill. Organized by ui-forge's three axes (visual/behavior/data) instead of Open Design's web/daemon split. Documents the existing Phase 5 bundle — no new artifacts introduced |
+
 ### Customizations
 
 All curated plugins include a `.claude-plugin/customizations.json` documenting every change from upstream:

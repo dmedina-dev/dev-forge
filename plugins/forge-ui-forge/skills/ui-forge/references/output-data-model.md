@@ -1,5 +1,16 @@
 # Output data model — what Phase 5 hands off
 
+<!-- Curated influence: nexu-io/open-design · packages/contracts + apps/daemon/src/{skills,design-systems}.ts · MIT.
+     Open Design separates web/daemon app contracts into a pure-TS `packages/contracts`
+     package — the single source of truth for shared DTOs, SSE event unions, and
+     example payloads. The discipline of declaring "here is the canonical shape
+     of every artifact that crosses the boundary, with a doc that travels next
+     to it" is what this reference ports into ui-forge's Phase 5 handoff. Adapted:
+     ui-forge has no runtime contracts layer (everything is filesystem JSON +
+     markdown), so the contract lives as a markdown reference rather than typed
+     code, and is organized by the three ui-forge axes (visual/behavior/data)
+     instead of Open Design's web/daemon split. -->
+
 This document is the contract between **ui-forge** (the prototyping skill) and **anything downstream** that consumes its output: a frontend-implementation agent, a code generator, a designer reviewing the spec, a Storybook author wiring fixtures, or a human reading "what does this prototype say I should build?".
 
 ui-forge runs five phases under `<project>/.ui-forge/` and stops at the boundary — **it never writes into `src/`**. Phase 5 is the handoff: a frozen, self-contained bundle that captures three independent axes — **visual**, **behavior**, **data** — plus the workflow trail that produced them. A downstream consumer should be able to pick up this bundle and build the screen without ever talking to ui-forge again.

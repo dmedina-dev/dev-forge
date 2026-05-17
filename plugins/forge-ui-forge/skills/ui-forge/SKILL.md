@@ -23,6 +23,17 @@ Iterative prototyping workflow that lives entirely under `<project>/.ui-forge/`.
 
 ## Precedence charter
 
+<!-- Curated influence: nexu-io/open-design · apps/daemon/src/prompts/system.ts (composeSystemPrompt) · MIT.
+     Open Design composes its system prompt from layered fragments (memory →
+     user instructions → project instructions → design system → skill body →
+     craft) with **precedence rules written into the prompt itself** — e.g.
+     "brand wins on color, skill wins on workflow". That pattern of explicit,
+     prompt-embedded precedence is what this charter ports into ui-forge.
+     Adapted: ui-forge's three-axis model (visual/behavior/data + workflow
+     meta) replaces Open Design's brand/skill model, and the seven rules are
+     specific to the ui-forge phase loop. The phase-opening lock-in line is
+     a ui-forge-native pattern, not from Open Design. -->
+
 Every turn touches one or more of three axes — **visual**, **behavior**, **data** — over a workflow scaffold. When two layers disagree, follow this precedence. Phase 2 drift ("variants that differ in color but not structure"), Phase 3 axis-confusion ("user pinned a behavior but I tweaked CSS"), and Phase 4 spec leaks ("a field appears in the spec that isn't in the schema") usually come from skipping one of these rules.
 
 | # | Rule | Wins over |

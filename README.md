@@ -180,6 +180,8 @@ Original authors: **nexu-io** ([@nexu-io](https://github.com/nexu-io)) and contr
 
 No upstream plugin is vendored — Open Design is a full product (Next.js + Node daemon + Electron, 16 coding-agent CLIs, 72 design systems), not a Claude Code skill collection. Ideas were adapted into existing dev-forge plugins.
 
+> Paths cited below reflect `nexu-io/open-design` as fetched on **2026-05-17** (no commit pinned — Open Design is not vendored, so these are read-once references for archaeology, not a sync source). Verify against current `main` if any cited file has moved.
+
 #### Curated ideas adapted into other plugins
 
 | Idea from Open Design | Landed in | Adaptation |

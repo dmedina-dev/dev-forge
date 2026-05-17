@@ -16,6 +16,5 @@
 # bootstrap copy under .ui-forge/assets/.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-export UIFORGE_PLUGIN_DIR="$SKILL_DIR"
+export UIFORGE_PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 exec python3 "$SCRIPT_DIR/serve.py" "$@"

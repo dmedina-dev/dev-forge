@@ -56,6 +56,14 @@ At the start of each phase, post a short lock-in line so the user can intercept 
   behavior=<n/a|skeleton-loaded|distilled>  tokens=<source>  axis=<visual|behavior|data|mixed>
 ```
 
+Worked example (Phase 2 opening on `portfolio-overview` after Phase 1.5 ran):
+
+```
+[ui-forge] phase=2 workflow=variation-exploration
+  manifest=read  brief=frozen  schema=validated
+  behavior=skeleton-loaded  tokens=registry/tokens.json  axis=visual
+```
+
 If any field is wrong, the user corrects and you re-emit before doing the work. This is cheap — one line of output — and prevents 90% of "I generated 12 variants but the schema was missing a field" rounds.
 
 ## On-disk layout
@@ -84,7 +92,7 @@ Every consumer project gets:
     ├── 01-variations.html
     ├── 02-forge.html
     ├── feedback/round-NN.json
-    └── output/{screen.html, screen-spec.md, components-used.json}
+    └── output/{screen.html, screen-spec.md, decision.md, components-used.json}
 ```
 
 ## Workflow — 5 phases
@@ -274,6 +282,7 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
 7. Write `output/components-used.json`:
    ```json
    {
+     "version": 1,
      "screen": "portfolio-overview",
      "registryComponents": [{"id": "kpi-card", "version": "v2"}, {"id": "data-table-dense", "version": "v1"}],
      "newComponents": ["header-with-filters", "notification-banner"],
@@ -283,6 +292,14 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
    ```
 
 8. Regenerate `registry/catalog.html` from `templates/catalog.html.tmpl`.
+
+9. **Run the bundle validator before declaring Phase 5 ready:**
+
+   ```bash
+   bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/validate-bundle.sh" <screen-id>
+   ```
+
+   Checks the mechanical invariants from `references/output-data-model.md`: entity-name conformance with `schema.json` (#1), component pins resolve in `manifest.json` (#3), fixture pins resolve in `fixtures/index.json` (#4), `screen.html` has no overlay leftovers (#5), every pinned version has both `component.html` and `spec.md` (#7). Exit 0 = clean handoff. On exit 1, fix the violations before naming the next phase — don't tell the user "Phase 5 ready" with a dirty bundle.
 
 ### Phase 5 — Handoff
 

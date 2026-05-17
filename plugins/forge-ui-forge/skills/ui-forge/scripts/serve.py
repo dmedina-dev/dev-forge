@@ -11,6 +11,7 @@ Endpoints:
     GET  /forge/reload       SSE — sends "reload" when any 02-forge.html changes
 """
 
+import hashlib
 import http.server
 import json
 import os
@@ -34,11 +35,21 @@ PID_FILE = UI_FORGE / ".server.pid"
 # Plugin-served overlay: when serve.sh exports UIFORGE_PLUGIN_DIR, we override
 # /assets/overlay.js to stream the plugin's current copy instead of the per-
 # project bootstrap copy at .ui-forge/assets/overlay.js. This means an overlay
-# bump in the plugin is picked up by every running serve.py without users
-# running refresh-assets.sh per project. file:// access still resolves the
-# relative path to the bootstrap copy, so that fallback path is unchanged.
-_plugin_dir_env = os.environ.get("UIFORGE_PLUGIN_DIR", "").strip()
-PLUGIN_OVERLAY = (Path(_plugin_dir_env) / "assets" / "overlay.js") if _plugin_dir_env else None
+# bump in the plugin is picked up on the next browser reload without users
+# running refresh-assets.sh per project. file:// access bypasses this server
+# entirely and continues to load the bootstrap copy via relative path —
+# documented here only for symmetry; this code is not on the file:// path.
+_env = os.environ.get("UIFORGE_PLUGIN_DIR", "").strip()
+PLUGIN_OVERLAY = Path(_env, "assets", "overlay.js") if _env else None
+
+# Fail loudly at startup when UIFORGE_PLUGIN_DIR is set but the overlay can't
+# be located — otherwise a typo silently degrades to the bootstrap copy.
+if _env and (PLUGIN_OVERLAY is None or not PLUGIN_OVERLAY.is_file()):
+    sys.stderr.write(
+        f"[ui-forge] warning: UIFORGE_PLUGIN_DIR={_env} set but "
+        f"{PLUGIN_OVERLAY} is not a readable file; serving bootstrap copy.\n"
+    )
+    PLUGIN_OVERLAY = None
 
 sse_clients = []
 sse_lock = threading.Lock()
@@ -98,27 +109,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/forge/reload":
             self._handle_sse()
-        elif self.path == "/assets/overlay.js" and PLUGIN_OVERLAY is not None and PLUGIN_OVERLAY.is_file():
+        elif self.path == "/assets/overlay.js" and PLUGIN_OVERLAY is not None:
             self._serve_plugin_overlay()
         else:
             super().do_GET()
 
     def _serve_plugin_overlay(self):
-        # Stream the plugin's current overlay.js — readers on http:// always
-        # get the freshest copy without per-project refresh-assets.sh.
+        # Stream the plugin's current overlay.js — readers on http:// get the
+        # freshest copy without per-project refresh-assets.sh. Narrow except
+        # so anything outside filesystem-state errors still surfaces in logs.
         try:
             body = PLUGIN_OVERLAY.read_bytes()
-        except Exception:
-            # Plugin copy unreadable for any reason → fall back to the static
-            # handler so the per-project bootstrap copy is served instead.
+        except (FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
+            sys.stderr.write(
+                f"[ui-forge] overlay=plugin read failed ({type(e).__name__}: {e}); "
+                f"falling back to bootstrap copy.\n"
+            )
             super().do_GET()
             return
         self.send_response(200)
         self.send_header("Content-Type", "application/javascript")
         self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-UIForge-Overlay-Sha", hashlib.sha256(body).hexdigest()[:12])
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def _handle_feedback(self):
         try:
@@ -250,8 +268,8 @@ def main():
         parts.append(f"catalog={url}/{catalog.relative_to(UI_FORGE)}")
     if not screens and not catalog.exists():
         parts.append("no screens yet")
-    if PLUGIN_OVERLAY is not None and PLUGIN_OVERLAY.is_file():
-        parts.append(f"overlay=plugin")
+    if PLUGIN_OVERLAY is not None:
+        parts.append("overlay=plugin")
     print("[ui-forge] " + " | ".join(parts), flush=True)
 
     try:

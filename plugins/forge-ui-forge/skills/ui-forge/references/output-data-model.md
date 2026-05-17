@@ -195,7 +195,7 @@ The contract document. Sections:
 ## States             — only applicable: default/hover/focus/active/disabled/loading/empty/error
 ## Interactions       — events and behavior
 ## Behavior           — state transitions · business rules · validations · mutation contracts · conditional rendering
-## Data contract      — JSON shape + types; reference schema.json or a fixture
+## Data contract      — JSON shape + types; always reference `data/schema.json` (schema.json itself may import a fixture)
 ## Accessibility      — ARIA roles, tab order, labels
 ## Responsive         — breakpoints and what changes
 ## Composition        — registry components used and how they assemble
@@ -226,6 +226,7 @@ Captures the **reasoning**, not just the result. Future readers asking "why does
 
 ```json
 {
+  "version": 1,
   "screen": "<screen-id>",
   "registryComponents": [
     { "id": "<component-id>", "version": "v<N>" }
@@ -235,6 +236,8 @@ Captures the **reasoning**, not just the result. Future readers asking "why does
   "fixturesUsed": ["<fixture-name>", ...]
 }
 ```
+
+`version` is the file-schema version (bump on breaking shape changes — e.g. adding a required field). Currently `1`.
 
 Composition manifest. The downstream consumer reads `registryComponents` and `newComponents` to know which `registry/components/<id>/<version>/spec.md` files to consult, and `fixturesUsed` to know which `registry/fixtures/*.json` are in play.
 
@@ -349,7 +352,7 @@ decision.md ─────────────────► references va
 
 **Single source of truth per fact:**
 
-- Design tokens: `tokens.json`. The spec references token names, never values.
+- Design tokens: `tokens.json` is canonical **for downstream code mapping** (Tailwind config, CSS variables, Style Dictionary entries the consumer generates from the bundle). `screen.html` is a frozen visual snapshot — Tailwind utilities encode values directly so "open in browser, see the design" stays a 1-click affordance, and *that property wins over token-name purity*. When `tokens.json` advances after a screen is distilled, `screen.html` does not auto-update; the consumer rebinds tokens from the spec, not from the snapshot.
 - Data shapes: `schema.json`. The spec describes the contract; the data files materialize it.
 - Component markup: `registry/components/<id>/v<N>/component.html`. The screen embeds composed instances; the registry holds the canonical.
 - Behavior: `screen-spec.md § Behavior` (after distillation). `behavior.md` is the working notebook and may go stale.
@@ -358,13 +361,21 @@ decision.md ─────────────────► references va
 
 The handoff bundle satisfies these invariants. If a downstream consumer detects a violation, it's a Phase 4 bug, not a downstream concern:
 
-1. **Every field in `output/screen.html` exists in `schema.json`.** Rule 3 of the precedence charter; verified by Phase 4 schema-conformance check.
-2. **Every token used in `output/screen.html` or any `component.html` exists in `tokens.json`.** Rule 5.
-3. **Every component listed in `components-used.json.registryComponents` exists in `manifest.json` at the declared version.** Phase 4 cross-reference.
-4. **Every fixture in `components-used.json.fixturesUsed` exists in `fixtures/index.json` and on disk.** Phase 4 cross-reference.
-5. **`output/screen.html` contains no `<!-- ui-forge:* -->` markers and no `data-uiforge-*` attributes.** Strip is complete.
-6. **`screen-spec.md § Behavior` is non-empty if and only if the screen has at least one state transition, validation, business rule, mutation contract, or conditional rendering rule.** Otherwise the section is dropped (no empty placeholders).
-7. **Component versions are append-only.** A `v2` exists alongside `v1`; `v1` is never edited in place. Downstream consumers can pin to a version and trust it.
+1. **Every entity referenced by `output/screen.html`'s inlined `window.UIFORGE_DATA` is declared in `schema.json#entities`.** Rule 3 of the precedence charter; verified mechanically by `scripts/validate-bundle.sh`.
+2. **`tokens.json` is the canonical token list for downstream code mapping.** `screen.html` is *not* enforced to reference token names — it's a frozen visual snapshot, intentionally permissive on inlined Tailwind utility values. The consumer rebinds tokens from `screen-spec.md § Design tokens used` + `tokens.json`, not from the snapshot's class strings.
+3. **Every component listed in `components-used.json.registryComponents` exists in `manifest.json` at the declared version.** Verified mechanically by `scripts/validate-bundle.sh`.
+4. **Every fixture in `components-used.json.fixturesUsed` exists in `fixtures/index.json` and on disk.** Verified mechanically.
+5. **`output/screen.html` contains no `<!-- ui-forge:* -->` markers and no `data-uiforge-*` attributes.** Strip is complete. Verified mechanically.
+6. **`screen-spec.md § Behavior` is present if and only if the screen has at least one state transition, validation, business rule, mutation contract, or conditional rendering rule.** Otherwise the section is dropped (no empty placeholders). Not currently enforced by the validator — distillation decides; the section is human-judged.
+7. **Component versions are append-only.** A `v2` exists alongside `v1`; `v1` is never edited in place. Verified mechanically: every version pinned in `components-used.json` must have both `component.html` and `spec.md` present.
+
+Run the validator before declaring Phase 5 ready:
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/validate-bundle.sh" [screen-id]
+```
+
+Without a screen-id, every screen in `.ui-forge/screens/` is checked. Exit 0 = all invariants hold; exit 1 = at least one violation, with file:reason printed for each.
 
 ## Lifecycle and versioning
 
@@ -377,6 +388,7 @@ The handoff bundle satisfies these invariants. If a downstream consumer detects 
 
 Anti-features — listed so downstream consumers don't go looking:
 
+- **No writes outside `<project>/.ui-forge/`.** The handoff bundle is the boundary; ui-forge never touches `src/`, `app/`, `package.json`, or any sibling of `.ui-forge/`. Code generation lives downstream.
 - **No framework code.** No React, Vue, Svelte, or component-library bindings. The translation from spec + tokens + HTML to your stack is the downstream agent's job.
 - **No live data integration.** No API client code, no MCP wiring, no real backend. All scenarios are mock.
 - **No build configuration.** No `package.json`, no bundler config, no Storybook setup. The bundle is files; you decide the build.
@@ -395,4 +407,8 @@ These files exist under `.ui-forge/` for resumption and audit but are not consum
 - `screens/<id>/feedback/round-NN.json` + `latest.json` — pin history.
 - `assets/overlay.js` — annotation runtime, copied per project for `file://` fallback.
 
-`02-forge.html` and `01-variations.html` are useful as *historical reference* if a future reader asks "what alternatives were considered?" — but `decision.md` is the canonical answer to that question.
+`02-forge.html` and `01-variations.html` are useful as *historical reference* if a future reader asks "what alternatives were considered?" — but `decision.md` is the canonical narrative answer.
+
+### A note on `decision.md` ↔ `01-variations.html`
+
+`decision.md` references variant ids (e.g. `v04`, `mix: 3+7`) that only resolve inside `01-variations.html`. This is **intentional**, not a boundary leak: `decision.md` is **context/archaeology** for the next-step generation (a downstream agent reading "why does this layout look like this?" or a human revisiting an old screen), **not a contract** that downstream code consumes. The contractual handoff for "build this screen" is `screen-spec.md` + `components-used.json` + `data/`, all of which stand alone without the variations file. If a future reader wants to see what `v04` actually looked like, they open `01-variations.html`; that's audit, not compliance.

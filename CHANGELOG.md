@@ -4,6 +4,24 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.7.0 — 2026-05-17
+
+Sharpens forge-ui-forge in two directions: a **precedence charter** that tells the agent how to weigh visual / behavior / data when the user pushes in conflicting directions, and a **canonical output-data-model reference** so downstream consumers (frontend-implementation agent, code generator, human reader) have a single contract for what Phase 5 hands off. Plus a small runtime polish on the dev server so overlay updates ship via plugin upgrade instead of per-project `refresh-assets.sh`.
+
+**Plugins bumped:**
+- `forge-ui-forge`: `0.5.0` → `0.6.0` (minor):
+  - **Precedence charter** added to SKILL.md — 7 rules that crystallize the implicit hierarchy of ui-forge turns: workflow wins over speed, catalog before invention, schema is the data contract, behavior is authoritative for temporal logic, tokens are authoritative for visual primitives, pins are diffs not full restatements, brief defines scope. Each rule names the rebuttal it overrides (e.g. "andá ya", "queda mejor con #fafafa raw"), so Claude has explicit handles when user pressure pushes in those directions.
+  - **Phase opening lock-in line** — at the start of each phase the agent posts a one-line summary of what was read (manifest / brief / schema / behavior / tokens / axis). The user intercepts misreads before generation happens, preventing the "12 variants generated against the wrong schema" failure mode.
+  - **`references/output-data-model.md`** new — the canonical contract between ui-forge and any downstream consumer. Declares the three axes (visual / behavior / data), gives a TL;DR read order, the bundle map, exact schemas for every artifact (`config.json`, `brief.md`, `schema.json`, `mock.json`, scenarios, `behavior.md`, `screen-spec.md`, `decision.md`, `components-used.json`, `manifest.json`, `tokens.json`, fixtures, components), relationships between artifacts and which one is single source of truth for each fact, 7 invariants Phase 4 guarantees, versioning policy, and an explicit anti-features list.
+  - **Plugin-served overlay** on the prototype dev server — `serve.sh` exports `UIFORGE_PLUGIN_DIR`; `serve.py` intercepts `GET /assets/overlay.js` and streams the plugin's current copy when that env points to a valid file. http:// consumers always get the freshest overlay shipped with the plugin install — no more `refresh-assets.sh` per project after a plugin upgrade. file:// keeps using the per-project bootstrap copy, so the offline fallback is unchanged.
+  - **SKILL.md Phase 5 section** lists `output/decision.md` and `data/mock.json` + scenarios explicitly (they were implicit before) and links to the new output-data-model reference.
+
+**Marketplace:** `2.6.0` → `2.7.0` (minor — mirrors highest plugin bump).
+
+**Breaking changes:** none. `UIFORGE_PLUGIN_DIR` is purely opt-in (absence leaves the static handler path unchanged). The precedence charter is descriptive — Claude already operated this way most of the time; the charter just gives it explicit handles. The output-data-model reference adds no new artifacts; it documents the existing Phase 5 bundle shape.
+
+---
+
 ## v2.6.0 — 2026-05-12
 
 Curates two ideas from `mattpocock/skills` into existing dev-forge plugins instead of vendoring whole — a lightweight session handoff command in forge-keeper, and a deep enrichment of forge-ui-forge to capture **behavior/logic**, not just visual design. Plus a small post-tag patch (no version bump) swapping heart emojis (🩷🩵) for functional symbols (⚙️🔄) in the new ui-forge pin types.

@@ -1,6 +1,6 @@
 {
   "name": "forge-ui-forge",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "UI prototyping skill: iterative HTML screen variations, click-to-annotate overlay, per-project registry of reusable components and fixtures. Produces framework-agnostic specs for downstream implementation. Plus live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp).",
   "author": {
     "name": "dmedina",

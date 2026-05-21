@@ -191,6 +191,13 @@
       "target": ".claude-plugin/plugin.json (upstream version)",
       "summary": "Replaced with dev-forge plugin metadata (name: forge-mattpocock, dev-forge author/repo, dev-forge-tracked version)",
       "reason": "Each dev-forge plugin is published under the forge-* namespace with its own author/version. Standard renaming pattern applied to every external plugin in this marketplace."
+    },
+    {
+      "id": "custom-24",
+      "type": "modified",
+      "target": "skills/improve-codebase-architecture/SKILL.md",
+      "summary": "HTML-report temp dir prefers ${CLAUDE_PROJECT_DIR}/.tmp/ over $TMPDIR",
+      "reason": "macOS Bash sandbox blocks /var/folders/.../T/ which $TMPDIR resolves to (documented in dev-forge CLAUDE.md gotchas); using project-local .tmp/ keeps writes inside the allowlisted project root. User is responsible for adding .tmp/ to .gitignore."
     }
   ]
 }

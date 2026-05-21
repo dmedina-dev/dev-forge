@@ -4,6 +4,33 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.8.0 — 2026-05-22
+
+Two real fixes plus the periodic upstream sync sweep. **forge-keeper** ships a working SessionStart(clear) rescue hook (the previous `type: "prompt"` variant was broken on the Claude Code side). **forge-mattpocock** absorbs the upstream HTML-report rewrite of `improve-codebase-architecture`, adapted with a sandbox-safe temp dir so the generated report doesn't silently fail under Claude Code's macOS bash sandbox. Everything else is bookkeeping — 7 plugins refreshed their upstream pins with no consumer-facing content changes.
+
+**Plugins bumped:**
+- `forge-keeper`: `1.4.0` → `1.4.1` (patch — replaced the broken `type: "prompt"` SessionStart(clear) hook with a `type: "command"` bash script. The prompt variant failed with `"ToolUseContext is required for prompt hooks"` because Claude Code does not provide `ToolUseContext` on SessionStart events. New `hooks/session-start-clear` gathers the same rescue signals deterministically — latest `docs/sessions/` entry + age, git status counts, last 5 commits — and emits them via `hookSpecificOutput.additionalContext`. Same UX intent, now actually fires. Follows dev-forge bash conventions: `set -uo pipefail` + `trap 'exit 0' ERR`, guaranteed `exit 0`, manual JSON escaping, handles non-git dirs and BSD/GNU `stat` differences)
+- `forge-mattpocock`: `1.0.1` → `1.1.0` (minor — synced `mattpocock/skills` `9f2e0bd0` → `b8be62ff`. Applied the upstream HTML-report rewrite of `improve-codebase-architecture/SKILL.md` with **manual merge** preserving the local glossary re-pointings (the upstream now writes a self-contained Tailwind+Mermaid HTML file with before/after diagrams and recommendation-strength badges, replacing the previous numbered-list output). New `HTML-REPORT.md` reference copied verbatim from upstream — full HTML scaffold, diagram patterns, style guidance. Local `grill-with-docs/SKILL.md` kept as-is (forge-keeper-adapted version). **New customization `custom-24`**: HTML-report temp dir prefers `${CLAUDE_PROJECT_DIR}/.tmp/` over `$TMPDIR`. Reason: macOS bash sandbox blocks `/var/folders/.../T/` which `$TMPDIR` resolves to (documented in dev-forge `CLAUDE.md` gotchas) — using project-local `.tmp/` keeps writes inside the allowlisted project root. Attribution comment updated to numerate both adaptations)
+- `forge-commit`: `1.1.2` → `1.1.3` (patch — bookkeeping: `anthropics/claude-code` pin refreshed to `cc898dc3`; upstream advanced but no commits touched `plugins/commit-commands/`)
+- `forge-deep-review`: `2.0.1` → `2.0.2` (patch — bookkeeping: both origins refreshed to `cc898dc3`; 0 upstream commits touched `plugins/pr-review-toolkit/` or `plugins/code-review/`)
+- `forge-frontend-design`: `1.0.1` → `1.0.2` (patch — bookkeeping: `anthropics/claude-plugins-official` pin refreshed to `d68033bd`; 0 commits touched `plugins/frontend-design/`)
+- `forge-hookify`: `1.0.2` → `1.0.3` (patch — bookkeeping: pin refresh to `cc898dc3`)
+- `forge-plugin-dev`: `1.0.1` → `1.0.2` (patch — bookkeeping: pin refresh to `cc898dc3`)
+- `forge-security`: `1.0.1` → `1.0.2` (patch — bookkeeping: pin refresh to `cc898dc3`)
+- `forge-superpowers`: `1.1.0` → `1.1.1` (patch — bookkeeping: still on `v5.1.0` (`f2cbfbe`), no upstream release since; `last_checked` and `fetched_at` refreshed)
+
+**Marketplace:** `2.7.0` → `2.8.0` (minor — driven by `forge-mattpocock` minor).
+
+**Breaking changes:** none. The `forge-keeper` hook fix replaces a broken hook with a working one — consumers whose SessionStart(clear) rescue was silently failing now get the rescue context they expected. The `forge-mattpocock` ICA changes preserve all local divergences (glossary structure, DEEPENING.md addition) while picking up the upstream's HTML-report flow; the sandbox-safe temp dir is a behavior change in *where* the report lands but the report itself is identical.
+
+**Upstream pin state post-release:**
+- `obra/superpowers`: `v5.1.0` (`f2cbfbe`)
+- `mattpocock/skills`: `main @ b8be62ff`
+- `anthropics/claude-code`: `main @ cc898dc3`
+- `anthropics/claude-plugins-official`: `main @ d68033bd`
+
+---
+
 ## v2.7.0 — 2026-05-17
 
 Sharpens forge-ui-forge in two directions: a **precedence charter** that tells the agent how to weigh visual / behavior / data when the user pushes in conflicting directions, and a **canonical output-data-model reference** so downstream consumers (frontend-implementation agent, code generator, human reader) have a single contract for what Phase 5 hands off. Plus a small runtime polish on the dev server so overlay updates ship via plugin upgrade instead of per-project `refresh-assets.sh`.

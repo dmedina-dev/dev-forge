@@ -1,7 +1,7 @@
 {
   "name": "forge-plugin-dev",
   "description": "Plugin development toolkit: 7 skills for creating Claude Code plugins, agents, commands, hooks, and MCP integrations. Curated from anthropics/claude-code.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "dmedina",
     "email": "me@dmedina.dev"

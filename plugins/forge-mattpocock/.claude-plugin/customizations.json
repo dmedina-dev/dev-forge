@@ -4,16 +4,16 @@
     "repo": "mattpocock/skills",
     "path": "",
     "ref": "main",
-    "commit": "9f2e0bd0ea776eb6372eb81fa8a4a47814a8404a",
-    "fetched_at": "2026-05-11",
+    "commit": "b8be62ffac",
+    "fetched_at": "2026-05-21",
     "check_url": "https://github.com/mattpocock/skills/commits/main"
   },
   "upstream_status": {
-    "last_checked": "2026-05-11",
+    "last_checked": "2026-05-21",
     "latest_ref": "main",
-    "latest_commit": "9f2e0bd0ea776eb6372eb81fa8a4a47814a8404a",
+    "latest_commit": "b8be62ffac",
     "has_updates": false,
-    "summary": "Reviewed 18 upstream commits since prior pin (b56795be → 9f2e0bd0). Kept all local customizations: upstream changes to skills/engineering/grill-with-docs/SKILL.md and skills/engineering/to-prd/SKILL.md were minor wording / structural-section additions on top of the original upstream form; our local adaptations (custom-10, custom-12) target a different documentation layout (dev-forge docs/glossary.md / docs/plans/), so the upstream evolution is not absorbable without re-doing the adaptation. New upstream skills (prototype, handoff, in-progress/review, in-progress/writing-*) are excluded — see custom-15 through custom-20. No conflicts on excluded skills.",
+    "summary": "Synced 9f2e0bd0ea\u2192b8be62ffac: applied HTML-report rewrite to improve-codebase-architecture/SKILL.md (manual merge preserving glossary re-pointings); added HTML-REPORT.md from upstream; kept local grill-with-docs/SKILL.md (forge-keeper adaptations).",
     "changes": []
   },
   "customizations": [
@@ -35,7 +35,7 @@
       "id": "custom-03",
       "type": "excluded",
       "target": "skills/misc/",
-      "summary": "Excluded misc bucket — not part of curated subset",
+      "summary": "Excluded misc bucket \u2014 not part of curated subset",
       "reason": "User selected only 6 skills (grill-me, grill-with-docs, to-prd, tdd, diagnose, triage)"
     },
     {
@@ -49,7 +49,7 @@
       "id": "custom-05",
       "type": "excluded",
       "target": "skills/engineering/to-issues/",
-      "summary": "Excluded — bound to GitHub issues",
+      "summary": "Excluded \u2014 bound to GitHub issues",
       "reason": "Out of scope for this curation; user only requested the 6 skills above"
     },
     {
@@ -57,7 +57,7 @@
       "type": "modified",
       "target": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "summary": "Added on second-pass review. Re-pointed CONTEXT.md / CONTEXT-FORMAT.md references at forge-keeper docs structure (docs/glossary.md / GLOSSARY-FORMAT.md). LANGUAGE.md and DEEPENING.md copied unmodified; INTERFACE-DESIGN.md had one CONTEXT.md mention, now generic.",
-      "reason": "Completes the engineering trinity (build → diagnose → improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
+      "reason": "Completes the engineering trinity (build \u2192 diagnose \u2192 improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
     },
     {
       "id": "custom-07",
@@ -71,7 +71,7 @@
       "type": "excluded",
       "target": "skills/engineering/qa/",
       "summary": "Not in selected subset",
-      "reason": "User did not request this skill — forge-proactive-qa already covers QA in dev-forge"
+      "reason": "User did not request this skill \u2014 forge-proactive-qa already covers QA in dev-forge"
     },
     {
       "id": "custom-09",
@@ -84,7 +84,7 @@
       "id": "custom-09b",
       "type": "excluded",
       "target": "skills/productivity/write-a-skill/",
-      "summary": "Excluded — overlaps with claude-plugins-official/skill-creator",
+      "summary": "Excluded \u2014 overlaps with claude-plugins-official/skill-creator",
       "reason": "skill-creator (already used in this account) is the more sophisticated of the two. Two skills competing for the same triggers worsens activation for both."
     },
     {
@@ -105,7 +105,7 @@
       "id": "custom-11",
       "type": "removed",
       "target": "skills/grill-with-docs/CONTEXT-FORMAT.md",
-      "summary": "Removed — replaced by GLOSSARY-FORMAT.md aligned with forge-keeper docs",
+      "summary": "Removed \u2014 replaced by GLOSSARY-FORMAT.md aligned with forge-keeper docs",
       "reason": "Forge-keeper keeps domain language in docs/glossary.md (lazy), separate from CLAUDE.md's conventions/architecture role (which is line-limited)"
     },
     {
@@ -119,7 +119,7 @@
       "id": "custom-13",
       "type": "excluded",
       "target": "skills/engineering/triage/",
-      "summary": "Excluded triage skill — fundamentally an issue-tracker workflow",
+      "summary": "Excluded triage skill \u2014 fundamentally an issue-tracker workflow",
       "reason": "User opted out: without an issue tracker pumping work in, the skill has nothing to triage. The state machine and AGENT-BRIEF / OUT-OF-SCOPE patterns are independently useful but not bundled here."
     },
     {
@@ -141,7 +141,7 @@
       "type": "excluded",
       "target": "skills/productivity/handoff/",
       "summary": "Excluded new handoff skill (introduced 2026-05-06)",
-      "reason": "Agent transition documentation overlaps with forge-keeper:sync + docs/sessions/ logs, which already capture session handoffs in dev-forge. Different mental model — handoff writes a single file targeted at the next agent, forge-keeper persists structured session entries."
+      "reason": "Agent transition documentation overlaps with forge-keeper:sync + docs/sessions/ logs, which already capture session handoffs in dev-forge. Different mental model \u2014 handoff writes a single file targeted at the next agent, forge-keeper persists structured session entries."
     },
     {
       "id": "custom-17",
@@ -175,7 +175,7 @@
       "id": "custom-21",
       "type": "excluded",
       "target": ".out-of-scope/",
-      "summary": "Excluded upstream out-of-scope notes (added during 2026-04 → 2026-05 window)",
+      "summary": "Excluded upstream out-of-scope notes (added during 2026-04 \u2192 2026-05 window)",
       "reason": "Upstream project's own audit trail of rejected skill ideas; not part of curated skill content"
     },
     {

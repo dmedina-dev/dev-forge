@@ -4,16 +4,16 @@
     "repo": "obra/superpowers",
     "path": "",
     "ref": "v5.1.0",
-    "commit": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
-    "fetched_at": "2026-05-11",
+    "commit": "f2cbfbefeb",
+    "fetched_at": "2026-05-21",
     "check_url": "https://github.com/obra/superpowers/releases"
   },
   "upstream_status": {
-    "last_checked": "2026-05-11",
+    "last_checked": "2026-05-21",
     "latest_ref": "v5.1.0",
-    "latest_commit": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7",
+    "latest_commit": "f2cbfbefeb",
     "has_updates": false,
-    "summary": "Applied v5.0.7 → v5.1.0. 10 skill files refreshed (worktree rewrites, requesting-code-review absorbs deleted agent persona, systematic-debugging + plans + subagent-driven-development updates). README refreshed. Deleted local copies of 3 deprecated slash-command stubs (/brainstorm, /execute-plan, /write-plan) and standalone agents/code-reviewer.md to mirror upstream removals. Local customizations preserved on hooks/hooks.json (custom-13), hooks/session-start (custom-14), skills/brainstorming/SKILL.md (custom-12), and .claude-plugin/plugin.json (custom-28).",
+    "summary": "On latest release v5.1.0; no upstream changes since.",
     "changes": []
   },
   "customizations": [
@@ -189,7 +189,7 @@
       "id": "custom-25",
       "type": "modified",
       "target": ".claude-plugin/plugin.json",
-      "summary": "Renamed plugin (superpowers → forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
+      "summary": "Renamed plugin (superpowers \u2192 forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
       "reason": "Each dev-forge plugin is published independently under the forge-* namespace; version is tracked at the dev-forge marketplace level, not aligned to upstream releases"
     }
   ]

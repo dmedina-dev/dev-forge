@@ -4,8 +4,8 @@
     "repo": "anthropics/claude-plugins-official",
     "path": "plugins/frontend-design",
     "ref": "main",
-    "commit": "fe8f81309e7b5c983d1e2a23ed476efec458057d",
-    "fetched_at": "2026-05-11",
+    "commit": "d68033bd1a",
+    "fetched_at": "2026-05-21",
     "check_url": "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/frontend-design",
     "license": "Apache-2.0",
     "authors": [
@@ -14,11 +14,11 @@
     ]
   },
   "upstream_status": {
-    "last_checked": "2026-05-11",
+    "last_checked": "2026-05-21",
     "latest_ref": "main",
-    "latest_commit": "fe8f81309e7b5c983d1e2a23ed476efec458057d",
+    "latest_commit": "d68033bd1a",
     "has_updates": false,
-    "summary": "128 upstream commits since prior pin; 0 touch plugins/frontend-design/. Marketplace churn affected other plugins only (code-modernization, mcp-server-dev, cwc-makers, etc.), plus policy/CI tightening. Pin refreshed to baseline future checks. Also fixed origin.path from 'frontend-design' (stale, never accurate) to 'plugins/frontend-design' to match upstream layout.",
+    "summary": "Upstream advanced (anthropics/claude-plugins-official) but no commits touched our subpath; tracking refreshed.",
     "changes": []
   },
   "customizations": [

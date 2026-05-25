@@ -4,6 +4,17 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.8.1 — 2026-05-25
+
+Hotfix: `forge-profiles` install was failing on fresh machines since v2.1.0. The plugin declared a `userConfig.profiles` entry without the schema-required `type` field, which made Claude Code's plugin loader abort extraction (orphan `temp_subdir_*` under `~/.claude/plugins/cache/` with only partial files; no entry in `installed_plugins.json`). The declaration was cosmetic — the three commands manage `pluginConfigs["forge-profiles@dev-forge"].options.profiles` directly — so the fix is to remove `userConfig` entirely.
+
+**Plugins bumped:**
+- `forge-profiles`: `1.1.1` → `1.1.2` (patch — removed the malformed `userConfig` declaration from `plugin.json` that was rejecting the plugin at install validation. Storage path and command behavior unchanged; the skill still reads/writes `pluginConfigs["forge-profiles@dev-forge"].options.profiles`)
+
+**Marketplace:** `2.8.0` → `2.8.1` (patch — single fix bump).
+
+**Breaking changes:** none. Consumers who already had `forge-profiles` installed and working were unaffected by the bug (their cache survived); consumers who tried to install on a new machine should now succeed.
+
 ## v2.8.0 — 2026-05-22
 
 Two real fixes plus the periodic upstream sync sweep. **forge-keeper** ships a working SessionStart(clear) rescue hook (the previous `type: "prompt"` variant was broken on the Claude Code side). **forge-mattpocock** absorbs the upstream HTML-report rewrite of `improve-codebase-architecture`, adapted with a sandbox-safe temp dir so the generated report doesn't silently fail under Claude Code's macOS bash sandbox. Everything else is bookkeeping — 7 plugins refreshed their upstream pins with no consumer-facing content changes.

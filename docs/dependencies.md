@@ -122,8 +122,9 @@ Which plugins depend on or complement each other.
 ### forge-ui-forge
 - **Independent** — UI prototyping toolkit, works standalone
 - Native plugin (no upstream)
-- 1 skill + subcommands: serve, stop, status, refresh
+- 1 skill + 3 specialized subagents (Phase 2/3/4 delegation, since v0.7.0) + subcommands: serve, stop, status, refresh
 - Iterative HTML screen variations, click-to-annotate overlay (point pins on click, area selection on Shift+drag), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures under `.ui-forge/`
+- Subagents (v0.7.0+): `ui-forge-variator` (Phase 2 variations), `ui-forge-iterator` (Phase 3 pin rounds, auto-dispatched on Monitor stdout line), `ui-forge-distiller` (Phase 4b bundle assembly + validate-bundle.sh). The main session passes paths only — never HTML content — so the parent context stays light across long iteration sessions.
 - Live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp)
 - Produces framework-agnostic specs for downstream implementation
 - Complements forge-frontend-design (philosophy + prototyping form a natural pair)

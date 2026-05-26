@@ -1,7 +1,7 @@
 ---
 name: ui-forge
 description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Includes hot-reload dev server with SSE — user annotates in the browser, clicks 🚀 Send to Claude, Claude regenerates HTML, browser reloads automatically. Subcommands for the dev server lifecycle: "ui-forge serve" (start), "ui-forge stop", "ui-forge status". Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with hot-reload annotation overlay — user clicks 🚀 to send pins, Claude regenerates, browser auto-reloads via SSE, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, iterating on visual interfaces before writing production code, starting/stopping the ui-forge server, or sending feedback from the overlay. Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
-version: 0.6.0
+version: 0.7.0
 ---
 
 # ui-forge
@@ -170,17 +170,30 @@ Pre-fill from the brief; let the user refine. Phase 2 variants can reference thi
 1. Do an explicit reuse analysis against `registry/manifest.json`. Phrase it like:
    > "Para esta pantalla puedo reutilizar `kpi-card v1` y `data-table-dense v1`. Necesito diseñar nuevo: el header con filtros y el panel lateral. Genero 12 variaciones manteniendo fijos los reutilizados. ¿Confirmas?"
 
-2. Generate `01-variations.html` using `templates/variations.html.tmpl`. Default N=12 (confirm with user if they prefer more/less). All variants share the same `mock.json`, same viewport dimensions, same tokens. Each card has `data-variant-id`.
+2. **Dispatch the `ui-forge-variator` subagent** to generate `01-variations.html` — do **not** generate the HTML in the main session. Heavy HTML output stays out of the parent context.
 
-3. Reused components stay fixed across variations; the new bits and the overall composition are what vary.
+   Call shape (via the `Agent` tool, `subagent_type: "ui-forge-variator"`):
 
-4. **Variants must be structurally different** — different layout, different information hierarchy, different primary affordance. Different colours or copy alone is not a variant; it's wallpaper. If two drafts come out too similar, redo one with explicit "do not use a card grid" / "primary affordance must move" guidance. See the anti-pattern below.
+   ```
+   screen-id: <kebab-case id>
+   CWD: <absolute path of the consumer project root>
+   N: 12  (or whatever the user chose)
+   axis: visual | behavior | data | mixed
+   reuse-decision: "<which registry components fixed, which blocks new — from step 1>"
+   plugin-root: ${CLAUDE_PLUGIN_ROOT}
+   ```
 
-5. The variations file ships with two browse modes:
+   The subagent reads `brief.md`, `schema.json`, `mock.json`, `behavior.md` (if present), `manifest.json`, `tokens.json` and the `variations.html.tmpl` template, then writes `screens/<id>/01-variations.html` and returns a ≤ 15-line report (per-variant one-line structural summaries + reused components + warnings).
+
+3. Reused components stay fixed across variations; the new bits and the overall composition are what vary. The subagent enforces this — your job in the parent session is to make the reuse decision explicit *before* dispatching.
+
+4. **Variants must be structurally different** — different layout, different information hierarchy, different primary affordance. Different colours or copy alone is not a variant; it's wallpaper. The subagent self-checks for this and redoes wallpaper drafts before writing. See the anti-pattern below.
+
+5. The variations file ships with two browse modes (handled by the template, not your concern in the parent):
    - **Grid scroll** (default) — vertical stack of cards, good for compare-everything.
-   - **Focus mode** — full-size single variant with `←` / `→` keyboard navigation and a floating switcher. Toggle via the `Focus mode (F)` button in the sticky nav, or press `F`. `Esc` exits. This is the mode for "I want to feel variant 4 at its real size before judging".
+   - **Focus mode** — full-size single variant with `←` / `→` keyboard navigation and a floating switcher. Toggle via the `Focus mode (F)` button in the sticky nav, or press `F`. `Esc` exits.
 
-6. Output the file path and tell the user: *"Elige id ganador o `mix: 3+7`"*.
+6. Show the subagent's report **verbatim** to the user, append the file path, and ask: *"Elige id ganador o `mix: 3+7`"*. Do **not** read `01-variations.html` into your own context — the user opens it in the browser.
 
 ### Phase 3 — Annotation (hot-reload loop)
 
@@ -230,13 +243,24 @@ Always-available (http:// and file://):
 #### Hot-reload iteration loop
 
 1. User annotates in the browser → clicks 🚀.
-2. Monitor delivers `[ui-forge] feedback screen=<id> round=<n> pins=<k>` to you.
-3. Read `.ui-forge/screens/<id>/feedback/latest.json` → get the round filename.
-4. Read the full round file → apply the changes to `02-forge.html`.
-5. Write the updated file → serve.py detects mtime change → SSE → browser reloads.
-6. User sees the result, annotates again if needed. Repeat.
+2. Monitor delivers `[ui-forge] round=N screen=<id> new=K total=T | #<id>[type] @(x,y) "comment" || ... | details: show-pin.py <id> --round N` to you.
+3. **Dispatch `ui-forge-iterator` automatically** — no confirmation prompt to the user. Call shape (via `Agent` tool, `subagent_type: "ui-forge-iterator"`):
 
-No chat paste required. The user never leaves the browser until satisfied.
+   ```
+   screen-id: <parsed from the Monitor line>
+   round: <parsed from the Monitor line>
+   CWD: <absolute path of the consumer project root>
+   plugin-root: ${CLAUDE_PLUGIN_ROOT}
+   ```
+
+   The subagent reads `feedback/round-NN.json` + `02-forge.html` + the relevant schema/manifest/tokens files, applies **all pins in the round at once** (a round may carry multiple pins), and writes the updated `02-forge.html`. `serve.py`'s mtime watcher then fires SSE and the browser auto-reloads — no parent-session involvement in the reload.
+
+4. Show the subagent's ≤ 15-line per-pin report verbatim to the user. Do **not** read `02-forge.html` yourself.
+5. User sees the change in the browser, annotates again if needed → back to step 1.
+
+No chat paste required. The user never leaves the browser until satisfied. The main session never loads the forge HTML — that's the whole point of the iterator subagent.
+
+If the user explicitly asks to skip the subagent (e.g. *"esta vez aplícalo tú directamente"*), you may fall back to the manual loop: read `latest.json` → read the round → edit `02-forge.html` yourself. This is the exception, not the default.
 
 #### Fallback (file://)
 
@@ -246,23 +270,19 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
 
 **Trigger:** "aprobado", "destila", "listo".
 
-1. Generate `output/screen.html` — **strip everything between the overlay markers**, inline `mock.json` as the only data source, self-contained.
+Phase 4 is split in two: **4a** is human-in-the-loop candidate negotiation, owned by the main session because it requires conversation with the user. **4b** is the mechanical bundle assembly, delegated to the `ui-forge-distiller` subagent so the heavy spec + registry writes don't pollute the parent context.
 
-2. Generate `output/screen-spec.md` from `templates/screen-spec.md.tmpl`. The template includes a `## Behavior` section that you populate by distilling pins + (if present) `data/behavior.md`:
-   - **`state-transition` pins** → § State transitions
-   - **`logic-rule` pins** → split between § Business rules and § Validations using this heuristic:
-     - Comment starts with `validación:` / `validation:` OR mentions a specific named field (`amount: ...`, `email must ...`) → § Validations
-     - Otherwise (cross-field invariant, domain rule) → § Business rules
-   - **§ Mutation contracts** and **§ Conditional rendering** are populated from the brief + scenarios + any matching pins (typically `change` or `logic-rule` pins describing forms / submit flows / conditional UI).
-   - Drop empty subsections entirely — don't leave placeholders for behavior that doesn't apply.
+#### Phase 4a — Candidate identification (main session)
 
-3. Generate `output/decision.md` from `templates/decision.md.tmpl`. Capture the **reasoning**, not just the result: which variant won and why (one paragraph), which pieces were mixed in from other variants (if applicable), and a one-line rejection reason per discarded variant. Future readers asking "why does this screen look like this?" need this file — `screen.html` alone doesn't answer it. Skip the file only if Phase 2 generated a single variant (nothing to decide between).
-
-4. Identify component candidates from two signals:
-   - **Strong:** pins with `type: extract-as-component` from Phase 3.
+1. Identify component candidates from two signals:
+   - **Strong:** pins with `type: extract-as-component` from Phase 3 (look across **all** `feedback/round-*.json`).
    - **Heuristic:** cohesive semantic blocks that repeat or are clearly standalone.
 
-5. Present candidates to the user for confirmation:
+2. Identify fixture and token candidates:
+   - **Fixtures:** datasets in `data/mock.json` or scenarios that are clearly reusable (market-indices list, country list, currency list…).
+   - **Tokens:** any `token-issue` pin where the iterator left a `warnings:` entry about a missing token.
+
+3. Present everything to the user for confirmation:
    ```
    Componentes nuevos:
      - [pin] header-with-filters → marcado por ti
@@ -271,35 +291,44 @@ If user opens `02-forge.html` via `file://` (no server), the overlay falls back 
      - kpi-card → cambios en spacing. ¿Promociono a v2?
    Fixtures nuevos detectados:
      - market-indices → 8 índices con valores. ¿Promuevo a registry/fixtures/?
+   Tokens propuestos:
+     - shadow.elevated (de pin #7 token-issue) → ¿añado a tokens.json?
    ```
 
-6. For each approved candidate:
-   - New component → `registry/components/<id>/v1/{component.html, spec.md}`.
-   - Modified component → `registry/components/<id>/v{N+1}/` — **never overwrite** a prior version.
-   - New fixture → `registry/fixtures/<name>.json` + update `fixtures/index.json`.
-   - Update `registry/manifest.json` (`usedInScreens`, `currentVersion`, timestamps).
+4. Collect approvals. Assemble the `approved` payload (each list may be empty `[]`):
 
-7. Write `output/components-used.json`:
-   ```json
-   {
-     "version": 1,
-     "screen": "portfolio-overview",
-     "registryComponents": [{"id": "kpi-card", "version": "v2"}, {"id": "data-table-dense", "version": "v1"}],
-     "newComponents": ["header-with-filters", "notification-banner"],
-     "screenLocal": ["empty-state-illustration"],
-     "fixturesUsed": ["portfolios"]
-   }
+   ```
+   approved:
+     new-components: [{id, source-pin-or-heuristic, sketch}]
+     bump-components: [{id, from-version, to-version, why}]
+     replace-pins: [{pin-id, registry-id, version}]   ← from Phase 3 replace-with-registry pins, already in HTML
+     new-fixtures: [{name, source}]
+     new-tokens: [{path, value, why}]
    ```
 
-8. Regenerate `registry/catalog.html` from `templates/catalog.html.tmpl`.
+#### Phase 4b — Bundle assembly (delegate to `ui-forge-distiller`)
 
-9. **Run the bundle validator before declaring Phase 5 ready:**
+5. Dispatch the distiller (`Agent` tool, `subagent_type: "ui-forge-distiller"`) with:
 
-   ```bash
-   bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/validate-bundle.sh" <screen-id>
+   ```
+   screen-id: <kebab-case>
+   CWD: <absolute path of the consumer project root>
+   plugin-root: ${CLAUDE_PLUGIN_ROOT}
+   approved: <the payload from step 4>
+   winning-variant: <variant id or "mix: 3+7" from Phase 3>
    ```
 
-   Checks the mechanical invariants from `references/output-data-model.md`: entity-name conformance with `schema.json` (#1), component pins resolve in `manifest.json` (#3), fixture pins resolve in `fixtures/index.json` (#4), `screen.html` has no overlay leftovers (#5), every pinned version has both `component.html` and `spec.md` (#7). Exit 0 = clean handoff. On exit 1, fix the violations before naming the next phase — don't tell the user "Phase 5 ready" with a dirty bundle.
+6. The distiller does the actual work, all in one pass:
+   - Generates `output/screen.html` (strips overlay markers, inlines `mock.json` as the only data source).
+   - Generates `output/screen-spec.md` from the template — populates § Behavior from `state-transition` + `logic-rule` pins and `data/behavior.md` (if present), using the heuristic *"`validación:`/`validation:` prefix or named field → § Validations; cross-field invariant → § Business rules"*. Drops empty subsections.
+   - Generates `output/decision.md` (skips if Phase 2 produced a single variant).
+   - Promotes approved components / bumps versions (never overwrites a prior version), promotes fixtures, adds new tokens.
+   - Writes `output/components-used.json` (`{version: 1, screen, registryComponents, newComponents, screenLocal, fixturesUsed}`).
+   - Updates `registry/manifest.json` (`usedInScreens`, `currentVersion`, timestamps).
+   - Regenerates `registry/catalog.html`.
+   - **Runs `scripts/validate-bundle.sh <screen-id>`** and includes the exit code in its report.
+
+7. Show the distiller's structured report to the user. The report ends with `validator: PASS|FAIL`. On **FAIL**, do not declare Phase 5 ready — relay the warnings, and either fix forward or re-dispatch with a corrected `approved` payload (don't hand off a dirty bundle).
 
 ### Phase 5 — Handoff
 
@@ -394,6 +423,20 @@ Located at `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/templates/`:
 | `catalog.html.tmpl` | Phase 4 registry gallery |
 | `tokens.default.json` | Default Tailwind-ish token set seeded on bootstrap |
 
+## Subagents
+
+The heavy file work in Phases 2/3/4 is delegated to three specialized subagents shipped with this plugin. The main session passes only **screen-id + paths + parameters** — never HTML or large JSON — so the parent context stays clean across long sessions.
+
+| Subagent | Phase | Disparo | Writes |
+|---|---|---|---|
+| `ui-forge-variator` | 2 | Main session dispatches after locking reuse-vs-new | `screens/<id>/01-variations.html` |
+| `ui-forge-iterator` | 3 | Main session dispatches **automatically** on each Monitor `[ui-forge] round=N screen=X ...` line | `screens/<id>/02-forge.html` (one round, possibly several pins, applied as one pass) |
+| `ui-forge-distiller` | 4b | Main session dispatches after candidate approval | `output/*`, `registry/*`, runs `validate-bundle.sh` |
+
+Each subagent returns a ≤ 15-line structured report (rutas, per-item summaries, warnings). The main session forwards that report to the user verbatim. **The main session does not read `01-variations.html` or `02-forge.html` directly** — those files are for the browser, not the chat.
+
+Manual fallback: if the user explicitly asks the main session to apply pins itself (rare), it can read `feedback/round-NN.json` + `02-forge.html` and edit directly. Default is always the subagent.
+
 ## Assets
 
 - `${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/assets/overlay.js` — the annotation overlay. The bootstrap script copies it to `<project>/.ui-forge/assets/overlay.js` so the HTML files in `screens/` can reference it via a stable relative path.
@@ -487,8 +530,8 @@ The live mode lives entirely under `scripts/live/`, gated in `overlay.js` by `wi
 3. Freeze the brief at `screens/<id>/brief.md`.
 4. Generate schema + scenarios with domain-plausible data.
 5. **Stateful screen?** (wizard, state machine, mutation-heavy, complex validations) → also generate `data/behavior.md` skeleton (Phase 1.5). Read-only displays skip this.
-6. Propose reuse vs. new design explicitly against the manifest.
-7. Generate variations → user chooses (grid scroll or focus mode with `←` `→`) → forge.
-8. Iterate via round-NN JSON paste loop. New pin types: `logic-rule` for business rules / validations; `state-transition` for temporal behaviors.
-9. On "approved": distill (`screen.html` + `screen-spec.md` with `## Behavior` + `decision.md`), promote components/fixtures with confirmation, regenerate catalog.
+6. Propose reuse vs. new design explicitly against the manifest. Lock the decision before dispatching to Phase 2.
+7. **Phase 2** — dispatch `ui-forge-variator` to write `01-variations.html`. Show the agent's report verbatim; user opens the file in the browser, chooses winner (grid scroll or focus mode with `←` `→`) → forge.
+8. **Phase 3** — on every Monitor `[ui-forge] round=N screen=X ...` line, auto-dispatch `ui-forge-iterator`. Multiple pins per round are normal; the subagent applies them all in one pass. Browser auto-reloads via SSE. New pin types: `logic-rule` for business rules / validations; `state-transition` for temporal behaviors.
+9. **Phase 4** — on "approved": negotiate component / fixture / token candidates with the user (4a), then dispatch `ui-forge-distiller` with the approved payload (4b). The distiller runs `validate-bundle.sh` itself; only declare Phase 5 ready on `validator: PASS`.
 10. Hand off the spec package. Stop before `src/`.

@@ -70,7 +70,7 @@ forge-keeper commands:
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
 | **forge-frontend-design** | Distinctive, production-grade UI/UX design | Skill-based (auto-triggered) |
-| **forge-ui-forge** | Iterative UI prototyping: generates N HTML screen variations, click-to-annotate via overlay, hot-reload regenerates from feedback. Outputs framework-agnostic specs + per-project component registry under `.ui-forge/` | Skill + `serve`, `stop`, `status`, `refresh` subcommands |
+| **forge-ui-forge** | Iterative UI prototyping: generates N HTML screen variations, click-to-annotate via overlay, hot-reload regenerates from feedback. Phases 2/3/4 delegated to specialized subagents (variator/iterator/distiller) so the main session stays light on context across long iteration loops. Outputs framework-agnostic specs + per-project component registry under `.ui-forge/` | Skill + 3 subagents + `serve`, `stop`, `status`, `refresh` subcommands |
 
 ### Channels & autonomous agents
 

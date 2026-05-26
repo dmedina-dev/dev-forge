@@ -71,14 +71,18 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/show-pin.py" portfolio-ov
 
 **Pre-approval tip for users:** adding `python3 **/ui-forge/scripts/show-pin.py *` to `permissions.allow` in `.claude/settings.local.json` makes every future invocation friction-free.
 
-Apply the requested changes to `02-forge.html` by pin type:
-- `change` → modify the element or layout as described
-- `extract-as-component` → note for Phase 4 distillation
-- `replace-with-registry` → swap in the registry component
-- `token-issue` → fix token usage
-- `data-issue` → fix mock data or schema
+**Default flow: auto-dispatch `ui-forge-iterator`.** Don't read `02-forge.html` or the round file yourself. Parse `screen` and `round` from the Monitor line and immediately invoke the subagent (`Agent` tool, `subagent_type: "ui-forge-iterator"`):
 
-Write the updated `02-forge.html` — the server detects the mtime change and the browser auto-reloads via SSE. The user sees changes appear without switching to the chat.
+```
+screen-id: <parsed>
+round: <parsed>
+CWD: <absolute path of consumer project root>
+plugin-root: ${CLAUDE_PLUGIN_ROOT}
+```
+
+The subagent reads the round JSON, applies every pin in the round (a round can carry multiple pins) by type — `change`, `extract-as-component` (marked for Phase 4), `replace-with-registry`, `token-issue`, `data-issue`, `logic-rule`, `state-transition` — and rewrites `02-forge.html`. The server's mtime watcher then fires SSE; the browser reloads on its own. The main session only forwards the subagent's ≤ 15-line per-pin report to the user.
+
+**Manual fallback** (rare — only when the user explicitly says "esta vez aplícalo tú directamente" or the subagent is unavailable): read `feedback/latest.json` → read the round file → edit `02-forge.html` yourself. Same SSE auto-reload applies.
 
 ## stop
 

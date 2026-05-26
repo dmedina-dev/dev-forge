@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Dev Forge — opinionated Claude Code plugins for project bootstrapping and ongoing context maintenance.",
-    "version": "2.8.1"
+    "version": "2.9.0"
   },
   "plugins": [
     {
@@ -222,13 +222,13 @@
     },
     {
       "name": "forge-ui-forge",
-      "description": "UI prototyping: iterative HTML screen variations, click-to-annotate overlay (click for point pins, Shift+drag for area selection), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures. Produces framework-agnostic specs for downstream implementation. Plus live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp).",
+      "description": "UI prototyping: iterative HTML screen variations, click-to-annotate overlay (click for point pins, Shift+drag for area selection), hot-reload dev server with 🚀 Send to Claude and SSE auto-reload, per-project registry of reusable components and fixtures. Phases 2/3/4 are delegated to specialized subagents (ui-forge-variator, ui-forge-iterator, ui-forge-distiller) so the main session stays light on context. Produces framework-agnostic specs for downstream implementation. Plus live mode that proxies an existing dev server and injects the overlay (opt-in, requires aiohttp).",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",
         "path": "plugins/forge-ui-forge"
       },
-      "version": "0.6.0"
+      "version": "0.7.0"
     },
     {
       "name": "forge-deepthink",

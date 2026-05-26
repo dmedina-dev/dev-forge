@@ -4,6 +4,28 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.9.0 — 2026-05-26
+
+Context-offloading rework of **forge-ui-forge**. The skill now delegates the heavy file work in Phases 2/3/4 to three specialised subagents shipped with the plugin — the main session passes paths only and forwards a ≤ 15-line structured report from each agent back to the user. Long iteration loops (typical: 5–15 pin rounds) no longer fill the parent context with HTML.
+
+**Plugins bumped:**
+- `forge-ui-forge`: `0.6.0` → `0.7.0` (minor — three new subagents under `agents/`, each with its own lock-in line, inputs contract, files-to-read list, precedence-charter compliance, and ≤ 15-line structured report format):
+  - **`ui-forge-variator`** (Phase 2) — generates `screens/<id>/01-variations.html` (N variants, sequential). Dispatched by the main session after the reuse-vs-new decision is locked. Self-checks for "wallpaper variants" and redoes structurally-too-similar drafts before writing.
+  - **`ui-forge-iterator`** (Phase 3) — applies one round of pins (multiple pins per round are batched into a single pass) to `screens/<id>/02-forge.html`. **Auto-dispatched** by the main session on every Monitor stdout line `[ui-forge] round=N screen=X new=K total=T ...` — no confirmation prompt, because asking would break the overlay-driven UX flow. Honors precedence rule #6 (pins are diffs, not full restatements).
+  - **`ui-forge-distiller`** (Phase 4b) — takes the parent's approved candidate payload (new components, version bumps, fixtures, tokens) and writes `output/{screen.html, screen-spec.md, decision.md, components-used.json}` + promotes registry artefacts + regenerates `registry/catalog.html`. Runs `scripts/validate-bundle.sh <screen-id>` itself and includes the exit code in its report; the parent only declares Phase 5 ready on `validator: PASS`.
+  - **SKILL.md** Phase 2 / 3 / 4 sections rewritten to dispatch via the `Agent` tool with paths-only payloads. Phase 4 split into 4a (candidate negotiation, stays in the parent) and 4b (bundle assembly, delegated). New `## Subagents` section maps each phase to its dispatcher. Quick checklist steps 7–9 updated. `references/subcommands.md` § "On feedback event" describes the auto-dispatch contract.
+  - **Manual fallback preserved** — if the user explicitly says *"esta vez aplícalo tú directamente"*, the main session can still read `feedback/round-NN.json` + `02-forge.html` and edit directly. Default is always the subagent.
+
+**Marketplace:** `2.8.1` → `2.9.0` (minor — mirrors the highest plugin bump).
+
+**Breaking changes:** none. On-disk layout under `.ui-forge/` is unchanged, so existing consumer projects keep working as-is — the change is in how the agent operates, not in what files it produces. The dev server, overlay, SSE auto-reload, and Phase 5 handoff bundle shape are all identical. Subagent dispatching uses the standard `Agent` tool, which Claude Code already requires for the iterator to fire; no new tools or settings needed.
+
+**Docs sync (no plugin bump):**
+- `README.md` — forge-ui-forge row mentions the 3 subagents.
+- `docs/dependencies.md` § forge-ui-forge — explicit subagent list + delegation rationale.
+- `docs/exemplars.md` — new third exemplar **"Native plugin with context-offloading subagents"** alongside the existing native (forge-keeper) and curated (forge-superpowers) entries. References the agent skeleton, SKILL.md § Subagents, and the auto-dispatch contract in subcommands.md.
+- `.claude/rules/plugin-authoring.md` — new bullet on paths-only subagent delegation: when a plugin generates large artefacts across multiple iterations, delegate to specialised subagents that receive paths only, never inline content; auto-dispatch is acceptable on mechanical Monitor triggers; fan-out generation prefers one sequential subagent over N parallel ones by default.
+
 ## v2.8.1 — 2026-05-25
 
 Hotfix: `forge-profiles` install was failing on fresh machines since v2.1.0. The plugin declared a `userConfig.profiles` entry without the schema-required `type` field, which made Claude Code's plugin loader abort extraction (orphan `temp_subdir_*` under `~/.claude/plugins/cache/` with only partial files; no entry in `installed_plugins.json`). The declaration was cosmetic — the three commands manage `pluginConfigs["forge-profiles@dev-forge"].options.profiles` directly — so the fix is to remove `userConfig` entirely.

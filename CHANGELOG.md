@@ -4,6 +4,36 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v2.10.0 — 2026-06-02
+
+Marketplace-maintenance commands move out of their plugins and into **repo-level `.claude/commands/`**, and a new `/import-plugin` command is added. The two migrated commands (`update-check`, `release`) only ever functioned inside the dev-forge repo — `update-check` scans `plugins/*/.claude-plugin/customizations.json` and `release` hard-guards on `.claude-plugin/marketplace.json` — so shipping them inside installable plugins was misleading. They now live with the repo and are invoked without a plugin prefix (`/update-check`, `/release`).
+
+**Plugins bumped:**
+- `forge-keeper`: `1.4.1` → `1.5.0` (minor — removed the `update-check` command (migrated to repo-level `/update-check`); its 16 KB guide moved with it via git rename to `.claude/commands/references/`. Dropped the "Related commands" section from SKILL.md and re-pointed the heal-plugin-cache trigger note. No other skill/command/hook in forge-keeper changed)
+- `forge-commit`: `1.1.3` → `1.2.0` (minor — removed the `release` command (migrated to repo-level `/release`); dropped customization `custom-02` and the `/release` mention from the plugin description. `/commit`, `/commit-push-pr`, `/clean_gone` unchanged)
+
+**Marketplace:** `2.9.0` → `2.10.0` (minor — driven by the two minor plugin bumps; also adds the repo-level `/import-plugin` command, which is not a plugin and carries no version).
+
+**New repo-level command (not a plugin):** `/import-plugin` — the inverse of the `forge-export` plugin. Adopts an existing plugin **into** this marketplace from two sources: an installed plugin (read from `~/.claude/plugins/installed_plugins.json`, files taken from the cache `installPath`, true upstream recovered from the source marketplace's own `marketplace.json`) or a remote GitHub repo (cloned into `.upstream/`). It copies into `plugins/`, writes `customizations.json` with the recovered origin, registers the entry in `marketplace.json`, regenerates `install-all.md`, and validates with `marketplace-health.sh`. It does not bump versions — that is `/release`'s job.
+
+**Breaking changes:** none in practice. `/forge-keeper:update-check` and `/forge-commit:release` no longer exist as plugin commands, but both were no-ops outside a dev-forge-style marketplace repo (one needs `customizations.json` files, the other guards on `marketplace.json`), so no real consumer workflow breaks. Inside this repo, invoke them as `/update-check` and `/release`.
+
+### Migration
+
+For anyone who invoked the old plugin commands (only meaningful when working *in* the dev-forge repo):
+- `/forge-keeper:update-check` → `/update-check`
+- `/forge-commit:release` → `/release`
+
+Run `/reload-plugins` (or start a new session) after updating so the `forge-keeper` 1.5.0 and `forge-commit` 1.2.0 caches refresh.
+
+**Upstream pin state post-release:** unchanged (no upstream sync this release).
+- `obra/superpowers`: `v5.1.0` (`f2cbfbe`)
+- `mattpocock/skills`: `main @ b8be62ff`
+- `anthropics/claude-code`: `main @ cc898dc3`
+- `anthropics/claude-plugins-official`: `main @ d68033bd`
+
+---
+
 ## v2.9.0 — 2026-05-26
 
 Context-offloading rework of **forge-ui-forge**. The skill now delegates the heavy file work in Phases 2/3/4 to three specialised subagents shipped with the plugin — the main session passes paths only and forwards a ≤ 15-line structured report from each agent back to the user. Long iteration loops (typical: 5–15 pin rounds) no longer fill the parent context with HTML.

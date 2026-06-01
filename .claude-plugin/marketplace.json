@@ -113,7 +113,7 @@
     },
     {
       "name": "forge-commit",
-      "description": "Commit and PR commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup), /release (bump versions, tag, push). Curated from anthropics/claude-code.",
+      "description": "Commit and PR commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup). Curated from anthropics/claude-code.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/dmedina-dev/dev-forge.git",

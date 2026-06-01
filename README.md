@@ -60,7 +60,7 @@ forge-keeper commands:
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean-gone`, `/release` |
+| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean-gone` |
 | **forge-security** | Security reminder hooks (XSS, injection, eval, etc.) | Passive — hooks on Edit/Write |
 | **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/hookify-list`, `/hookify-configure`, `/hookify-help` |
 | **forge-profiles** | Plugin profile manager — switch plugins + MCP servers per work mode | `/profile-create`, `/profile-list`, `/profile-change` |

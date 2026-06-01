@@ -1,6 +1,7 @@
 CLAUDE.local.md
 .upstream/
 .claude/worktrees/
+.claude/scheduled_tasks.lock
 .venv-dev/
 __pycache__/
 *.pyc

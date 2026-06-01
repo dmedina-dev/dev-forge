@@ -18,7 +18,7 @@ version, so orphaned sessions keep working without a restart.
 
 - You see repeated `PreToolUse:X hook error` / `PostToolUse:X hook error` lines across many tools in the same session
 - The root cause message mentions "Plugin directory does not exist"
-- Immediately after running `/forge-commit:release` if older sessions are still open
+- Immediately after releasing new plugin versions (a marketplace version bump) if older sessions are still open
 - As a maintenance sweep when plugin versions have drifted
 
 ## Step 1 — Scan (dry-run)

@@ -63,10 +63,10 @@ So if release N has one minor (`forge-x` 0.3 → 0.4) and three patches, marketp
 
 ## Release process
 
-Releases happen via `/forge-commit:release`. The skill detects which plugin directories changed since the last git tag and prompts for bumps.
+Releases happen via the repo-level `/release` command (in `.claude/commands/`, not a plugin). It detects which plugin directories changed since the last git tag and prompts for bumps.
 
 1. Commit work as feature branches; merge to main.
-2. Run `/forge-commit:release` — it bumps and tags.
+2. Run `/release` — it bumps and tags.
 3. Update `CHANGELOG.md` with the release notes (the release commit links to it).
 4. Push tag.
 
@@ -85,7 +85,7 @@ The same entry should also call out marketplace-level changes (added/removed plu
 
 We vendor plugins from upstream sources (see `customizations-pattern.md`). Upstream may ship security or behavior fixes that affect us. To keep this from drifting:
 
-- **Manual:** run `/forge-keeper:update-check` at least every 14 days.
+- **Manual:** run the repo-level `/update-check` command at least every 14 days.
 - **Automated** (planned, tracked in CHANGELOG once shipped): a scheduled GitHub Action / cron-style routine to run the check weekly and open a PR when updates exist.
 
 The `last_checked` field in each `customizations.json` is the audit trail. If `last_checked` is more than 30 days old when a release ships, mention it in the release notes so consumers know what's stale.

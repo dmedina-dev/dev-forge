@@ -99,7 +99,7 @@ Reference plugins for how things should be done — see @docs/exemplars.md.
 - Skills trigger based on description text — vague descriptions = unreliable triggers
 - When updating from upstream, use `/update-check` which syncs via `.upstream/` persistent clones (top-down: copy upstream → apply customizations)
 - Custom `added` files in customizations.json MUST be documented or rsync `--delete` will remove them during sync
-- `/release` command only works in marketplace repos (requires `.claude-plugin/marketplace.json`)
+- `/release`, `/update-check`, and `/import-plugin` are repo-level commands in `.claude/commands/` (not plugins) — they maintain this marketplace itself, so they live with the repo rather than shipping to consumers. `/release` requires `.claude-plugin/marketplace.json` at the repo root; `/update-check` reads `plugins/*/.claude-plugin/customizations.json` and the guide in `.claude/commands/references/update-check-guide.md`; `/import-plugin` adopts an installed (`~/.claude` via `installed_plugins.json`) or remote-git plugin into `plugins/` + `marketplace.json` (its inverse is the `forge-export` plugin, which publishes dev-forge *out* to a standalone marketplace)
 - context-watch.sh uses `trap 'exit 0' ERR` instead of `set -e` for safety
 - forge-telegram requires the `Monitor` tool (Claude Code Apr 2026+), plus `curl`, `jq`, `openssl`. Listener writes state to `~/.claude/channels/telegram/` — if the Bash sandbox is enabled, add the paths from `plugins/forge-telegram/skills/telegram/references/operational.md` § Sandbox gotcha to `sandbox.filesystem.allowWrite` in `.claude/settings.local.json`, or the listener runs into a silent stuck-state loop.
 - forge-proactive-qa requires Playwright installed in the target project

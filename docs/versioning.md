@@ -70,6 +70,24 @@ Releases happen via the repo-level `/release` command (in `.claude/commands/`, n
 3. Update `CHANGELOG.md` with the release notes (the release commit links to it).
 4. Push tag.
 
+### Concurrent releases from another machine
+
+If you work across machines (or another session pushed while you were offline), `origin/main`
+may already carry a release you don't have locally, and `git push` will be rejected. The version
+number you picked can also collide — both sides independently bump from the same base. Recover by
+**rebasing, not merging**, then renumbering:
+
+1. `git fetch origin`; inspect `git log HEAD..origin/main` to see what landed.
+2. `git rebase origin/main` — resolve conflicts in `marketplace.json` (`metadata.version`),
+   `CHANGELOG.md` (reorder so your entry sits on top), and any docs touched on both sides.
+3. **Renumber your release to the next free version** (the remote already consumed yours), update
+   `metadata.version`, the `CHANGELOG` header, the release commit message, and re-tag.
+4. Re-run `bash scripts/marketplace-health.sh`, then push.
+
+This happened on 2026-06-02: a planned `v2.9.0` collided with an upstream `v2.9.0` (forge-ui-forge
+subagents) and shipped as `v2.10.0`. Plugin-level bumps rarely collide — only the shared
+`metadata.version` and `CHANGELOG` do.
+
 ## CHANGELOG discipline
 
 Every release MUST have a `CHANGELOG.md` entry under a heading `## v{X.Y.Z} — {YYYY-MM-DD}`.

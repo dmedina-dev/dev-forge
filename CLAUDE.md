@@ -14,6 +14,8 @@ Each plugin is **independent** — install, test, remove any plugin without affe
 dev-forge/
 ├── .claude-plugin/marketplace.json    ← catalog of all available plugins
 ├── .upstream/                         ← persistent upstream clones (gitignored)
+├── .claude/commands/                  ← repo-level maintenance commands (not shipped as plugins):
+│                                         /update-check, /release, /import-plugin
 ├── plugins/
 │   ├── forge-init/                    ← bootstrapper (disposable)
 │   ├── forge-keeper/                  ← context maintenance
@@ -22,7 +24,7 @@ dev-forge/
 │   ├── forge-deep-review/             ← specialized review agents + automated PR review
 │   ├── forge-hookify/                 ← custom hook rules engine
 │   ├── forge-security/                ← security reminder hooks
-│   ├── forge-commit/                  ← commit/PR commands + marketplace release
+│   ├── forge-commit/                  ← commit/PR commands
 │   ├── forge-frontend-design/         ← frontend UI/UX design
 │   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor, event-driven)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)

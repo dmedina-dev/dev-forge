@@ -77,11 +77,22 @@ with open(marketplace_path) as f:
     catalog = json.load(f)
 
 plugins = {p["name"]: p for p in catalog["plugins"]}
+
+# Plugins without a curated SHORT_LABELS entry (e.g. freshly imported via
+# /import-plugin, or hand-authored) fall back to a label derived from their
+# marketplace description so the catalog never hard-blocks. Warn (non-fatal)
+# so the maintainer adds a proper one-liner later.
+def _derived_label(name):
+    desc = (plugins[name].get("description") or name).strip()
+    desc = desc.split(". ")[0].split(" — ")[0].split(". Curated")[0].strip()
+    return (desc[:77] + "…") if len(desc) > 78 else desc
+
 missing_labels = sorted(set(plugins) - set(SHORT_LABELS))
 if missing_labels:
-    sys.exit(
-        f"[generate-install-all] no SHORT_LABELS entry for: {missing_labels}.\n"
-        "Edit scripts/generate-install-all.sh and add a one-liner for each."
+    sys.stderr.write(
+        f"[generate-install-all] WARNING: no SHORT_LABELS entry for {missing_labels}; "
+        "using a label derived from marketplace.json description. Add a curated "
+        "one-liner in scripts/generate-install-all.sh.\n"
     )
 
 working_names = [n for n in plugins if n not in DISPOSABLE]
@@ -106,7 +117,7 @@ working_ordered = sort_working(working_names)
 
 
 def describe(name):
-    return SHORT_LABELS[name]
+    return SHORT_LABELS.get(name) or _derived_label(name)
 
 
 def requires(name):

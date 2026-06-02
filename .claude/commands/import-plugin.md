@@ -62,11 +62,14 @@ Ask (AskUserQuestion) whether to import:
 
 1. Have the user pick a plugin from the Context inventory (`<name>@<marketplace>`).
 2. **Files** — read the install record from
-   `~/.claude/plugins/installed_plugins.json` (key `<name>@<marketplace>`, a list of installs).
-   Use the most recent record's `installPath` (a `cache/<marketplace>/<name>/<version>/` dir) as
-   the source tree — that is the real installed plugin, even for external/aggregator plugins whose
-   files don't live under the marketplace clone. Verify it has `.claude-plugin/plugin.json`. The
-   record's `gitCommitSha` is the precise `commit` for origin tracking.
+   `~/.claude/plugins/installed_plugins.json` (key `<name>@<marketplace>`, a **list** of installs,
+   one per project scope / version). If the list has more than one distinct `version` /
+   `installPath`, **list them and let the user pick** — do not silently take the most-recent record,
+   since that may be an older version reactivated in another project. Use the chosen record's
+   `installPath` (a `cache/<marketplace>/<name>/<version>/` dir) as the source tree — that is the
+   real installed plugin, even for external/aggregator plugins whose files don't live under the
+   marketplace clone. Verify it has `.claude-plugin/plugin.json`. That record's `gitCommitSha` is
+   the precise `commit` for origin tracking.
 3. **Origin** — read that marketplace's own
    `~/.claude/plugins/marketplaces/<marketplace>/.claude-plugin/marketplace.json`, find the entry
    for `<name>`, and recover the true upstream: its `upstream` block (`repo`, `ref`, `url`) if
@@ -78,17 +81,28 @@ Ask (AskUserQuestion) whether to import:
 
 1. Ask for `owner/repo`, an optional subpath within the repo (empty = repo root), and a ref
    (default `main`).
-2. Clone or fetch into `.upstream/` (same convention as `/update-check`):
+2. Clone or fetch into `.upstream/` (same `.upstream/<slug>` convention `/update-check` uses —
+   see `.claude/commands/references/update-check-guide.md` § "Step 1 — Ensure upstream clone").
+   Substitute the user's values for `OWNER/REPO` and `REF`; quote anything that may contain spaces.
    ```bash
-   SLUG=$(echo "{owner/repo}" | tr '/' '-')
-   [ -d ".upstream/$SLUG" ] || git clone "https://github.com/{owner/repo}.git" ".upstream/$SLUG"
-   git -C ".upstream/$SLUG" fetch --all --tags
-   git -C ".upstream/$SLUG" checkout {ref}
-   git -C ".upstream/$SLUG" pull 2>/dev/null || true
+   SLUG=$(echo "OWNER/REPO" | tr '/' '-')
+   # (Re)clone if missing OR if a prior interrupted clone left a non-git directory
+   if [ ! -d ".upstream/$SLUG/.git" ]; then
+     rm -rf ".upstream/$SLUG"
+     git clone "https://github.com/OWNER/REPO.git" ".upstream/$SLUG"
+   fi
+   git -C ".upstream/$SLUG" fetch --all --tags --prune
+   # Detached checkout resolves a branch OR a tag and always lands on the freshly
+   # fetched tip — prefer the remote-tracking branch (fresh), fall back to a tag/SHA.
+   git -C ".upstream/$SLUG" checkout --detach "origin/REF" 2>/dev/null \
+     || git -C ".upstream/$SLUG" checkout --detach "REF"
+   COMMIT=$(git -C ".upstream/$SLUG" rev-parse HEAD)
    ```
+   If both checkouts fail, the ref doesn't exist upstream — stop and report.
 3. Source path = `.upstream/$SLUG/<subpath>/`. Verify it contains a `.claude-plugin/plugin.json`
    (a valid plugin). If not, stop and report — the subpath isn't a plugin root.
-4. Record the exact commit: `git -C ".upstream/$SLUG" rev-parse {ref}`.
+4. Use `$COMMIT` (the resolved HEAD above) as the exact origin commit — not a re-resolution of
+   the ref name, which could read a stale local branch.
 
 ### Step 3 — Target name + collision check
 
@@ -110,7 +124,10 @@ Ask (AskUserQuestion) whether to import:
 
 ### Step 5 — Write customizations.json
 
-Create `plugins/<name>/.claude-plugin/customizations.json`.
+Create `plugins/<name>/.claude-plugin/customizations.json`. The canonical schema lives in
+`docs/customizations-pattern.md` — the skeletons below are the common single-origin case; if the
+plugin you're importing genuinely aggregates **two upstreams**, use the `origins` array form
+documented there (as `forge-deep-review` does) instead of the single `origin` object.
 
 **For an external (git/installed-with-upstream) plugin:**
 ```json
@@ -172,10 +189,14 @@ marketplace version is `/release`'s job, done later when this import ships.
 ```bash
 bash scripts/generate-install-all.sh
 ```
-Then flag the doc-parity updates the sync rule expects (`.claude/rules/sync-keeps-docs-current.md`):
-the README plugin table, the CLAUDE.md `## Architecture` tree, and `docs/dependencies.md`. Propose
-the specific row/line additions and apply them only after the user approves — or tell the user to
-run `/forge-keeper:sync` to handle the doc sweep.
+This regenerates `install-all.md` from `marketplace.json`. It prints a one-line
+`WARNING: no SHORT_LABELS entry for ['forge-<name>']` and uses a label derived from the
+description — that is expected for a new plugin. Add a curated one-liner to the `SHORT_LABELS`
+map in `scripts/generate-install-all.sh` and re-run if you want a tighter label.
+
+The remaining doc-parity sweep (README plugin table, the CLAUDE.md `## Architecture` tree,
+`docs/dependencies.md`) is owned by `.claude/rules/sync-keeps-docs-current.md` — **do not restate
+those checks here; run `/forge-keeper:sync`** after the import to apply them under human review.
 
 ### Step 8 — Validate
 

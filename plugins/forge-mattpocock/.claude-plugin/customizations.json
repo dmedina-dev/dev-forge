@@ -55,8 +55,8 @@
     {
       "id": "custom-06",
       "type": "modified",
-      "target": "skills/engineering/improve-codebase-architecture/SKILL.md",
-      "summary": "Added on second-pass review. Re-pointed CONTEXT.md / CONTEXT-FORMAT.md references at forge-keeper docs structure (docs/glossary.md / GLOSSARY-FORMAT.md). LANGUAGE.md and DEEPENING.md copied unmodified; INTERFACE-DESIGN.md had one CONTEXT.md mention, now generic.",
+      "target": "skills/improve-codebase-architecture/SKILL.md",
+      "summary": "Added on second-pass review. Re-pointed CONTEXT.md / CONTEXT-FORMAT.md references at forge-keeper docs structure (docs/glossary.md / GLOSSARY-FORMAT.md). LANGUAGE.md and DEEPENING.md copied unmodified; INTERFACE-DESIGN.md had one CONTEXT.md mention, now generic. Upstream path: skills/engineering/improve-codebase-architecture/SKILL.md.",
       "reason": "Completes the engineering trinity (build \u2192 diagnose \u2192 improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
     },
     {
@@ -98,8 +98,8 @@
       "id": "custom-10",
       "type": "modified",
       "target": "skills/grill-with-docs/SKILL.md",
-      "summary": "Adapted to forge-keeper documentation structure",
-      "reason": "Upstream targets CONTEXT.md / CONTEXT-MAP.md. Dev Forge projects center docs around CLAUDE.md (root + zoned), .claude/rules/, docs/exemplars.md, docs/adr/, and (lazy) docs/glossary.md. The skill now grills against that layout."
+      "summary": "Adapted to forge-keeper documentation structure; added disable-model-invocation: true to frontmatter (absent upstream)",
+      "reason": "Upstream targets CONTEXT.md / CONTEXT-MAP.md. Dev Forge projects center docs around CLAUDE.md (root + zoned), .claude/rules/, docs/exemplars.md, docs/adr/, and (lazy) docs/glossary.md. The skill now grills against that layout. disable-model-invocation makes the skill slash-only, avoiding trigger competition with sibling grill-me (same pattern as zoom-out)."
     },
     {
       "id": "custom-11",
@@ -195,9 +195,23 @@
     {
       "id": "custom-24",
       "type": "modified",
-      "target": "skills/improve-codebase-architecture/SKILL.md",
-      "summary": "HTML-report temp dir prefers ${CLAUDE_PROJECT_DIR}/.tmp/ over $TMPDIR",
+      "target": "skills/improve-codebase-architecture/SKILL.md, skills/improve-codebase-architecture/HTML-REPORT.md",
+      "summary": "HTML-report temp dir prefers ${CLAUDE_PROJECT_DIR}/.tmp/ over $TMPDIR (SKILL.md output instructions + HTML-REPORT.md intro). Upstream paths: skills/engineering/improve-codebase-architecture/.",
       "reason": "macOS Bash sandbox blocks /var/folders/.../T/ which $TMPDIR resolves to (documented in dev-forge CLAUDE.md gotchas); using project-local .tmp/ keeps writes inside the allowlisted project root. User is responsible for adding .tmp/ to .gitignore."
+    },
+    {
+      "id": "custom-25",
+      "type": "modified",
+      "target": "skills/grill-with-docs/ADR-FORMAT.md",
+      "summary": "Adapted terminology 'contexts' -> 'zones' and added an 'ADR vs .claude/rules/' section explaining when a decision should also (or instead) become a path-scoped rule. Upstream path: skills/engineering/grill-with-docs/ADR-FORMAT.md.",
+      "reason": "Aligns ADR guidance with dev-forge's zone vocabulary and .claude/rules/ enforcement layer. Without this entry the top-down sync treats upstream changes to this file as conflict-free and overwrites the local adaptations."
+    },
+    {
+      "id": "custom-26",
+      "type": "added",
+      "target": "skills/grill-with-docs/GLOSSARY-FORMAT.md",
+      "summary": "Added glossary format reference, linked from grill-with-docs/SKILL.md; replaces upstream CONTEXT-FORMAT.md (removed in custom-11)",
+      "reason": "Forge-keeper keeps domain language in docs/glossary.md, so the grilling skill needs a matching format reference. Documented as 'added' so the rsync --delete top-down sync does not delete this local-only file."
     }
   ]
 }

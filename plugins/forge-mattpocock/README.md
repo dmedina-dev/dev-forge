@@ -6,7 +6,7 @@ Engineering & productivity skills curated from [mattpocock/skills](https://githu
 
 Original author: **Matt Pocock** ([@mattpocock](https://github.com/mattpocock))
 
-Upstream: <https://github.com/mattpocock/skills> (MIT) — pinned at commit `b56795b` on `main` (2026-04-28).
+Upstream: <https://github.com/mattpocock/skills> (MIT) — pinned at commit `b8be62ffac` on `main` (2026-05-21).
 
 This bundle keeps all upstream content under the upstream MIT license. See `.claude-plugin/customizations.json` for every change applied on top of the original.
 
@@ -44,7 +44,7 @@ Both can be installed at the same time. There is no naming collision — Pocock'
 This plugin does not require any other dev-forge plugin. It pairs naturally with:
 
 - **forge-keeper** — `grill-with-docs` writes into the same docs structure forge-keeper maintains.
-- **forge-commit** — `tdd`'s "commit per cycle" rhythm fits `/commit`.
+- **forge-commit** — pairs well for committing after each completed `tdd` cycle.
 - **forge-deep-review** — run after a `tdd` cycle.
 
 ## License

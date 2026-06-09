@@ -34,7 +34,7 @@ The server:
 - Serves `.ui-forge/` on `http://127.0.0.1:4269`
 - Prints clickable URLs for any existing `02-forge.html` screens
 - Accepts `POST /forge/feedback` — writes `feedback/round-NN.json` + `feedback/latest.json`
-- Prints `[ui-forge] feedback screen=<id> round=<n> pins=<k>` to stdout on each POST — this is the Monitor event that triggers you to act
+- Prints `[ui-forge] round=<n> screen=<id> new=<k> total=<t> | <pin segments> | details: show-pin.py <id> --round <n>` to stdout on each POST (full format under "On feedback event" below) — this is the Monitor event that triggers you to act
 - Serves `GET /forge/reload` (SSE) — pushes reload events when `02-forge.html` mtime changes
 - Writes PID to `.ui-forge/.server.pid`
 
@@ -128,7 +128,7 @@ Monitor(
 
 Flags:
 - `--target <url>` — required. Upstream HTTP dev server (HTTPS upstream not supported in v1).
-- `--port <n>` — local port for the proxy. Default `4270`. Use `0` to let the OS pick (useful in tests).
+- `--port <n>` — local port for the proxy. Default `4270` (coexists with the prototype server on 4269 if both are running). Use `0` to let the OS pick (useful in tests).
 - `--name <slug>` — session id. Default: ISO timestamp `2026-04-27T143052`. Sets the directory under `.ui-forge/live/`.
 
 **Startup line (one per session):**
@@ -137,7 +137,7 @@ Flags:
 [ui-forge] live serving http://127.0.0.1:4270 → http://localhost:3000 (session=2026-04-27T143052)
 ```
 
-Tell the user: *"Open http://127.0.0.1:4270 — your app loads with the overlay; no source changes."*
+Tell the user: *"Open http://127.0.0.1:4270 — your app loads identically (HMR included via WebSocket forwarding) plus the overlay FAB in the corner; no source changes."*
 
 The proxy:
 - Forwards every HTTP/WS request to `--target` byte-for-byte (HMR works through the WS proxy).
@@ -163,7 +163,19 @@ python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/show-pin-live.py" 20
 python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/show-pin-live.py" --list-sessions
 ```
 
-**v1 contract:** Claude does NOT auto-edit `src/` from live pins. Read the JSON, decide an action, propose changes to the user. Auto-apply is a v2 follow-up.
+Alternatively, read `.ui-forge/live/<session-id>/latest.json` to get the latest round filename, then read the round JSON directly.
+
+**v1 contract:** Claude does NOT auto-edit `src/` from live pins. Read the JSON, decide an action (edit `src/`, refine a spec, plan a change), propose it to the user. The skill is a feedback collector; the action is yours. Auto-apply is a v2 follow-up.
+
+### Limitations (v1)
+
+- Upstream must be **HTTP** (no HTTPS upstream targets in v1).
+- One target per `live` invocation. Run multiple proxies on different ports for multiple targets.
+- Authentication is forwarded as `aiohttp.ClientSession` does by default (cookies, auth headers). Custom auth proxies are out of scope.
+
+### Rollback
+
+The live mode lives entirely under `scripts/live/`, gated in `overlay.js` by `window.UIFORGE_MODE === 'live'`, and bracketed in SKILL.md by `<!-- ui-forge:live:start -->` / `<!-- ui-forge:live:end -->`. The single squash commit `feat(ui-forge): live overlay proxy mode` introduced everything; `git revert <sha>` removes the feature without touching prototype mode.
 
 ## stop-live
 

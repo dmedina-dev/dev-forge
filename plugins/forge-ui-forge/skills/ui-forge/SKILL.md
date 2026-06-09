@@ -159,8 +159,8 @@ On first run, briefly ask whether to adjust the default tokens before moving on.
      (mattpocock's approach), we capture the same concerns declaratively in a
      markdown skeleton that the user/LLM refines through Phases 2-4. This keeps
      the flow HTML+Tailwind-only and avoids adding a new runtime to ui-forge.
-     If you need an executable logic prototype, a sibling forge-logic-prototype
-     plugin is the right place for it. -->
+     An executable logic prototype would belong in a separate plugin (not
+     built); out of scope for ui-forge. -->
 
 **Activate this phase only when the screen has non-trivial logic.** Signals: wizard, multi-step form, dashboard with real-time updates, screen with state machine (loading → loaded → error → retry), form with cross-field validations, mutation-heavy screen (POST/PATCH/DELETE).
 
@@ -216,7 +216,7 @@ Pre-fill from the brief; let the user refine. Phase 2 variants can reference thi
 If the server isn't already running, start it before generating `02-forge.html`. See `references/subcommands.md` for the full command reference.
 
 ```
-Monitor: python3 "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.py"
+Monitor: bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/serve.sh"
 ```
 
 The server prints clickable URLs. Give the user the direct link to their forge page.
@@ -407,8 +407,8 @@ Use the templates (`component-spec.md.tmpl`, `screen-spec.md.tmpl`) as scaffolds
 - **Don't use tokens that aren't in `tokens.json`.** If one is missing, propose adding it first, then use it.
 - **Don't touch anything outside `.ui-forge/`.** Ever.
 - **Don't hardcode data in HTML.** Data flows through `<script type="application/json">` blocks parameterized by the schema.
-- **Don't install dependencies.** Tailwind via CDN, vanilla JS, nothing else.
-- **Don't start generic servers.** The only server this skill runs is `scripts/serve.py` via Monitor (for hot-reload). Don't start other servers, proxies, or bundlers.
+- **Don't install dependencies in generated prototypes.** Tailwind via CDN, vanilla JS, nothing else. (Documented exception: the opt-in `pip install aiohttp` that live mode requires — see below.)
+- **Don't start generic servers.** The only servers this skill runs are `scripts/serve.sh` via Monitor (hot-reload) and `scripts/live/live.sh` via Monitor (live-mode proxy). Don't start other servers, proxies, or bundlers.
 - **Don't generate framework code.** HTML + Tailwind only. Translation to React/Vue/Svelte/etc. is the downstream agent's job.
 - **Don't integrate real data or MCPs** in v1. Mock only.
 - **Don't mix contradictory fixtures.** If screen A uses `portfolios.diego` with 12 holdings, screen B should use the same subset unless there's an explicit reason to diverge.
@@ -483,55 +483,13 @@ This skill handles `serve`, `stop`, `status` subcommands for the dev server life
 
 ## Live mode — overlay over an existing dev server
 
-Use when you want to annotate the **real running application** (any stack: Vite, Next, Rails, Django, Phoenix, ...) the same way you annotate prototypes — without modifying the app's source. The live proxy sits in front of your dev server, injects `overlay.js` into HTML responses, and collects pins in `.ui-forge/live/<session-id>/`.
+Use when you want to annotate the **real running application** (any stack: Vite, Next, Rails, Django, Phoenix, ...) the same way you annotate prototypes — without modifying the app's source. The live proxy sits in front of your dev server, injects `overlay.js` into HTML responses, and collects pins in `.ui-forge/live/<session-id>/`. Closing the proxy removes the overlay end-to-end — no code change in the consumer app, nothing to leak to deployment.
 
-**Requires `aiohttp`** — install once with `pip install aiohttp`. Prototype mode keeps working without it.
+**Requires `aiohttp`** — opt-in, install once with `pip install aiohttp`. Prototype mode keeps working without it.
 
 **What this is NOT (v1):** Claude does **not** auto-edit `src/` from live-mode pins. Pins land as JSON; you decide when and how to apply them. (Auto-apply is a v2 follow-up.)
 
-### Starting the proxy
-
-```
-Monitor: bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/live.sh" --target http://localhost:3000
-```
-
-Optional flags:
-- `--port 4270` (default — coexists with the prototype server on 4269 if both are running)
-- `--name <slug>` (default: ISO timestamp; sets the directory name under `.ui-forge/live/`)
-
-The proxy prints one startup line:
-
-```
-[ui-forge] live serving http://127.0.0.1:4270 → http://localhost:3000 (session=2026-04-27T143052)
-```
-
-Open `http://127.0.0.1:4270` in the browser — your app loads identically (HMR included via WebSocket forwarding) plus the overlay FAB in the corner.
-
-### Feedback flow
-
-1. User annotates → clicks 🚀.
-2. Monitor delivers `[ui-forge] live round=N session=<id> host=<host> path=<path> ...`.
-3. Read `.ui-forge/live/<session-id>/latest.json` → get the round filename.
-4. Read the round JSON (or `python3 .../show-pin-live.py <session-id> --round N`) → decide what to do (edit `src/`, refine spec, plan a change). The skill is a feedback collector; the action is yours.
-
-### Stopping / status
-
-```bash
-bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/stop-live.sh"
-bash "${CLAUDE_PLUGIN_ROOT}/skills/ui-forge/scripts/live/status-live.sh"
-```
-
-Both target `.ui-forge/.live-server.pid`. Stopping is idempotent. Closing the proxy removes the overlay end-to-end — there is no code change in the consumer app, nothing to leak to deployment.
-
-### Limitations (v1)
-
-- Upstream must be **HTTP** (no HTTPS upstream targets in v1).
-- One target per `live` invocation. Run multiple proxies on different ports for multiple targets.
-- Authentication is forwarded as `aiohttp.ClientSession` does by default (cookies, auth headers). Custom auth proxies are out of scope.
-
-### Rollback
-
-The live mode lives entirely under `scripts/live/`, gated in `overlay.js` by `window.UIFORGE_MODE === 'live'`, and bracketed in this SKILL.md by `<!-- ui-forge:live:start -->` / `<!-- ui-forge:live:end -->`. The single squash commit `feat(ui-forge): live overlay proxy mode` introduced everything; `git revert <sha>` removes the feature without touching prototype mode.
+Exact flags, startup line, feedback-event format, limitations, and stop/status commands: see `references/subcommands.md` § live / stop-live / status-live.
 
 <!-- ui-forge:live:end -->
 

@@ -4,16 +4,16 @@
     "repo": "mattpocock/skills",
     "path": "",
     "ref": "main",
-    "commit": "b8be62ffac",
-    "fetched_at": "2026-05-21",
+    "commit": "e3d8b735ef",
+    "fetched_at": "2026-06-10",
     "check_url": "https://github.com/mattpocock/skills/commits/main"
   },
   "upstream_status": {
-    "last_checked": "2026-05-21",
+    "last_checked": "2026-06-10",
     "latest_ref": "main",
-    "latest_commit": "b8be62ffac",
+    "latest_commit": "e3d8b735ef",
     "has_updates": false,
-    "summary": "Synced 9f2e0bd0ea\u2192b8be62ffac: applied HTML-report rewrite to improve-codebase-architecture/SKILL.md (manual merge preserving glossary re-pointings); added HTML-REPORT.md from upstream; kept local grill-with-docs/SKILL.md (forge-keeper adaptations).",
+    "summary": "Synced 2026-06-10: ported upstream seams rewrite into to-prd (custom-12) and upstream CONTEXT-FORMAT rule simplification into GLOSSARY-FORMAT.md; remaining upstream delta (productivity/teach skill, lessons docs) is outside our vendored set",
     "changes": []
   },
   "customizations": [
@@ -35,7 +35,7 @@
       "id": "custom-03",
       "type": "excluded",
       "target": "skills/misc/",
-      "summary": "Excluded misc bucket \u2014 not part of curated subset",
+      "summary": "Excluded misc bucket — not part of curated subset",
       "reason": "User selected only 6 skills (grill-me, grill-with-docs, to-prd, tdd, diagnose, triage)"
     },
     {
@@ -49,7 +49,7 @@
       "id": "custom-05",
       "type": "excluded",
       "target": "skills/engineering/to-issues/",
-      "summary": "Excluded \u2014 bound to GitHub issues",
+      "summary": "Excluded — bound to GitHub issues",
       "reason": "Out of scope for this curation; user only requested the 6 skills above"
     },
     {
@@ -57,7 +57,7 @@
       "type": "modified",
       "target": "skills/improve-codebase-architecture/SKILL.md",
       "summary": "Added on second-pass review. Re-pointed CONTEXT.md / CONTEXT-FORMAT.md references at forge-keeper docs structure (docs/glossary.md / GLOSSARY-FORMAT.md). LANGUAGE.md and DEEPENING.md copied unmodified; INTERFACE-DESIGN.md had one CONTEXT.md mention, now generic. Upstream path: skills/engineering/improve-codebase-architecture/SKILL.md.",
-      "reason": "Completes the engineering trinity (build \u2192 diagnose \u2192 improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
+      "reason": "Completes the engineering trinity (build → diagnose → improve). Architecture vocabulary aligns with the deep-modules concept already in the tdd skill."
     },
     {
       "id": "custom-07",
@@ -71,7 +71,7 @@
       "type": "excluded",
       "target": "skills/engineering/qa/",
       "summary": "Not in selected subset",
-      "reason": "User did not request this skill \u2014 forge-proactive-qa already covers QA in dev-forge"
+      "reason": "User did not request this skill — forge-proactive-qa already covers QA in dev-forge"
     },
     {
       "id": "custom-09",
@@ -84,7 +84,7 @@
       "id": "custom-09b",
       "type": "excluded",
       "target": "skills/productivity/write-a-skill/",
-      "summary": "Excluded \u2014 overlaps with claude-plugins-official/skill-creator",
+      "summary": "Excluded — overlaps with claude-plugins-official/skill-creator",
       "reason": "skill-creator (already used in this account) is the more sophisticated of the two. Two skills competing for the same triggers worsens activation for both."
     },
     {
@@ -105,21 +105,21 @@
       "id": "custom-11",
       "type": "removed",
       "target": "skills/grill-with-docs/CONTEXT-FORMAT.md",
-      "summary": "Removed \u2014 replaced by GLOSSARY-FORMAT.md aligned with forge-keeper docs",
+      "summary": "Removed — replaced by GLOSSARY-FORMAT.md aligned with forge-keeper docs",
       "reason": "Forge-keeper keeps domain language in docs/glossary.md (lazy), separate from CLAUDE.md's conventions/architecture role (which is line-limited)"
     },
     {
       "id": "custom-12",
       "type": "modified",
       "target": "skills/to-prd/SKILL.md",
-      "summary": "Removed all GitHub / issue-tracker assignment; output is a wave-organized plan saved to docs/plans/",
+      "summary": "Removed all GitHub / issue-tracker assignment; output is a wave-organized plan saved to docs/plans/. 2026-06-10 sync: ported upstream step-2 rewrite (module decomposition → test seams: prefer existing seams, highest possible) keeping the one-round-confirmation and AFK-assumption local style",
       "reason": "User explicitly requested no GitHub assignment and plans organized by waves like forge-superpowers (parallel tasks within a wave, sequential between waves)"
     },
     {
       "id": "custom-13",
       "type": "excluded",
       "target": "skills/engineering/triage/",
-      "summary": "Excluded triage skill \u2014 fundamentally an issue-tracker workflow",
+      "summary": "Excluded triage skill — fundamentally an issue-tracker workflow",
       "reason": "User opted out: without an issue tracker pumping work in, the skill has nothing to triage. The state machine and AGENT-BRIEF / OUT-OF-SCOPE patterns are independently useful but not bundled here."
     },
     {
@@ -141,7 +141,7 @@
       "type": "excluded",
       "target": "skills/productivity/handoff/",
       "summary": "Excluded new handoff skill (introduced 2026-05-06)",
-      "reason": "Agent transition documentation overlaps with forge-keeper:sync + docs/sessions/ logs, which already capture session handoffs in dev-forge. Different mental model \u2014 handoff writes a single file targeted at the next agent, forge-keeper persists structured session entries."
+      "reason": "Agent transition documentation overlaps with forge-keeper:sync + docs/sessions/ logs, which already capture session handoffs in dev-forge. Different mental model — handoff writes a single file targeted at the next agent, forge-keeper persists structured session entries."
     },
     {
       "id": "custom-17",
@@ -175,7 +175,7 @@
       "id": "custom-21",
       "type": "excluded",
       "target": ".out-of-scope/",
-      "summary": "Excluded upstream out-of-scope notes (added during 2026-04 \u2192 2026-05 window)",
+      "summary": "Excluded upstream out-of-scope notes (added during 2026-04 → 2026-05 window)",
       "reason": "Upstream project's own audit trail of rejected skill ideas; not part of curated skill content"
     },
     {
@@ -210,7 +210,7 @@
       "id": "custom-26",
       "type": "added",
       "target": "skills/grill-with-docs/GLOSSARY-FORMAT.md",
-      "summary": "Added glossary format reference, linked from grill-with-docs/SKILL.md; replaces upstream CONTEXT-FORMAT.md (removed in custom-11)",
+      "summary": "Added glossary format reference, linked from grill-with-docs/SKILL.md; replaces upstream CONTEXT-FORMAT.md (removed in custom-11). 2026-06-10 sync: ported upstream CONTEXT-FORMAT.md rule simplification (aliases under _Avoid_, dropped flag-conflicts/relationships/example-dialogue rules and their template sections)",
       "reason": "Forge-keeper keeps domain language in docs/glossary.md, so the grilling skill needs a matching format reference. Documented as 'added' so the rsync --delete top-down sync does not delete this local-only file."
     }
   ]

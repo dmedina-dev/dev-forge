@@ -29,20 +29,19 @@ Use waves when the work has natural cut-points — schema changes before backend
 
 Skim the repo to refresh your model of what exists. Use the project's domain language (from `docs/glossary.md` / CLAUDE.md / similar) consistently in the PRD. Respect existing ADRs in the area you're touching — surface conflicts explicitly, don't paper over them.
 
-### 2. Decompose into modules
+### 2. Identify the test seams
 
-Sketch the modules you'll need to build or modify. Actively look for opportunities to extract **deep modules** (small interface, lots of implementation behind it) that can be tested in isolation.
+Sketch the seams at which you're going to test the feature. Prefer existing seams over new ones, and use the highest seam possible; if new seams are needed, propose them at the highest point you can.
 
 Confirm with the user (one round, not an interview):
 
-- Does this module decomposition match what you expect?
-- Which modules need tests written?
+- Do these seams match what you expect?
 
-If the user is AFK, proceed with your decomposition and note the assumption in the plan.
+If the user is AFK, proceed with your chosen seams and note the assumption in the plan.
 
 ### 3. Group tasks into waves
 
-Walk the decomposition and assign each task to a wave by dependency:
+Walk the work implied by the user stories and seams, and assign each task to a wave by dependency:
 
 - **Wave 1** — anything that depends only on the existing code (data models, pure helpers, fixture builders).
 - **Wave 2+** — anything that depends on Wave 1 outputs (services using the new models, handlers using the new services).

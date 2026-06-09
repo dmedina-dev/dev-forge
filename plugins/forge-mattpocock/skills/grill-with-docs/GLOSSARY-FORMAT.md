@@ -24,33 +24,14 @@ _Avoid_: Bill, payment request.
 **Customer**:
 A person or organization that places Orders. Distinct from User (who logs into the system).
 _Avoid_: Client, buyer, account.
-
-## Relationships
-
-- An **Order** produces one or more **Invoices** (one per Fulfillment).
-- An **Invoice** belongs to exactly one **Customer**.
-- A **Customer** may have many **Users** (e.g. a company with multiple buyers).
-
-## Example dialogue
-
-> **Dev:** "When a **Customer** places an **Order**, do we create the **Invoice** immediately?"
-> **Domain expert:** "No — an **Invoice** is only generated once a **Fulfillment** is confirmed."
-
-## Flagged ambiguities
-
-- "account" was used to mean both **Customer** and **User** — resolved: these are distinct concepts.
-- "purchase" was used as a synonym for **Order** — resolved: prefer **Order**.
 ```
 
 ## Rules
 
-- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others as aliases to avoid.
-- **Flag conflicts explicitly.** If a term is used ambiguously, call it out under "Flagged ambiguities" with the resolution.
-- **Keep definitions tight.** One sentence max. Define what it IS, not what it does.
-- **Show relationships and cardinality.** Use bold term names; use phrases like "one or more", "exactly one", "may have many".
+- **Be opinionated.** When multiple words exist for the same concept, pick the best one and list the others under `_Avoid_`.
+- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
 - **Only domain-specific terms.** Before adding a term, ask: is this concept unique to this project's domain, or just general programming? Only the former belongs.
 - **Group under subheadings** when natural clusters emerge. If all terms cohere around one area, a flat list is fine.
-- **Write an example dialogue.** A short conversation between a developer and a domain expert that demonstrates how the terms interact and clarifies boundaries.
 
 ## Where to place the glossary
 
@@ -66,9 +47,8 @@ Lazily. Only when the first non-trivial domain term is resolved during a grillin
 
 | Belongs in `docs/glossary.md` | Belongs in `CLAUDE.md` |
 |-------------------------------|------------------------|
-| Domain terms and aliases | Project commands (build, test, deploy) |
-| Relationships between concepts | Architecture overview |
-| Flagged ambiguities | Conventions to follow |
-| Example domain dialogue | Gotchas and workarounds |
+| Domain terms and `_Avoid_` aliases | Project commands (build, test, deploy) |
+| Tight domain definitions | Architecture overview |
+| Term groupings by domain area | Conventions, gotchas and workarounds |
 
 CLAUDE.md is line-limited (~200 root, ~100 child) and read on every session start. Keep it for what *every* session needs. Glossary is loaded when domain language matters.

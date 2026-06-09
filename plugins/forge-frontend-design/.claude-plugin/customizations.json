@@ -35,6 +35,13 @@
       "target": "LICENSE",
       "summary": "Excluded upstream LICENSE",
       "reason": "Attribution preserved in customizations.json"
+    },
+    {
+      "id": "custom-03",
+      "type": "modified",
+      "target": "skills/frontend-design/SKILL.md",
+      "summary": "Replaced frontmatter license 'Complete terms in LICENSE.txt' with SPDX id 'Apache-2.0' and inserted curation attribution comment after frontmatter",
+      "reason": "LICENSE.txt pointer was dangling (file deliberately excluded, custom-02); attribution comment required by repo convention for externally curated skills"
     }
   ]
 }

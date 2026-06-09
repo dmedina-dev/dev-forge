@@ -33,7 +33,9 @@ When you switch profiles, the command:
 1. Reads `.claude/settings.local.json`
 2. Loads the target profile from `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
 3. Calculates what plugins and MCP servers to add/remove
-4. Updates the `plugins` and `mcpServers` keys (preserves permissions, env, everything else)
+4. Updates `enabledPlugins` in `.claude/settings.local.json` (sets the target profile's plugins to
+   `true`, sets the ones being deactivated to `false` or removes them) and replaces the
+   `mcpServers` object in `.mcp.json` (preserves permissions, env, everything else)
 5. Tells you to run `/reload-plugins` to apply
 
 ## Commands
@@ -48,8 +50,10 @@ Everything lives in `.claude/settings.local.json` under the `pluginConfigs` key:
 
 ```json
 {
-  "plugins": ["current", "active", "plugins"],
-  "mcpServers": { "...current servers..." },
+  "enabledPlugins": {
+    "forge-keeper@dev-forge": true,
+    "forge-superpowers@dev-forge": true
+  },
   "permissions": { "...existing permissions..." },
   "pluginConfigs": {
     "forge-profiles@dev-forge": {
@@ -57,7 +61,7 @@ Everything lives in `.claude/settings.local.json` under the `pluginConfigs` key:
         "profiles": {
           "daily": {
             "description": "Everyday coding — keeper, superpowers, commit, security",
-            "plugins": ["marketplace:owner/repo:plugin-a", "marketplace:owner/repo:plugin-b"],
+            "plugins": ["forge-keeper@dev-forge", "forge-commit@dev-forge"],
             "mcpServers": {
               "context7": { "type": "stdio", "command": "npx", "args": ["..."] }
             },
@@ -65,7 +69,7 @@ Everything lives in `.claude/settings.local.json` under the `pluginConfigs` key:
           },
           "plugin-dev": {
             "description": "Plugin development with skill-creator and forge-plugin-dev",
-            "plugins": ["marketplace:owner/repo:plugin-c"],
+            "plugins": ["skill-creator@claude-plugins-official"],
             "mcpServers": {},
             "created_at": "2026-04-04"
           }
@@ -76,9 +80,12 @@ Everything lives in `.claude/settings.local.json` under the `pluginConfigs` key:
 }
 ```
 
-Each profile stores the exact `plugins` identifiers and the full `mcpServers` object.
-This ensures profiles work regardless of how plugins were installed or how MCP servers
-were configured (stdio, SSE, HTTP).
+MCP servers are not part of settings.local.json — project MCP servers live in `.mcp.json` at the
+project root (top-level `mcpServers` object), which profiles also manage.
+
+Each profile stores the exact plugin identifiers (`plugin@marketplace` format) and the full
+`mcpServers` object. This ensures profiles work regardless of how plugins were installed or how
+MCP servers were configured (stdio, SSE, HTTP).
 
 No extra files or directories needed. Profile data lives under the official `pluginConfigs`
 schema key, properly namespaced to the plugin.

@@ -13,10 +13,10 @@ Profiles are stored in `.claude/settings.local.json` under `pluginConfigs["forge
 ### Step 1: Read Current Configuration
 
 1. Read `.claude/settings.local.json`
-2. Extract the current `plugins` array (active plugins)
-3. Extract the current `mcpServers` object (active MCP servers)
-4. If the file doesn't exist or keys are missing, start with empty list/object
-5. For each plugin, extract a human-readable name from the identifier (last segment after `:` or directory basename)
+2. Extract the current `enabledPlugins` object and keep the keys with value `true` (active plugins); fall back to `~/.claude/settings.json` if the project file has none
+3. Extract the current `mcpServers` object (active MCP servers) from `.mcp.json` at the project root
+4. If a file doesn't exist or keys are missing, start with empty object
+5. For each plugin, extract a human-readable name from the identifier (the part before `@` in `plugin@marketplace`)
 
 ### Step 2: Present Current Plugins
 
@@ -29,9 +29,9 @@ These are your active plugins — the starting point for this profile.
 
 | # | Plugin | Identifier |
 |---|--------|------------|
-| 1 | forge-keeper | marketplace:dmedina-dev/dev-forge:forge-keeper |
-| 2 | forge-superpowers | marketplace:dmedina-dev/dev-forge:forge-superpowers |
-| 3 | skill-creator | marketplace:claude-plugins-official:skill-creator |
+| 1 | forge-keeper | forge-keeper@dev-forge |
+| 2 | forge-superpowers | forge-superpowers@dev-forge |
+| 3 | skill-creator | skill-creator@claude-plugins-official |
 | ... | ... | ... |
 
 Which plugins do you want to **remove** from this profile? (numbers, comma-separated, or "none")
@@ -114,7 +114,7 @@ Save this profile?
         "profiles": {
           "<name>": {
             "description": "<description>",
-            "plugins": ["<exact-identifier>", "..."],
+            "plugins": ["<plugin@marketplace>", "..."],
             "mcpServers": { "<server-name>": { "...config..." } },
             "created_at": "<YYYY-MM-DD>"
           }
@@ -125,7 +125,7 @@ Save this profile?
 }
 ```
 
-4. Write back the FULL file (preserve all other keys: plugins, permissions, env, pluginConfigs for other plugins, etc.)
+4. Write back the FULL file (preserve all other keys: enabledPlugins, permissions, env, pluginConfigs for other plugins, etc.)
 5. Validate: `python3 -m json.tool .claude/settings.local.json`
 6. Confirm: "Profile **<name>** saved. Switch to it with `/profile-change <name>`."
 

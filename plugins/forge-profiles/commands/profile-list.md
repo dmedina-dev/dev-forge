@@ -11,13 +11,13 @@ Show all available profiles and indicate which one matches the current configura
 ### Step 1: Read Profiles
 
 1. Read `.claude/settings.local.json`
-2. Navigate to `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
+2. Navigate to `pluginConfigs["forge-profiles@dev-forge"].options.profiles` (if the `profiles` value is a string, JSON-parse it)
 3. If the file doesn't exist or the path doesn't exist: inform user "No profiles found. Create one with `/profile-create`." and stop
 4. Parse each profile: name (the key), description, plugins array, mcpServers object, created_at
 
 ### Step 2: Detect Active Profile
 
-1. Get the current `plugins` array and `mcpServers` object from settings.local.json
+1. Get the current `enabledPlugins` object (entries with value `true`) from `.claude/settings.local.json` (fall back to `~/.claude/settings.json` if the project file has none) and the `mcpServers` object from `.mcp.json`
 2. Compare current state against each profile (both plugins AND mcpServers must match)
 3. Exact match (same plugins regardless of order + same mcpServers keys) = active profile
 4. If no exact match: no profile is marked as active

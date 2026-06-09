@@ -5,8 +5,8 @@ argument-hint: "[profile name]"
 
 # Change Plugin Profile
 
-Switch to a different plugin profile. This modifies the `plugins` key in `.claude/settings.local.json`
-to activate only the plugins defined in the target profile.
+Switch to a different plugin profile. This modifies the `enabledPlugins` key in `.claude/settings.local.json`
+(and the `mcpServers` object in `.mcp.json`) to activate only the plugins defined in the target profile.
 
 **Target profile:** $ARGUMENTS
 
@@ -14,7 +14,7 @@ to activate only the plugins defined in the target profile.
 
 ### Step 1: Select Profile
 
-1. Read `.claude/settings.local.json` and extract profiles from `pluginConfigs["forge-profiles@dev-forge"].options.profiles`
+1. Read `.claude/settings.local.json` and extract profiles from `pluginConfigs["forge-profiles@dev-forge"].options.profiles` (if the `profiles` value is a string, JSON-parse it)
 2. If path doesn't exist or profiles object is empty: "No profiles found. Create one with `/profile-create`." and stop
 
 **If `$ARGUMENTS` specifies a profile name:**
@@ -28,9 +28,9 @@ to activate only the plugins defined in the target profile.
 
 ### Step 2: Calculate Diff
 
-1. Get current `plugins` array and `mcpServers` object from settings.local.json
+1. Get current `enabledPlugins` object from `.claude/settings.local.json` (fall back to `~/.claude/settings.json` if the project file has none) and current `mcpServers` from `.mcp.json`
 2. Get target profile's `plugins` and `mcpServers` from `pluginConfigs["forge-profiles@dev-forge"].options.profiles.<name>`
-3. Calculate plugin diff:
+3. Calculate plugin diff (current = `enabledPlugins` entries with value `true`):
    - **Install**: plugins in target but not in current
    - **Uninstall**: plugins in current but not in target
    - **Keep**: plugins in both
@@ -80,14 +80,15 @@ If no changes needed (both plugins and mcpServers already match): "You're alread
 ### Step 4: Apply Changes
 
 1. Read the FULL `.claude/settings.local.json`
-2. Replace the `plugins` key with the target profile's plugins array
-3. Replace the `mcpServers` key with the target profile's mcpServers object
-4. Write the complete file back
+2. Update the `enabledPlugins` key: set the target profile's plugins to `true`, set the ones being deactivated to `false` (or remove their entries)
+3. Write the complete settings file back
+4. Read `.mcp.json` (or start from `{}` if it doesn't exist) and replace its `mcpServers` object with the target profile's mcpServers object, then write it back
 
-**CRITICAL:** Only modify `plugins` and `mcpServers`. Do NOT touch permissions, env,
-pluginConfigs, or any other key. Read entire file → change two keys → write entire file.
+**CRITICAL:** In settings.local.json, only modify `enabledPlugins`. Do NOT touch permissions, env,
+pluginConfigs, or any other key. In `.mcp.json`, only modify `mcpServers`. Read entire file →
+change one key → write entire file.
 
-5. Validate: `python3 -m json.tool .claude/settings.local.json`
+5. Validate: `python3 -m json.tool .claude/settings.local.json` and `python3 -m json.tool .mcp.json`
 
 ### Step 5: Reload
 
@@ -103,4 +104,4 @@ Run `/reload-plugins` to activate the new configuration.
 - If target profile has plugins that might not exist anymore: warn but apply (user may have local paths)
 - If target profile has no `mcpServers` key: treat as empty object (remove all current servers)
 - If write fails (permissions, disk): report error, do NOT leave a partial settings file
-- If current `plugins` or `mcpServers` keys don't exist: treat as empty (all target items will be additions)
+- If `enabledPlugins` doesn't exist in either settings file, or `.mcp.json` doesn't exist: treat as empty (all target items will be additions)

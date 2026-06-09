@@ -77,7 +77,7 @@ notify_on_errors: true
 
 Your plugin is configured with <mode> validation mode.
 
-To modify settings, edit this file and restart Claude Code.
+To modify settings, edit this file — values apply on the next hook invocation.
 ```
 
 ### Step 4: Inform User
@@ -86,7 +86,7 @@ Tell the user:
 - Settings file created at `.claude/my-plugin.local.md`
 - Current configuration summary
 - How to edit manually if needed
-- Reminder: Restart Claude Code for changes to take effect
+- Values apply on the next hook invocation — no restart needed (only hooks.json structure changes require restart)
 - Settings file is gitignored (won't be committed)
 
 ## Implementation Notes

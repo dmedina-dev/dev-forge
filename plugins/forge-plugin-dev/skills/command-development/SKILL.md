@@ -322,8 +322,16 @@ Commands can execute bash commands inline to dynamically gather context before C
 - Gather project/repository state
 - Build context-aware workflows
 
-**Implementation details:**
-For complete syntax, examples, and best practices, see `references/plugin-features-reference.md` section on bash execution. The reference includes the exact syntax and multiple working examples to avoid execution issues
+**Syntax:**
+- Prefix the command with `!` and wrap it in backticks: `` !`git status --short` ``
+- Each inline command runs **before** Claude processes the prompt; its output is substituted in place
+- The command's frontmatter must include `Bash` in `allowed-tools` (preferably scoped, e.g. `Bash(git:*)`)
+
+Working examples appear throughout `references/plugin-features-reference.md` (see its Validation Patterns section)
+
+## User Interaction Patterns
+
+Commands can gather user input mid-execution with the AskUserQuestion tool — option menus, confirmation gates, multi-step wizards, and decision trees. For comprehensive guidance and working examples, see `references/interactive-commands.md`.
 
 ## Command Organization
 
@@ -389,10 +397,10 @@ Organize commands in subdirectories:
 argument-hint: [pr-number]
 ---
 
-$IF($1,
-  Review PR #$1,
-  Please provide a PR number. Usage: /review-pr [number]
-)
+If $1 is provided:
+  Review PR #$1
+Otherwise:
+  Ask for a PR number. Usage: /review-pr [number]
 ```
 
 ### File References
@@ -829,6 +837,14 @@ If build failed:
 
 ---
 
-For detailed frontmatter field specifications, see `references/frontmatter-reference.md`.
-For plugin-specific features and patterns, see `references/plugin-features-reference.md`.
+Reference files in `references/`:
+
+- **`frontmatter-reference.md`** - Complete YAML frontmatter field specifications
+- **`plugin-features-reference.md`** - Plugin-specific features: discovery, ${CLAUDE_PLUGIN_ROOT}, validation patterns
+- **`interactive-commands.md`** - User interaction via AskUserQuestion: menus, confirmations, wizards
+- **`advanced-workflows.md`** - Multi-step command sequences and composition patterns
+- **`documentation-patterns.md`** - Self-documenting, maintainable command design
+- **`testing-strategies.md`** - Testing commands before deployment and distribution
+- **`marketplace-considerations.md`** - Designing commands for distribution and marketplaces
+
 For command pattern examples, see `examples/` directory.

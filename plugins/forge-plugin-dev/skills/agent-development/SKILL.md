@@ -112,9 +112,9 @@ assistant: "[How Claude should respond]"
 - Explain reasoning in commentary
 - Be specific about when NOT to use the agent
 
-### model (required)
+### model (optional)
 
-Which model the agent should use.
+Which model the agent should use. If omitted, the agent inherits the parent model.
 
 **Options:**
 - `inherit` - Use same model as parent (recommended)
@@ -124,9 +124,9 @@ Which model the agent should use.
 
 **Recommendation:** Use `inherit` unless agent needs specific model capabilities.
 
-### color (required)
+### color (optional)
 
-Visual identifier for agent in UI.
+Visual identifier for agent in UI. If omitted, a default is used.
 
 **Options:** `blue`, `cyan`, `green`, `yellow`, `magenta`, `red`
 
@@ -352,8 +352,8 @@ Output: [What to provide]
 |-------|----------|--------|---------|
 | name | Yes | lowercase-hyphens | code-reviewer |
 | description | Yes | Text + examples | Use when... <example>... |
-| model | Yes | inherit/sonnet/opus/haiku | inherit |
-| color | Yes | Color name | blue |
+| model | No | inherit/sonnet/opus/haiku | inherit |
+| color | No | Color name | blue |
 | tools | No | Array of tool names | ["Read", "Grep"] |
 
 ### Best Practices
@@ -395,8 +395,7 @@ Working examples in `examples/`:
 
 Development tools in `scripts/`:
 
-- **`validate-agent.sh`** - Validate agent file structure
-- **`test-agent-trigger.sh`** - Test if agent triggers correctly
+- **`${CLAUDE_PLUGIN_ROOT}/skills/agent-development/scripts/validate-agent.sh`** - Validate agent file structure
 
 ## Implementation Workflow
 
@@ -408,7 +407,7 @@ To create an agent for a plugin:
 4. Write frontmatter with all required fields
 5. Write system prompt following best practices
 6. Include 2-4 triggering examples in description
-7. Validate with `scripts/validate-agent.sh`
+7. Validate with `${CLAUDE_PLUGIN_ROOT}/skills/agent-development/scripts/validate-agent.sh`
 8. Test triggering with real scenarios
 9. Document agent in plugin README
 

@@ -124,7 +124,6 @@ commands/
 **File format**:
 ```markdown
 ---
-name: command-name
 description: Command description
 ---
 
@@ -150,13 +149,14 @@ agents/
 **File format**:
 ```markdown
 ---
-description: Agent role and expertise
-capabilities:
-  - Specific task 1
-  - Specific task 2
+name: agent-name
+description: When to use this agent, with triggering examples
+tools: ["Read", "Grep"]  # optional — defaults to all tools
+model: inherit           # optional — inherit/sonnet/opus/haiku
+color: blue              # optional — UI color
 ---
 
-Detailed agent instructions and knowledge...
+Agent system prompt: role, process, output expectations...
 ```
 
 **Usage**: Users can invoke agents manually, or Claude Code selects them automatically based on task context
@@ -215,14 +215,16 @@ hooks/
 **Configuration format**:
 ```json
 {
-  "PreToolUse": [{
-    "matcher": "Write|Edit",
-    "hooks": [{
-      "type": "command",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/validate.sh",
-      "timeout": 30
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Write|Edit",
+      "hooks": [{
+        "type": "command",
+        "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/validate.sh",
+        "timeout": 30
+      }]
     }]
-  }]
+  }
 }
 ```
 

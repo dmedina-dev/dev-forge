@@ -10,7 +10,8 @@ if [ $# -eq 0 ]; then
   echo ""
   echo "Validates agent file for:"
   echo "  - YAML frontmatter structure"
-  echo "  - Required fields (name, description, model, color)"
+  echo "  - Required fields (name, description)"
+  echo "  - Optional fields (model, color, tools)"
   echo "  - Field formats and constraints"
   echo "  - System prompt presence and length"
   echo "  - Example blocks in description"
@@ -122,8 +123,8 @@ fi
 MODEL=$(echo "$FRONTMATTER" | grep '^model:' | sed 's/model: *//')
 
 if [ -z "$MODEL" ]; then
-  echo "❌ Missing required field: model"
-  ((error_count++))
+  echo "⚠️  model not specified (agent inherits parent model)"
+  ((warning_count++))
 else
   echo "✅ model: $MODEL"
 
@@ -142,8 +143,8 @@ fi
 COLOR=$(echo "$FRONTMATTER" | grep '^color:' | sed 's/color: *//')
 
 if [ -z "$COLOR" ]; then
-  echo "❌ Missing required field: color"
-  ((error_count++))
+  echo "⚠️  color not specified (default UI color used)"
+  ((warning_count++))
 else
   echo "✅ color: $COLOR"
 

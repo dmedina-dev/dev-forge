@@ -23,6 +23,55 @@
       "target": "README.md",
       "summary": "Excluded upstream README",
       "reason": "Upstream plugin documentation, dev-forge has its own docs"
+    },
+    {
+      "id": "custom-02",
+      "type": "modified",
+      "target": "skills/agent-development/",
+      "summary": "Downgraded model/color to optional in SKILL.md (sections + summary table) and validate-agent.sh (warn instead of error); removed nonexistent test-agent-trigger.sh from script list; validate-agent.sh now invoked via ${CLAUDE_PLUGIN_ROOT} path",
+      "reason": "Working agents in this repo (forge-deep-review, forge-ui-forge) omit model/color and load fine; test-agent-trigger.sh never existed, even upstream; relative script paths break when the skill runs outside its own directory"
+    },
+    {
+      "id": "custom-03",
+      "type": "modified",
+      "target": "skills/command-development/",
+      "summary": "Replaced invented $IF() templating with prose conditionals in SKILL.md and references/plugin-features-reference.md; added inline bash-execution syntax spec replacing a dangling reference pointer; added User Interaction Patterns section pointing to references/interactive-commands.md; closing reference list now enumerates all 7 reference files",
+      "reason": "Claude Code has no $IF() substitution (real substitutions: $ARGUMENTS, $1-$9, @file, !`cmd`); the referenced bash-execution section did not exist; interactive-commands.md was orphaned despite the skill description triggering on AskUserQuestion"
+    },
+    {
+      "id": "custom-04",
+      "type": "modified",
+      "target": "skills/hook-development/SKILL.md",
+      "summary": "Wrapped the Plugin Hook Configuration example in the required {\"hooks\": {...}} wrapper; fixed 'security-guidance plugin' pointer to forge-security",
+      "reason": "Example contradicted the skill's own plugin hooks.json format spec; no security-guidance plugin exists in this marketplace — the vendored equivalent is forge-security"
+    },
+    {
+      "id": "custom-05",
+      "type": "modified",
+      "target": "skills/plugin-structure/SKILL.md",
+      "summary": "Wrapped hooks.json example in {\"hooks\": {...}}; replaced fictional agent frontmatter (capabilities list, missing name) with the real schema (name, description, optional tools/model/color); removed unsupported 'name' field from the command frontmatter example",
+      "reason": "Examples showed invalid schemas that would mislead plugin authors; command frontmatter does not support 'name' per command-development's frontmatter-reference"
+    },
+    {
+      "id": "custom-06",
+      "type": "modified",
+      "target": "skills/skill-development/SKILL.md",
+      "summary": "Fixed 'cc --plugin-dir' to 'claude --plugin-dir' in the plugin testing example",
+      "reason": "cc is the C compiler; the Claude Code CLI binary is claude"
+    },
+    {
+      "id": "custom-07",
+      "type": "modified",
+      "target": "commands/create-plugin.md",
+      "summary": "Fixed 'cc --plugin-dir' to 'claude --plugin-dir' in the local testing instructions",
+      "reason": "Same cc-is-the-C-compiler typo as skills/skill-development/SKILL.md"
+    },
+    {
+      "id": "custom-08",
+      "type": "modified",
+      "target": "skills/plugin-settings/",
+      "summary": "Rewrote Restart Requirement section and its echoes (SKILL.md plus examples/create-settings-command.md and examples/example-settings.md) to distinguish hooks.json structure changes (require restart) from settings-file values (read per hook invocation, apply immediately)",
+      "reason": "Skill contradicted itself — blanket 'settings changes require restart' claims versus the hot-toggle pattern it sells; reality is only hooks.json structure changes need a restart"
     }
   ]
 }

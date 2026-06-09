@@ -450,10 +450,10 @@ argument-hint: [environment]
 
 Validate environment: !`echo "$1" | grep -E "^(dev|staging|prod)$" || echo "INVALID"`
 
-$IF($1 in [dev, staging, prod],
-  Deploy to $1 environment using validated configuration,
-  ERROR: Invalid environment '$1'. Must be one of: dev, staging, prod
-)
+If $1 is a valid environment (dev, staging, prod):
+  Deploy to $1 environment using validated configuration
+Otherwise:
+  Report error: invalid environment '$1'. Must be one of: dev, staging, prod
 ```
 
 **Validation approaches:**
@@ -493,10 +493,10 @@ argument-hint: [environment] [version]
 
 Validate inputs: !`test -n "$1" -a -n "$2" && echo "OK" || echo "MISSING"`
 
-$IF($1 AND $2,
-  Deploy version $2 to $1 environment,
-  ERROR: Both environment and version required. Usage: /deploy [env] [version]
-)
+If both $1 and $2 are provided:
+  Deploy version $2 to $1 environment
+Otherwise:
+  Report error: both environment and version required. Usage: /deploy [env] [version]
 ```
 
 ### Plugin Resource Validation

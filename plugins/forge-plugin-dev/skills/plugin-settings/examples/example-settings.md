@@ -151,9 +151,7 @@ Users can edit settings files manually:
 # Edit settings
 vim .claude/my-plugin.local.md
 
-# Changes take effect after restart
-exit  # Exit Claude Code
-claude  # Restart
+# Values apply on the next hook invocation — no restart needed
 ```
 
-Changes require Claude Code restart - hooks can't be hot-swapped.
+Settings values are read per hook invocation and apply immediately. Only changes to the plugin's hooks.json structure require a Claude Code restart.

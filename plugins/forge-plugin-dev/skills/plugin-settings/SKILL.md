@@ -197,7 +197,7 @@ fi
 # ...
 ```
 
-**Use case:** Enable/disable hooks without editing hooks.json (requires restart).
+**Use case:** Enable/disable hook behavior without editing hooks.json — the value is read on each hook invocation, so toggling applies immediately (no restart).
 
 ### Pattern 2: Agent State Management
 
@@ -283,7 +283,7 @@ Steps:
 2. Create `.claude/my-plugin.local.md` with YAML frontmatter
 3. Set appropriate values based on user input
 4. Inform user that settings are saved
-5. Remind user to restart Claude Code for hooks to recognize changes
+5. Inform user that values take effect on the next hook invocation — no restart needed
 ```
 
 ### Template Generation
@@ -307,7 +307,7 @@ max_retries: 3
 Your settings are active.
 \`\`\`
 
-After creating or editing, restart Claude Code for changes to take effect.
+Edits take effect on the next hook invocation — no restart needed.
 ```
 
 ## Best Practices
@@ -366,21 +366,20 @@ fi
 
 ### Restart Requirement
 
-**Important:** Settings changes require Claude Code restart.
+**The distinction:**
+
+- **hooks.json structure changes** (adding/removing hooks, changing matchers or commands) require a Claude Code restart — hook registration loads at session start and cannot be hot-swapped.
+- **Settings-file values** (`.claude/plugin-name.local.md`) are read by hook scripts on every invocation — edits apply immediately, no restart. This is the pattern's main value: hot-toggling behavior via `enabled: true/false` or config values without touching hooks.json.
 
 Document in your README:
 
 ```markdown
 ## Changing Settings
 
-After editing `.claude/my-plugin.local.md`:
-1. Save the file
-2. Exit Claude Code
-3. Restart: `claude` or `cc`
-4. New settings will be loaded
+Edit `.claude/my-plugin.local.md` and save — values apply on the next
+hook invocation, no restart needed. Only changes to the plugin's
+hooks.json (hook structure) require restarting Claude Code.
 ```
-
-Hooks cannot be hot-swapped within a session.
 
 ## Security Considerations
 
@@ -539,6 +538,6 @@ To add settings to a plugin:
 4. Implement settings parsing in hooks/commands
 5. Use quick-exit pattern (check file exists, check enabled field)
 6. Document settings in plugin README with template
-7. Remind users that changes require Claude Code restart
+7. Document that settings values apply immediately (only hooks.json structure changes require restart)
 
 Focus on keeping settings simple and providing good defaults when settings file doesn't exist.

@@ -79,8 +79,8 @@ Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
 
 ## Wave 5 — Release
 
-- [ ] `bash scripts/marketplace-health.sh` + smoke tests de los plugins tocados.
-- [ ] `/release` → **v3.0.0** (breaking: eliminación de forge-context-mcp) + CHANGELOG.md
+- [x] `bash scripts/marketplace-health.sh` + smoke tests de los plugins tocados.
+- [x] `/release` → **v3.0.0** (breaking: eliminación de forge-context-mcp) + CHANGELOG.md
       (regla: todo release actualiza CHANGELOG) + refresco de pins en README si aplica.
 
 ## Diferidos (decisión consciente, no olvido)

@@ -1,12 +1,11 @@
 ---
-# Curated from: obra/superpowers v5.0.7
-# Customization custom-12: Reduced trigger sensitivity — only activate on complex, multi-faceted requirements
 name: brainstorming
 description: >
   Use when facing complex, multi-faceted requirements that need design exploration before implementation.
   Examples: new system architecture, multi-component features, cross-cutting concerns, or ambiguous specs
   with multiple valid approaches. DO NOT use for simple tasks, bug fixes, or well-defined features.
 ---
+<!-- Curated from obra/superpowers/skills/brainstorming · MIT. Adapted: trigger narrowed to complex, multi-faceted requirements only (custom-12). -->
 
 # Brainstorming Ideas Into Designs
 
@@ -166,4 +165,4 @@ A browser-based companion for showing mockups, diagrams, and visual options duri
 A question about a UI topic is not automatically a visual question. "What does personality mean in this context?" is a conceptual question — use the terminal. "Which wizard layout works better?" is a visual question — use the browser.
 
 If they agree to the companion, read the detailed guide before proceeding:
-`skills/brainstorming/visual-companion.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/visual-companion.md`

@@ -97,6 +97,12 @@ Which option?
 #### Option 1: Merge Locally
 
 ```bash
+# Capture workspace state BEFORE leaving the worktree — Step 6 consumes these.
+# (After cd to the main root, deriving them from CWD would always look like a normal repo.)
+GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
+GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
+WORKTREE_PATH=$(git rev-parse --show-toplevel)
+
 # Get main repo root for CWD safety
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
 cd "$MAIN_ROOT"
@@ -159,6 +165,11 @@ Wait for exact confirmation.
 
 If confirmed:
 ```bash
+# Capture workspace state BEFORE leaving the worktree — Step 6 consumes these.
+GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
+GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
+WORKTREE_PATH=$(git rev-parse --show-toplevel)
+
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
 cd "$MAIN_ROOT"
 ```
@@ -172,19 +183,14 @@ git branch -D <feature-branch>
 
 **Only runs for Options 1 and 4.** Options 2 and 3 always preserve the worktree.
 
-```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-WORKTREE_PATH=$(git rev-parse --show-toplevel)
-```
+**Use the `GIT_DIR`, `GIT_COMMON`, and `WORKTREE_PATH` values captured in Step 5** (Options 1 and 4 record them before `cd`-ing to the main repo root). Do NOT re-derive them here — by this point CWD is the main repo root, so re-deriving would always report a normal repo and skip cleanup.
 
 **If `GIT_DIR == GIT_COMMON`:** Normal repo, no worktree to clean up. Done.
 
-**If worktree path is under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`:** Superpowers created this worktree — we own cleanup.
+**If `$WORKTREE_PATH` is under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`:** Superpowers created this worktree — we own cleanup.
 
 ```bash
-MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
+# CWD is already the main repo root (Step 5 cd'd there)
 git worktree remove "$WORKTREE_PATH"
 git worktree prune  # Self-healing: clean up any stale registrations
 ```

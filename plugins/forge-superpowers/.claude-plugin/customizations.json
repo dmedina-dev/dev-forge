@@ -191,6 +191,62 @@
       "target": ".claude-plugin/plugin.json",
       "summary": "Renamed plugin (superpowers \u2192 forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
       "reason": "Each dev-forge plugin is published independently under the forge-* namespace; version is tracked at the dev-forge marketplace level, not aligned to upstream releases"
+    },
+    {
+      "id": "custom-26",
+      "type": "modified",
+      "target": "skills/{executing-plans,writing-plans,systematic-debugging,subagent-driven-development}/SKILL.md",
+      "summary": "Rewrote 19 dangling 'superpowers:<skill>' cross-references to 'forge-superpowers:<skill>'",
+      "reason": "Completes the plugin rename started in custom-25: plugin.json was renamed to forge-superpowers but skill cross-references still pointed at the upstream 'superpowers' namespace, which does not exist in dev-forge installs"
+    },
+    {
+      "id": "custom-27",
+      "type": "modified",
+      "target": "skills/brainstorming/visual-companion.md",
+      "summary": "Prefixed all seven script invocations (start-server.sh x6, stop-server.sh x1) with ${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/",
+      "reason": "Bare relative 'scripts/...' paths only resolve when CWD is the skill directory; plugin convention requires ${CLAUDE_PLUGIN_ROOT} for all hook/script paths"
+    },
+    {
+      "id": "custom-28",
+      "type": "modified",
+      "target": "skills/brainstorming/SKILL.md",
+      "summary": "Replaced stale in-frontmatter attribution comments (said v5.0.7) with the repo-standard single-line HTML comment after the frontmatter; fixed visual-companion.md reference to use ${CLAUDE_PLUGIN_ROOT}",
+      "reason": "Attribution claimed v5.0.7 while origin.ref is v5.1.0; repo convention (plugin-authoring.md) places a 'Curated from' HTML comment immediately after the frontmatter. The bare relative path to visual-companion.md would not resolve at runtime"
+    },
+    {
+      "id": "custom-29",
+      "type": "modified",
+      "target": "skills/finishing-a-development-branch/SKILL.md",
+      "summary": "Options 1 and 4 now capture GIT_DIR/GIT_COMMON/WORKTREE_PATH before cd-ing to the main repo root; Step 6 consumes the pre-captured values instead of re-deriving from CWD",
+      "reason": "Upstream bug: Step 5 cd's to $MAIN_ROOT before Step 6 derives workspace state from CWD, so cleanup always saw a normal repo and never removed the worktree"
+    },
+    {
+      "id": "custom-30",
+      "type": "modified",
+      "target": "skills/requesting-code-review/SKILL.md",
+      "summary": "Prepended the WHAT to the description ('Dispatch a fresh-context code-reviewer subagent to check completed work.')",
+      "reason": "Upstream description only stated WHEN to trigger, never WHAT the skill does, making trigger matching unreliable"
+    },
+    {
+      "id": "custom-31",
+      "type": "removed",
+      "target": "skills/writing-plans/plan-document-reviewer-prompt.md",
+      "summary": "Removed orphaned plan-reviewer subagent prompt",
+      "reason": "Contradicts v5.1.0's inline self-review (SKILL.md explicitly says the plan review is 'not a subagent dispatch') and is referenced nowhere"
+    },
+    {
+      "id": "custom-32",
+      "type": "removed",
+      "target": "skills/brainstorming/spec-document-reviewer-prompt.md",
+      "summary": "Removed orphaned spec-reviewer subagent prompt",
+      "reason": "Upstream v5.1.0 replaced the subagent review loop with inline spec self-review; the prompt file is referenced nowhere"
+    },
+    {
+      "id": "custom-33",
+      "type": "excluded",
+      "target": "skills/systematic-debugging/{CREATION-LOG.md,test-academic.md,test-pressure-1.md,test-pressure-2.md,test-pressure-3.md}",
+      "summary": "Excluded upstream skill-development test fixtures shipped inside the skill directory",
+      "reason": "Like custom-01, these validate the upstream ecosystem (skill creation log and pressure-test scenarios), not relevant to our plugin usage; referenced nowhere in shipped content"
     }
   ]
 }

@@ -129,7 +129,7 @@ the implementation plan.
 3. ...
 
 ### Early Exit Option
-If you want to execute this plan yourself (via `/subagent-driven-development`
+If you want to execute this plan yourself (via `forge-superpowers:subagent-driven-development`
 or `/executing-plans`), you can stop here. Otherwise, approve and I'll begin
 TDD execution with builder + reviewer teammates.
 
@@ -213,5 +213,5 @@ At any gate, if the user indicates they want to stop:
 
 ### To Resume
 [How to pick up from here — e.g., "Run `/brainstorming` again with the plan file,
-or use `/subagent-driven-development` directly on the plan."]
+or use `forge-superpowers:subagent-driven-development` directly on the plan."]
 ```

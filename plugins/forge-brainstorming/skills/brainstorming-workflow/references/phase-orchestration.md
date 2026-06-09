@@ -86,7 +86,7 @@ implementation map, data flow, build sequence, risk assessment.
 
 ### After User Chooses Approach
 1. Announce: "I'm using the writing-plans skill to create the implementation plan."
-2. Use superpowers:writing-plans to convert chosen architecture into TDD plan
+2. Use forge-superpowers:writing-plans to convert chosen architecture into TDD plan
    - Include: all context from Phases 1-2
    - Each task follows TDD: failing test → verify → implement → verify → commit
    - Save to: `docs/superpowers/plans/YYYY-MM-DD-{feature-name}.md`
@@ -113,7 +113,7 @@ Only flag issues that would cause real problems during planning.
 ## Phase 4: Execution
 
 ### Setup
-1. Set up git worktree: use superpowers:using-git-worktrees
+1. Set up git worktree: use forge-superpowers:using-git-worktrees
 2. Spawn builder: `Agent(name: "builder", subagent_type: "forge-brainstorming:builder", team_name: "brainstorming-{slug}")`
 3. Ensure reviewer is active (spawned in Phase 3)
 

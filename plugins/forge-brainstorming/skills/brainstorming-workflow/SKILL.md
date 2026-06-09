@@ -50,7 +50,7 @@ Phase 6: PR & Close   → closer verifies, creates PR, runs automated review
 Stop at any gate:
 - After Phase 1: "I just needed the exploration"
 - After Phase 2: "I have the architecture, I'll implement myself"
-- After Phase 3: "I have the plan, I'll use `/subagent-driven-development`"
+- After Phase 3: "I have the plan, I'll use `forge-superpowers:subagent-driven-development`"
 - After Phase 5: "Skip PR, I'll handle that"
 
 ## Gates
@@ -83,13 +83,13 @@ See `references/phase-orchestration.md` for:
 **Requires:** forge-superpowers (provides writing-plans, TDD, verification, finishing, worktrees)
 
 **Superpowers skills used:**
-- `superpowers:writing-plans` — Phase 3 plan generation
-- `superpowers:using-git-worktrees` — Phase 4 workspace isolation
-- `superpowers:test-driven-development` — builder follows TDD protocol
-- `superpowers:verification-before-completion` — Phase 6 pre-PR verification
-- `superpowers:finishing-a-development-branch` — Phase 6 integration options
+- `forge-superpowers:writing-plans` — Phase 3 plan generation
+- `forge-superpowers:using-git-worktrees` — Phase 4 workspace isolation
+- `forge-superpowers:test-driven-development` — builder follows TDD protocol
+- `forge-superpowers:verification-before-completion` — Phase 6 pre-PR verification
+- `forge-superpowers:finishing-a-development-branch` — Phase 6 integration options
 
-**Complements:** `superpowers:brainstorming` — user chooses between `/brainstorming` (persistent teammates that accumulate context across phases) or superpowers' inline brainstorming (single-turn ideation, no persistent state)
+**Complements:** `forge-superpowers:brainstorming` — user chooses between `/brainstorming` (persistent teammates that accumulate context across phases) or superpowers' inline brainstorming (single-turn ideation, no persistent state)
 
 ## Command
 

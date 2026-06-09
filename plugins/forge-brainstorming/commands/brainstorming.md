@@ -62,7 +62,7 @@ Present to user (see `references/gate-protocols.md`):
 ## Phase 3: Planning
 
 1. Announce: "I'm using the writing-plans skill to create the implementation plan."
-2. Use **superpowers:writing-plans** to convert chosen architecture into a detailed TDD plan
+2. Use **forge-superpowers:writing-plans** to convert chosen architecture into a detailed TDD plan
    - Include all context from Phases 1-2: scout findings, user requirements, chosen architecture
    - Each task follows TDD: write failing test → verify failure → implement → verify pass → commit
    - Save to `docs/superpowers/plans/YYYY-MM-DD-{feature-name}.md`
@@ -83,13 +83,13 @@ Otherwise, present to user (see `references/gate-protocols.md`):
 - Plan summary: number of tasks, components, technologies
 - Task list overview (titles)
 - Reviewer's spec validation result
-- Early exit option (user can take plan and run `/subagent-driven-development` themselves)
+- Early exit option (user can take plan and run `forge-superpowers:subagent-driven-development` themselves)
 
 **WAIT for approval.**
 
 ## Phase 4: Execution
 
-1. Set up isolated workspace: use **superpowers:using-git-worktrees**
+1. Set up isolated workspace: use **forge-superpowers:using-git-worktrees**
 2. Spawn builder: `Agent(name: "builder", subagent_type: "forge-brainstorming:builder", team_name: "brainstorming-{slug}")`
 3. Ensure reviewer is active (spawned in Phase 3)
 

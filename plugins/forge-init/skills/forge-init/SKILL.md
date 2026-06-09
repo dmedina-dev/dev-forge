@@ -67,13 +67,18 @@ After approval:
 ```
 To uninstall forge-init (no longer needed):
   /plugin → Manage and uninstall plugins → forge-init → Uninstall
-
-forge-keeper is active for ongoing maintenance.
-Run /forge-keeper:status to check context health anytime.
 ```
+
+Then check whether forge-keeper is installed. If it is, add:
+```
+forge-keeper handles ongoing maintenance — run /forge-keeper:status
+to check context health anytime.
+```
+Otherwise, suggest installing it for ongoing context maintenance.
 
 ## References
 
+- Installing all plugins → `/forge-init:install-all` (see `commands/install-all.md`)
 - CLAUDE.md conventions → `references/claudemd-conventions.md`
 - Code exemplars process → `references/code-exemplars.md`
 - Knowledge layer principles → `references/knowledge-principles.md`

@@ -4,6 +4,39 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v3.0.0 — 2026-06-10
+
+**forge-context-mcp is removed from the catalog** (18 → 17 plugins) and 13 plugins land fixes from a marketplace-wide skill review: a 58-agent workflow reviewed all 39 skills and adversarially verified 86 findings, then five fix waves applied them (trail in `docs/plans/2026-06-10-skill-review-fixes.md` and `docs/sessions/2026-06-10-skill-review-context-mcp-removal.md`). The removal is the breaking change: the review proved forge-context-mcp's content hallucinated — all three cited GitHub repos 404, the `serena-mcp` PyPI package doesn't exist, `xray-mcp` on npm is an unrelated Jira product, and every guide configured MCP in `.claude/settings.json`, which Claude Code doesn't read. A future `forge-memory` plugin will reformulate that space.
+
+**Plugins bumped:**
+- `forge-proactive-qa`: `1.2.1` → `1.3.0` (minor — new `references/operational.md` § Sandbox documenting the $TMPDIR allowWrite surface; plus doc-reality fixes: `${CLAUDE_PLUGIN_ROOT}` reference paths, real state-file name/location, screenshots as paths-in-text, "All modes")
+- `forge-profiles`: `1.1.2` → `1.1.3` (patch — docs now describe the real switching mechanism: `enabledPlugins` object + `plugin@marketplace` ids in settings, MCP servers in `.mcp.json`; legacy string-encoded profile storage tolerated)
+- `forge-ui-forge`: `0.7.0` → `0.7.1` (patch — skill description compressed 1987 → 969 chars: the harness truncates at 1024, which silenced every Spanish trigger phrase; serve.sh is the canonical server entry; live-mode docs deduplicated into references/)
+- `forge-superpowers`: `1.1.1` → `1.1.2` (patch — 19 dangling `superpowers:` cross-references repointed, `${CLAUDE_PLUGIN_ROOT}` script paths, finishing-a-development-branch worktree-detection logic fix, 7 orphaned upstream files removed, attribution comments on all skills)
+- `forge-plugin-dev`: `1.0.2` → `1.0.3` (patch — 13 doc defects: invented `$IF()` syntax removed, model/color now optional, `{"hooks":{}}` wrappers, restart-requirement contradiction resolved, interactive-commands.md de-orphaned, `cc` → `claude`, attribution comments)
+- `forge-hookify`: `1.0.3` → `1.0.4` (patch — stop-event docs rewritten to the conditions form the engine actually evaluates; the documented simple-pattern stop rule could never match)
+- `forge-telegram`: `1.2.0` → `1.2.1` (patch — `${CLAUDE_PLUGIN_ROOT}` script paths, inbound flow renumbered sequentially)
+- `forge-keeper`: `1.5.0` → `1.5.1` (patch — no longer claims pre-/clear capture; PreCompact covers /compact, SessionStart(clear) rescue covers /clear)
+- `forge-brainstorming`: `1.0.1` → `1.0.2` (patch — `superpowers:` → `forge-superpowers:` namespace in all orchestration references)
+- `forge-export`: `1.1.2` → `1.1.3` (patch — generated install-all.md now lands in `<dest>/.claude/commands/`, valid Quick start template, drift-proof placeholder examples)
+- `forge-mattpocock`: `1.1.0` → `1.1.1` (patch — vendor-tracking hygiene: ADR-FORMAT/GLOSSARY-FORMAT now tracked, path conventions normalized, README pin refreshed)
+- `forge-frontend-design`: `1.0.2` → `1.0.3` (patch — `license: Apache-2.0` replaces dangling LICENSE.txt pointer; attribution comment added)
+- `forge-init`: `1.1.1` → `1.1.2` (patch — conditional forge-keeper cleanup message, install-all pointer in body)
+
+**Marketplace:** `2.10.0` → `3.0.0` (major — plugin removed from the catalog, a breaking change per docs/versioning.md regardless of the per-plugin bump levels).
+
+**Breaking changes:** forge-context-mcp no longer exists in the marketplace.
+
+### Migration
+
+- If you have it installed: `/plugin` → Manage and uninstall plugins → `forge-context-mcp` → Uninstall. Its cache goes stale after this release and `/reload-plugins` cannot recover it.
+- For MCP server setup, use the supported mechanisms directly: `claude mcp add <name> -- <command>` or a `.mcp.json` at the project root (the plugin's `.claude/settings.json` instructions never worked).
+- Stored forge-profiles profiles that reference `forge-context-mcp@dev-forge` should be recreated with `/profile-create`.
+
+**New repo convention:** skill frontmatter descriptions are capped at 1024 chars (harness truncation silently kills trigger phrases past the cutoff) and multi-line descriptions use `>-` folded scalars — enforced in `.claude/rules/plugin-authoring.md`.
+
+**Upstream pin state post-release:** unchanged (no upstream sync this release; all vendored edits are tracked as customizations).
+
 ## v2.10.0 — 2026-06-02
 
 Marketplace-maintenance commands move out of their plugins and into **repo-level `.claude/commands/`**, and a new `/import-plugin` command is added. The two migrated commands (`update-check`, `release`) only ever functioned inside the dev-forge repo — `update-check` scans `plugins/*/.claude-plugin/customizations.json` and `release` hard-guards on `.claude-plugin/marketplace.json` — so shipping them inside installable plugins was misleading. They now live with the repo and are invoked without a plugin prefix (`/update-check`, `/release`).

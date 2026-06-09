@@ -1,6 +1,6 @@
 {
   "name": "forge-keeper",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Keeps CLAUDE.md, project docs and memories in sync after development sessions. Context-aware semantic detection plus explicit /sync command for human-driven updates. Safety-net git-based hook at relaxed thresholds.",
   "author": {
     "name": "dmedina",
@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/dmedina-dev/dev-forge",
   "license": "MIT",
-  "keywords": ["memory", "context", "session", "documentation", "claude-md", "monorepo"]
+  "keywords": [
+    "memory",
+    "context",
+    "session",
+    "documentation",
+    "claude-md",
+    "monorepo"
+  ]
 }

@@ -1,12 +1,17 @@
 {
   "name": "forge-telegram",
   "description": "Telegram inbound listener + sender for Claude Code — bash scripts under Monitor. Long-poll getUpdates, events arrive as turns in the main session, Whisper voice transcription.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "dmedina",
     "email": "me@dmedina.dev"
   },
   "repository": "https://github.com/dmedina-dev/dev-forge",
   "license": "MIT",
-  "keywords": ["telegram", "monitor", "whisper", "bash"]
+  "keywords": [
+    "telegram",
+    "monitor",
+    "whisper",
+    "bash"
+  ]
 }

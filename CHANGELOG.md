@@ -4,6 +4,24 @@ All notable changes to the dev-forge marketplace are documented here. Version bu
 
 > Format: each release lists plugin bumps as `name: old → new (level)` and breaking changes get a **Migration** block with explicit steps.
 
+## v3.1.0 — 2026-06-10
+
+Upstream sync release: forge-security adopts upstream's LLM-assisted review rewrite wholesale (the update deferred since the v2.10.0 check), and forge-mattpocock ports two upstream changes in the spirit of its keeper adaptation rather than verbatim.
+
+**Plugins bumped:**
+- `forge-security`: `1.0.2` → `1.1.0` (minor — reset to upstream `security-guidance` @ `1c5f951a48`: LLM-assisted security review (`llm.py`, `review_api.py`, `patterns.py`, `session_state.py`, `extensibility.py`, `sg-python.sh` + 4 more files) on top of the existing pattern-reminder hook. `custom-02` (removal of the Anthropic-internal child-process shell-exec reminder pattern) dropped by maintainer decision — upstream adopted entire; only the README exclusion remains as a customization)
+- `forge-mattpocock`: `1.1.1` → `1.1.2` (patch — synced to `e3d8b735ef`: to-prd step 2 ported from module decomposition to **test seams** (prefer existing, highest possible) keeping the local one-round-confirmation/AFK style; upstream's CONTEXT-FORMAT rule simplification ported into its keeper-shaped successor `GLOSSARY-FORMAT.md` (aliases under `_Avoid_`, dropped flag-conflicts / relationships / example-dialogue rules and template sections). The rest of the upstream delta (new `productivity/teach` skill) is outside the vendored set)
+
+**Marketplace:** `3.0.0` → `3.1.0` (minor — driven by the forge-security minor).
+
+**Breaking changes:** none.
+
+**Upstream pin state post-release:**
+- `obra/superpowers`: `v5.1.0` (`f2cbfbe`) — unchanged, still the latest release
+- `mattpocock/skills`: `main @ e3d8b735ef` (was `b8be62ffac`)
+- `anthropics/claude-code`: per-plugin pins now diverge — `forge-security` at `main @ 1c5f951a48`; `forge-commit` / `forge-deep-review` / `forge-hookify` / `forge-plugin-dev` remain at `main @ cc898dc369` (their subpaths unchanged upstream)
+- `anthropics/claude-plugins-official`: `main @ d68033bd` — unchanged
+
 ## v3.0.0 — 2026-06-10
 
 **forge-context-mcp is removed from the catalog** (18 → 17 plugins) and 13 plugins land fixes from a marketplace-wide skill review: a 58-agent workflow reviewed all 39 skills and adversarially verified 86 findings, then five fix waves applied them (trail in `docs/plans/2026-06-10-skill-review-fixes.md` and `docs/sessions/2026-06-10-skill-review-context-mcp-removal.md`). The removal is the breaking change: the review proved forge-context-mcp's content hallucinated — all three cited GitHub repos 404, the `serena-mcp` PyPI package doesn't exist, `xray-mcp` on npm is an unrelated Jira product, and every guide configured MCP in `.claude/settings.json`, which Claude Code doesn't read. A future `forge-memory` plugin will reformulate that space.

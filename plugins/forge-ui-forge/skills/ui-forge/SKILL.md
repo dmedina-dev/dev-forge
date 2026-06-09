@@ -1,6 +1,18 @@
 ---
 name: ui-forge
-description: Prototype full UI screens iteratively before implementing them in production code while maintaining a per-project growing catalog of reusable components and shared data fixtures. Includes hot-reload dev server with SSE — user annotates in the browser, clicks 🚀 Send to Claude, Claude regenerates HTML, browser reloads automatically. Subcommands for the dev server lifecycle: "ui-forge serve" (start), "ui-forge stop", "ui-forge status". Triggers when the user wants to design a new screen, explore visual variations, gather inline feedback via click-to-annotate, or build up a reusable component library through prototyping. Also triggers on Spanish phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor". Five-phase flow: bootstrap `.ui-forge/`, generate mock data and scenarios from a declarative schema with optional fixture reuse, generate N HTML screen variations reusing registry components when applicable, iterate on chosen variation with hot-reload annotation overlay — user clicks 🚀 to send pins, Claude regenerates, browser auto-reloads via SSE, distill into clean `screen.html` plus framework-agnostic `screen-spec.md`, then promote selected blocks to versioned components and reusable datasets to shared fixtures. All artifacts live under `.ui-forge/` in the project root, git-versioned. Never modifies the consumer project's source tree, never installs dependencies, never generates framework-specific code, never hardcodes mock data inline. Use this skill whenever the user mentions prototyping screens, UI variations, mockups, wireframes, design exploration, iterating on visual interfaces before writing production code, starting/stopping the ui-forge server, or sending feedback from the overlay. Do NOT use for bug fixes in existing UI, small CSS tweaks, or when an approved external design (Figma, Sketch) is already ready for direct implementation.
+description: >-
+  Prototype full UI screens iteratively before implementing them in production code,
+  maintaining a per-project catalog of reusable components and shared data fixtures under
+  .ui-forge/. Hot-reload dev server with click-to-annotate overlay: the user annotates in
+  the browser, clicks 🚀 Send to Claude, Claude regenerates the HTML and the browser
+  reloads via SSE. Subcommands: "ui-forge serve" (start), "ui-forge stop", "ui-forge
+  status". Use when the user wants to design or prototype a screen, explore visual
+  variations, mockups or wireframes, gather inline feedback via annotations, build a
+  reusable component library, or start/stop the ui-forge server. Also triggers on Spanish
+  phrases like "prototipar la pantalla de", "diseña la UI de", "explora opciones visuales
+  para", "quiero mockear", "necesito maquetar", "arranca ui-forge", "para el servidor".
+  Do NOT use for bug fixes in existing UI, small CSS tweaks, or implementing an approved
+  external design (Figma, Sketch).
 version: 0.7.0
 ---
 

@@ -92,7 +92,9 @@ On confirmation, generate the new marketplace:
 
 1. Create the destination directory structure
 2. Write top-level files: `marketplace.json`, `CLAUDE.md`, `README.md`, `docs/dependencies.md`,
-   `commands/install-all.md`
+   `.claude/commands/install-all.md` (maintainer-only repo-level command — available when running
+   Claude Code inside the new marketplace repo; a bare `commands/` dir at the repo root is not
+   read by Claude Code)
 3. For each selected external plugin: write `plugins/<name>/.claude-plugin/customizations.json`
    with only the carried customizations
 4. For each selected native plugin copied: copy the plugin directory and write a

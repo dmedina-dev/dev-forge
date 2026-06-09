@@ -46,29 +46,26 @@ Ask the user which to include in the new marketplace.
 
 ### Table format
 
+Build the rows from the live data detected in Step 2 — the placeholders below
+only illustrate the structure:
+
 ```
 ## Available plugins
 
 ### External (curated from upstream sources)
 
-| Plugin                  | Upstream                                | Customizations |
-|-------------------------|-----------------------------------------|----------------|
-| forge-superpowers       | obra/superpowers @ v5.0.6               | 19             |
-| forge-plugin-dev        | anthropics/claude-code (plugin-dev)     | 0              |
-| forge-deep-review      | anthropics/claude-code (pr-review-toolkit + code-review) | 0     |
-| forge-hookify           | anthropics/claude-code (hookify)        | 0              |
-| forge-security          | anthropics/claude-code (security)       | 0              |
-| forge-commit            | anthropics/claude-code (commit-commands)| 0              |
-| forge-frontend-design   | anthropics/claude-plugins-official      | 0              |
-| telegram                | anthropics/claude-plugins-official      | 0              |
+| Plugin              | Upstream                          | Customizations |
+|---------------------|-----------------------------------|----------------|
+| <external-plugin-1> | <owner/repo> @ <ref>              | <N>            |
+| <external-plugin-2> | <owner/repo> (<path>)             | 0              |
+| <external-plugin-3> | <owner/repo> (<name> + 1 more)    | 0              |
 
 ### Native (authored in this repo)
 
-| Plugin              | Source                                   | Customizations |
-|---------------------|------------------------------------------|----------------|
-| forge-init          | dmedina-dev/dev-forge (plugins/forge-init)   | —          |
-| forge-keeper        | dmedina-dev/dev-forge (plugins/forge-keeper) | —          |
-| forge-proactive-qa  | dmedina-dev/dev-forge (plugins/forge-proactive-qa) | —    |
+| Plugin            | Source                                       | Customizations |
+|-------------------|----------------------------------------------|----------------|
+| <native-plugin-1> | <source-owner/repo> (plugins/<native-plugin-1>) | —           |
+| <native-plugin-2> | <source-owner/repo> (plugins/<native-plugin-2>) | —           |
 ```
 
 For the upstream column of external plugins: show `repo @ ref` for single
@@ -101,24 +98,27 @@ Skip any external plugin with no `customizations.json` or an empty
 1. Display the plugin name and upstream source as a header.
 2. List each customization entry:
 
+Use the live entries from the plugin's `customizations.json` — the
+placeholders below only illustrate the structure:
+
 ```
-## forge-superpowers — 19 customizations from obra/superpowers @ v5.0.6
+## <external-plugin> — <N> customizations from <owner/repo> @ <ref>
 
-  [custom-01] excluded  tests/
-    "Excluded upstream test infrastructure"
-    Reason: Tests are for validating the upstream ecosystem, not relevant to our plugin usage
+  [custom-01] excluded  <dir>/
+    "<summary>"
+    Reason: <reason>
 
-  [custom-02] excluded  .github/
-    "Excluded upstream CI/CD workflows"
-    Reason: Upstream project CI, not applicable to dev-forge
+  [custom-02] excluded  <other-dir>/
+    "<summary>"
+    Reason: <reason>
 
-  [custom-10] removed   skills/writing-skills/
-    "Removed writing-skills skill"
-    Reason: Using Anthropic official skill-creator instead
+  [custom-10] removed   skills/<skill-name>/
+    "<summary>"
+    Reason: <reason>
 
-  [custom-12] modified  skills/brainstorming/SKILL.md
-    "Reduced trigger sensitivity to complex requirements only"
-    Reason: Original trigger was too aggressive, activating brainstorming on simple requests
+  [custom-12] modified  skills/<other-skill>/SKILL.md
+    "<summary>"
+    Reason: <reason>
   ...
 ```
 
@@ -151,7 +151,7 @@ Ask two questions:
 
 **Question 1 — Content copy:**
 
-> "forge-init is a native plugin authored in this repo.
+> "<native-plugin> is a native plugin authored in this repo.
 > Copy the full plugin directory to the new repo? (yes = include all files,
 > no = reference-only entry in marketplace.json with a note that content is
 > not included)"

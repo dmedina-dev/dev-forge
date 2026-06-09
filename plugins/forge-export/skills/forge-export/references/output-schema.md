@@ -30,8 +30,9 @@ All files are written under `<dest>/` (the user-specified destination directory)
 │       │   ├── hooks.json
 │       │   └── <script>.sh            (copied scripts, paths rewritten)
 │       └── README.md
-├── commands/
-│   └── install-all.md
+├── .claude/
+│   └── commands/
+│       └── install-all.md             (maintainer-only repo-level command)
 ├── CLAUDE.md
 ├── README.md
 └── docs/
@@ -374,7 +375,9 @@ Include in the generated `install-all.md` as a working plugin.
 
 ## § install-all.md command
 
-Written to: `<dest>/commands/install-all.md`
+Written to: `<dest>/.claude/commands/install-all.md`
+
+This is a **maintainer-only repo-level command** — it lives in `.claude/commands/` of the generated repo (mirroring dev-forge's own pattern for `/release` and `/update-check`), so it is available when running Claude Code inside the new marketplace repo. It does NOT ship to consumers who install plugins from the marketplace. A bare `commands/` directory at a marketplace repo root is not read by Claude Code.
 
 Follows the same pattern as `plugins/forge-init/commands/install-all.md` exactly. The catalog table, working vs. configuration split, dependency ordering, and Steps 1–5 are identical in structure — only the plugin list and marketplace name differ.
 
@@ -439,12 +442,12 @@ Each plugin is **independent** — install, test, remove any plugin without affe
 \`\`\`
 <marketplace-dir>/
 ├── .claude-plugin/marketplace.json    ← catalog of all available plugins
+├── .claude/commands/                  ← repo-level maintenance commands (not shipped as plugins):
+│                                         /install-all
 ├── plugins/
 │   ├── <native-plugin-1>/
 │   ├── <native-plugin-2>/
 │   └── ...
-├── commands/
-│   └── install-all.md
 └── docs/
     └── dependencies.md
 \`\`\`
@@ -515,16 +518,19 @@ One row per included plugin. Links upstream repo in the Source column.
 ```markdown
 ## Quick start
 
-1. Install the marketplace plugin:
+1. Add the marketplace (once per machine):
    \`\`\`
-   /plugin install <marketplace-source-url>
+   /plugin marketplace add <owner>/<repo>
    \`\`\`
 
-2. Install all working plugins:
+2. Install the plugins you want:
    \`\`\`
-   /install-all
+   /plugin install <plugin-name-1>    # <one-line description>
+   /plugin install <plugin-name-2>    # <one-line description>
    \`\`\`
 ```
+
+Generate one `/plugin install <name>` line per working plugin (exclude configuration/disposable plugins). Maintainers working inside this repo can run `/install-all` (a repo-level command in `.claude/commands/`) to install every working plugin at once — mention this after the install lines.
 
 ### 4. Customization
 
@@ -623,7 +629,7 @@ Create directories in this order before writing any files:
 1. `<dest>/`
 2. `<dest>/.claude-plugin/`
 3. `<dest>/plugins/`
-4. `<dest>/commands/`
+4. `<dest>/.claude/commands/`
 5. `<dest>/docs/`
 6. `<dest>/plugins/<name>/.claude-plugin/` for each plugin that needs a customizations.json
 
@@ -671,7 +677,7 @@ After git commit, output a summary in this format:
 
 Files written:
   .claude-plugin/marketplace.json
-  commands/install-all.md
+  .claude/commands/install-all.md
   CLAUDE.md
   README.md
   docs/dependencies.md
@@ -688,8 +694,9 @@ Plugins installed at install time (from upstream):
 Next steps:
   1. Push to your git remote
   2. Update marketplace.json source.url placeholders if any (search for PLACEHOLDER)
-  3. Install: /plugin install <your-repo-url>
-  4. Run: /install-all
+  3. Add the marketplace: /plugin marketplace add <owner>/<repo>
+  4. Install plugins: /plugin install <name> (or run /install-all from a Claude Code
+     session inside the new repo — it is a maintainer-only repo-level command)
 ```
 
 If any `source.url` placeholders remain (user did not provide a repo URL), list them explicitly in the Next steps so the user knows to update them.

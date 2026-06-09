@@ -42,13 +42,13 @@ Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
 
 ## Wave 3 — Vendored con entrada en customizations.json (lote por plugin, 1 entrada cubre el lote)
 
-- [ ] **forge-hookify**: reescribir sección stop-events (SKILL.md:182-201) a forma conditions
+- [x] **forge-hookify**: reescribir sección stop-events (SKILL.md:182-201) a forma conditions
       (`field: transcript|reason`); añadir `Stop: reason, transcript` al Quick Reference (368-371);
       listar `require-tests-stop.local.md` en ejemplos (324-327). 1 entrada `modified`.
-- [ ] **forge-proactive-qa**: rutas references/ → `${CLAUDE_PLUGIN_ROOT}/references/...`
+- [x] **forge-proactive-qa**: rutas references/ → `${CLAUDE_PLUGIN_ROOT}/references/...`
       (SKILL.md:246,248,258); estado cycle (212 vs 233); screenshots contradicción (99 vs 111);
       "Both modes" → "All modes" (20); nota sandbox $TMPDIR + operational.md § sandbox.
-- [ ] **forge-plugin-dev**: quitar test-agent-trigger.sh (agent-dev:399); model/color → opcionales
+- [x] **forge-plugin-dev**: quitar test-agent-trigger.sh (agent-dev:399); model/color → opcionales
       (115,127, tabla, validate-agent.sh); rutas validate-agent.sh con ${CLAUDE_PLUGIN_ROOT};
       eliminar sintaxis $IF() (command-dev:392-396 + features-ref:453,496); sección AskUserQuestion
       → puntero a interactive-commands.md + enumerar 7 references; wrapper "hooks" en
@@ -56,16 +56,16 @@ Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
       `cc` → `claude` (skill-dev:288); contradicción restart en plugin-settings (369,383 vs 200,450);
       ejemplo agent `capabilities` → schema real (plugin-structure:151-158); quitar `name:` de ejemplo
       command (125-129). Entradas `modified` por archivo.
-- [ ] **forge-superpowers**: cross-refs `superpowers:` → `forge-superpowers:` (19 occurrencias,
+- [x] **forge-superpowers**: cross-refs `superpowers:` → `forge-superpowers:` (19 occurrencias,
       4 archivos) + entrada que complete custom-25; visual-companion.md rutas con
       ${CLAUDE_PLUGIN_ROOT} (7 invocaciones); atribución brainstorming v5.0.7 → v5.1.0 + formato
       estándar; finishing-a-development-branch: capturar GIT_DIR/WORKTREE_PATH antes del cd (101-102
       vs 176-181); requesting-code-review: añadir el WHAT a la descripción; eliminar huérfanos
       plan-document-reviewer-prompt.md y spec-document-reviewer-prompt.md (entradas `removed`);
       excluir CREATION-LOG.md + test-pressure-* en próximo sync (entrada `excluded`).
-- [ ] **forge-frontend-design**: `license:` → `Apache-2.0` + comentario de atribución que
+- [x] **forge-frontend-design**: `license:` → `Apache-2.0` + comentario de atribución que
       custom-01 ya afirma existir.
-- [ ] **forge-mattpocock** (higiene customizations.json, casi todo metadata local): entrada
+- [x] **forge-mattpocock** (higiene customizations.json, casi todo metadata local): entrada
       `modified` para ADR-FORMAT.md; entrada `added` para GLOSSARY-FORMAT.md (riesgo rsync --delete);
       normalizar paths custom-06/custom-24; propagar custom-24 a HTML-REPORT.md:3; README pin
       b56795b → b8be62f; README claim "commit per cycle" del tdd.

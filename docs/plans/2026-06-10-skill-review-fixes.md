@@ -30,14 +30,14 @@ Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
 
 ## Wave 2 — Paridad de docs del repo (sin tocar plugins)
 
-- [ ] README.md:65 + dependencies.md:49: `/hookify-list|configure|help` → `/forge-hookify:list|configure|help`.
-- [ ] README.md:63 + dependencies.md:62: `/clean-gone` → `/forge-commit:clean_gone`.
-- [ ] README.md:41-47: añadir `/handoff` y `/heal-plugin-cache` a forge-keeper.
-- [ ] README.md:80: `/proactive-qa:init` → `/forge-proactive-qa:init`.
-- [ ] CLAUDE.md:68: aclarar que forge-proactive-qa es nativo pero mantiene customizations.json con
+- [x] README.md:65 + dependencies.md:49: `/hookify-list|configure|help` → `/forge-hookify:list|configure|help`.
+- [x] README.md:63 + dependencies.md:62: `/clean-gone` → `/forge-commit:clean_gone`.
+- [x] README.md:41-47: añadir `/handoff` y `/heal-plugin-cache` a forge-keeper.
+- [x] README.md:80: `/proactive-qa:init` → `/forge-proactive-qa:init`.
+- [x] CLAUDE.md:68: aclarar que forge-proactive-qa es nativo pero mantiene customizations.json con
       `origin.type: "native"` como changelog de genericización; documentar la variante `native` en
       docs/customizations-pattern.md.
-- [ ] docs/dependencies.md: notas de arbitraje de triggers — diagnose vs systematic-debugging,
+- [x] docs/dependencies.md: notas de arbitraje de triggers — diagnose vs systematic-debugging,
       tdd vs test-driven-development, to-prd vs writing-plans (texto propuesto en el informe).
 
 ## Wave 3 — Vendored con entrada en customizations.json (lote por plugin, 1 entrada cubre el lote)

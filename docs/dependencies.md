@@ -46,7 +46,7 @@ Which plugins depend on or complement each other.
 - **Independent** — custom hook rules engine, works standalone
 - Curated from anthropics/claude-code (plugins/hookify) with import customizations
 - 4 hook events: PreToolUse, PostToolUse, Stop, UserPromptSubmit
-- 4 commands: /hookify (create rules), /hookify-list, /hookify-configure, /hookify-help
+- 4 commands: /hookify (create rules), /forge-hookify:list, /forge-hookify:configure, /forge-hookify:help
 - 1 agent: conversation-analyzer
 - 1 skill: writing-rules (rule format reference)
 
@@ -59,7 +59,7 @@ Which plugins depend on or complement each other.
 ### forge-commit
 - **Independent** — commit and PR commands, works standalone
 - Curated from anthropics/claude-code (plugins/commit-commands) with customizations
-- 3 commands: /commit (staged changes), /commit-push-pr (full flow), /clean-gone (branch cleanup)
+- 3 commands: /commit (staged changes), /commit-push-pr (full flow), /clean_gone (branch cleanup)
 
 ### forge-frontend-design
 - **Independent** — frontend design skill, works standalone
@@ -111,7 +111,10 @@ Which plugins depend on or complement each other.
 - 8 skills: grill-me, grill-with-docs, to-prd, tdd, diagnose, improve-codebase-architecture, zoom-out, caveman
 - Adaptations: grill-with-docs and improve-codebase-architecture rewired to forge-keeper docs structure (CLAUDE.md / .claude/rules/ / docs/glossary.md / docs/adr/); to-prd outputs wave-organized plans to docs/plans/ (no GitHub assignment); zoom-out and caveman are unmodified
 - Excluded by design (justifications in customizations.json): triage / to-issues (issue-tracker workflows), write-a-skill (overlaps with skill-creator), git-guardrails (overlaps with forge-security + forge-hookify), setup-pre-commit (JS-only), migrate-to-shoehorn / scaffold-exercises (niche)
-- Coexists with forge-superpowers (no skill-name collisions). Side-by-side alternative to compare
+- Coexists with forge-superpowers — but three skill pairs share trigger space; arbitration when both plugins are installed:
+  - **Bugs/debugging**: `forge-superpowers:systematic-debugging` is the default for any bug or unexpected behavior; `forge-mattpocock:diagnose` only on explicit "/diagnose" or a performance-regression framing (reproduce → minimise → instrument loop).
+  - **TDD**: `forge-superpowers:test-driven-development` is the always-on enforcement (triggers on any feature/bugfix); `forge-mattpocock:tdd` is the explicit-invocation alternative (integration-test philosophy + planning checklist).
+  - **Plans**: `forge-superpowers:writing-plans` starts from a written spec or approved design (it is the terminal step of superpowers brainstorming); `forge-mattpocock:to-prd` crystallizes the *current conversation* into a wave-organized PRD without interviewing.
 
 ### forge-ui-forge
 - **Independent** — UI prototyping toolkit, works standalone

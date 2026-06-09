@@ -38,13 +38,15 @@ Always-on plugins for daily development.
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-keeper** | Context maintenance + PreCompact hook | `/sync`, `/status`, `/recall`, `/segment-doc` |
+| **forge-keeper** | Context maintenance + PreCompact hook | `/sync`, `/status`, `/recall`, `/segment-doc`, `/handoff`, `/heal-plugin-cache` |
 
 forge-keeper commands:
 - `/sync` — analyze changes, propose CLAUDE.md + rules + exemplars updates
 - `/status` — context health report with drift detection
 - `/recall` — search session log for past decisions
 - `/segment-doc` — split monolithic .md into focused pieces for better context loading
+- `/handoff` — lightweight session resumption note, without the full /sync
+- `/heal-plugin-cache` — repair stale plugin cache references after a version bump
 
 ### Core workflow
 
@@ -60,9 +62,9 @@ forge-keeper commands:
 
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
-| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean-gone` |
+| **forge-commit** | Git commit and PR workflow | `/commit`, `/commit-push-pr`, `/clean_gone` |
 | **forge-security** | Security reminder hooks (XSS, injection, eval, etc.) | Passive — hooks on Edit/Write |
-| **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/hookify-list`, `/hookify-configure`, `/hookify-help` |
+| **forge-hookify** | Custom hook rules engine with `.local.md` rules | `/hookify`, `/forge-hookify:list`, `/forge-hookify:configure`, `/forge-hookify:help` |
 | **forge-profiles** | Plugin profile manager — switch plugins + MCP servers per work mode | `/profile-create`, `/profile-list`, `/profile-change` |
 
 ### Design & prototyping
@@ -77,7 +79,7 @@ forge-keeper commands:
 | Plugin | Purpose | Commands |
 |--------|---------|----------|
 | **forge-telegram** | Telegram bridge — Monitor-tool long-poll listener + manual send + Whisper voice transcription. Events arrive as turns in the main session | `/telegram start`, `/telegram stop`, `/telegram setup`, `/telegram status`, `/telegram send` |
-| **forge-proactive-qa** | Autonomous Playwright QA agent — explores web apps, logs issues, auto-fixes with retry. Channel-first Telegram notifications. Three modes: explore / autofix / cycle | `/proactive-qa explore`, `/proactive-qa autofix`, `/proactive-qa cycle`, `/proactive-qa:init` |
+| **forge-proactive-qa** | Autonomous Playwright QA agent — explores web apps, logs issues, auto-fixes with retry. Channel-first Telegram notifications. Three modes: explore / autofix / cycle | `/proactive-qa explore`, `/proactive-qa autofix`, `/proactive-qa cycle`, `/forge-proactive-qa:init` |
 
 ## Configuration plugins
 

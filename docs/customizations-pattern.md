@@ -162,3 +162,7 @@ Uses persistent full clones in `.upstream/` (gitignored, one clone per upstream 
 ## Native plugins
 
 Plugins created in-house (forge-init, forge-keeper) do NOT need customizations.json — they are the source of truth.
+
+### The `origin.type: "native"` variant
+
+A native plugin MAY keep a customizations.json with `"origin": { "type": "native", "note": "..." }` when its history matters — e.g. forge-proactive-qa uses one as a changelog of its genericization from a private original. There is no upstream to sync against: `/update-check` skips entries whose `origin.type` is `native`, and the `customizations[]` array documents the genericization decisions rather than divergences from an upstream.

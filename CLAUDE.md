@@ -64,7 +64,7 @@ dev-forge/
 
 ## External plugin customizations
 
-External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles, forge-ui-forge) don't need customizations.json. External plugins currently in the marketplace: forge-superpowers (obra/superpowers), forge-plugin-dev / forge-deep-review / forge-hookify / forge-security / forge-commit (anthropics/claude-code), forge-frontend-design (anthropics/claude-plugins-official), and forge-mattpocock (mattpocock/skills).
+External plugins follow a **vendor + customizations** pattern — see @docs/customizations-pattern.md for the full schema and update workflow. Native plugins (forge-init, forge-keeper, forge-proactive-qa, forge-brainstorming, forge-profiles, forge-ui-forge) don't need customizations.json — with one deliberate exception: forge-proactive-qa keeps a customizations.json with `origin.type: "native"` as a changelog of its genericization from a private original; `/update-check` skips it. External plugins currently in the marketplace: forge-superpowers (obra/superpowers), forge-plugin-dev / forge-deep-review / forge-hookify / forge-security / forge-commit (anthropics/claude-code), forge-frontend-design (anthropics/claude-plugins-official), and forge-mattpocock (mattpocock/skills).
 
 ## Conventions
 

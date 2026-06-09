@@ -30,6 +30,13 @@
       "target": "hooks/*.py, core/rule_engine.py",
       "summary": "Changed Python imports from hookify.core.* to core.* for package name independence",
       "reason": "Plugin directory is forge-hookify not hookify, so absolute package imports like 'from hookify.core' would fail. Changed to relative 'from core.*' since PLUGIN_ROOT is already in sys.path."
+    },
+    {
+      "id": "custom-03",
+      "type": "modified",
+      "target": "skills/writing-rules/SKILL.md",
+      "summary": "Fixed stop-event documentation: rewrote the stop Events section to use the conditions form (field: transcript / field: reason) instead of simple pattern:, added Stop fields (reason, transcript) to the Quick Reference field options, and added require-tests-stop.local.md to the examples list",
+      "reason": "Upstream docs taught 'event: stop' + 'pattern: .*' as the stop-rule form, but config_loader.py infers field 'content' for simple patterns on non-bash/file events, and rule_engine.py only exposes 'reason' and 'transcript' for Stop events — so the documented form silently never matches. Only bash and file events support simple pattern: rules."
     }
   ]
 }

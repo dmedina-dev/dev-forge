@@ -181,12 +181,21 @@ Console.log in TypeScript file!
 
 ### stop Events
 
-Match when agent wants to stop (completion checks):
+Match when agent wants to stop (completion checks).
+
+**Important:** Simple `pattern:` rules only work for `bash` and `file` events. For any other event the engine infers the match field as `content`, but Stop events only expose `reason` and `transcript` — so a stop rule written with just `pattern:` can never match (it fails silently). Always use the `conditions:` form with `field: transcript` or `field: reason`.
+
+Always-on completion reminder (matches every stop):
 
 ```markdown
 ---
+name: completion-checklist
+enabled: true
 event: stop
-pattern: .*
+conditions:
+  - field: transcript
+    operator: regex_match
+    pattern: .*
 ---
 
 Before stopping, verify:
@@ -194,6 +203,25 @@ Before stopping, verify:
 - [ ] Build succeeded
 - [ ] Documentation updated
 ```
+
+Block stopping when no test command appears in the transcript (full version in `examples/require-tests-stop.local.md`):
+
+```markdown
+---
+name: require-tests-run
+enabled: true
+event: stop
+action: block
+conditions:
+  - field: transcript
+    operator: not_contains
+    pattern: npm test
+---
+
+**Tests not detected in transcript!** Run tests before stopping.
+```
+
+**Available fields:** `reason` (stop reason), `transcript` (full transcript file content)
 
 **Use for:**
 - Reminders about required steps
@@ -325,6 +353,7 @@ See `${CLAUDE_PLUGIN_ROOT}/examples/` for complete examples:
 - `dangerous-rm.local.md` - Block dangerous rm commands
 - `console-log-warning.local.md` - Warn about console.log
 - `sensitive-files-warning.local.md` - Warn about editing .env files
+- `require-tests-stop.local.md` - Block stopping when no test command appears in the transcript
 
 ## Quick Reference
 
@@ -368,6 +397,7 @@ Warning message
 **Field options:**
 - Bash: `command`
 - File: `file_path`, `new_text`, `old_text`, `content`
+- Stop: `reason`, `transcript`
 - Prompt: `user_prompt`
 
 **Operators:**

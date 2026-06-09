@@ -10,22 +10,22 @@ eliminación de forge-context-mcp (17 plugins), descripción de ui-forge ≤1024
 
 Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
 
-- [ ] **forge-brainstorming**: reemplazar 10 referencias `superpowers:` → `forge-superpowers:`
+- [x] **forge-brainstorming**: reemplazar 10 referencias `superpowers:` → `forge-superpowers:`
       (SKILL.md:53,86-92; commands/brainstorming.md:65,92; references/phase-orchestration*).
-- [ ] **forge-telegram**: prefijar `${CLAUDE_PLUGIN_ROOT}/` en SKILL.md:90,144 y
+- [x] **forge-telegram**: prefijar `${CLAUDE_PLUGIN_ROOT}/` en SKILL.md:90,144 y
       references/subcommands.md:70,108,216; renumerar flujo inbound (0,1,2,3,2.5,3.5,4,5 → secuencial)
       actualizando las referencias cruzadas (SKILL.md:56,146).
-- [ ] **forge-keeper**: SKILL.md:6-8,18 — corregir claim "before /clear" → PreCompact solo para
+- [x] **forge-keeper**: SKILL.md:6-8,18 — corregir claim "before /clear" → PreCompact solo para
       /compact; /clear se rescata vía SessionStart post-clear.
-- [ ] **forge-ui-forge** (restantes): SKILL.md:207 `serve.py` → `serve.sh`; scoping de anti-patterns
+- [x] **forge-ui-forge** (restantes): SKILL.md:207 `serve.py` → `serve.sh`; scoping de anti-patterns
       (398-399) para no contradecir live mode (476); frase forge-logic-prototype (150-151) como
       hipotética; subcommands.md:37 formato stdout real (`round=<n> screen=<id> new=<k> total=<t>`);
       condensar sección Live mode (470-524) a puntero → references/subcommands.md.
-- [ ] **forge-export**: install-all generado a ruta no descubrible (SKILL.md:94-95 +
+- [x] **forge-export**: install-all generado a ruta no descubrible (SKILL.md:94-95 +
       output-schema.md:377) → bootstrap-plugin o `.claude/commands/`; Quick start inválido
       (output-schema.md:518-526) → `/plugin marketplace add` + install; refrescar ejemplos stale de
       interview-guide.md (v5.0.6/19 → placeholders).
-- [ ] **forge-init**: mensaje cleanup condicional sobre forge-keeper (SKILL.md:71); alinear
+- [x] **forge-init**: mensaje cleanup condicional sobre forge-keeper (SKILL.md:71); alinear
       descripción/body sobre install-all (SKILL.md:9-10).
 
 ## Wave 2 — Paridad de docs del repo (sin tocar plugins)

@@ -26,7 +26,7 @@ only after explicit user approval (standard /sync flow).
    `## Current plugins`.
 5. **Install commands**: `/plugin install forge-*` lines in README Quick Start
    should equal working plugins (= marketplace minus disposables:
-   `forge-init`, `forge-plugin-dev`, `forge-context-mcp`, `forge-export`).
+   `forge-init`, `forge-plugin-dev`, `forge-export`).
 6. **install-all.md catalog**: `plugins/forge-init/commands/install-all.md`
    tables should list every working plugin from marketplace.
 

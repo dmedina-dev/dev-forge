@@ -28,7 +28,6 @@ dev-forge/
 │   ├── forge-frontend-design/         ← frontend UI/UX design
 │   ├── forge-telegram/                ← Telegram listener + sender (bash + Monitor, event-driven)
 │   ├── forge-proactive-qa/            ← autonomous QA agent (requires Playwright)
-│   ├── forge-context-mcp/             ← MCP server setup guide (disposable)
 │   ├── forge-export/                  ← marketplace export wizard (disposable)
 │   ├── forge-brainstorming/           ← teammate-driven lifecycle (requires forge-superpowers)
 │   ├── forge-profiles/                ← plugin profile manager (independent)

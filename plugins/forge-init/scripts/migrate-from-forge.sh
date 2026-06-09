@@ -53,7 +53,6 @@ forge-commit=df-commit
 forge-frontend-design=df-frontend-design
 forge-telegram=df-telegram
 forge-proactive-qa=df-proactive-qa
-forge-context-mcp=df-context-mcp
 forge-export=df-export
 forge-brainstorming=df-brainstorming
 forge-profiles=df-profiles

@@ -38,7 +38,6 @@ marketplace_path, output_path = Path(sys.argv[1]), Path(sys.argv[2])
 DISPOSABLE = {
     "forge-init",
     "forge-plugin-dev",
-    "forge-context-mcp",
     "forge-export",
 }
 
@@ -62,14 +61,12 @@ SHORT_LABELS = {
     "forge-proactive-qa":    "Autonomous Playwright QA agent (Telegram-notified)",
     "forge-init":            "Project bootstrapper + migrate-from-forge helper",
     "forge-plugin-dev":      "Plugin development toolkit",
-    "forge-context-mcp":     "MCP server setup guide (Context7, Serena, XRAY)",
     "forge-export":          "Marketplace export wizard",
 }
 
 DISPOSABLE_WHEN = {
     "forge-init":         "New project → `/plugin install forge-init` → `/forge-init:init` → uninstall",
     "forge-plugin-dev":   "Developing plugins → `/plugin install forge-plugin-dev` → build → uninstall",
-    "forge-context-mcp":  "Setting up codebase intelligence → configure → uninstall",
     "forge-export":       "Forking dev-forge for another org → export → uninstall",
 }
 

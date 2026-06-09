@@ -1,5 +1,5 @@
 ---
-description: Install all dev-forge working plugins. Configuration plugins (forge-context-mcp, forge-export, forge-init, forge-plugin-dev) are shown separately — install them on demand. Resolves dependencies and lets user exclude plugins.
+description: Install all dev-forge working plugins. Configuration plugins (forge-export, forge-init, forge-plugin-dev) are shown separately — install them on demand. Resolves dependencies and lets user exclude plugins.
 ---
 
 Install all dev-forge **working** plugins — the daily driver set.
@@ -38,7 +38,6 @@ value when not actively being used.
 |--------|---------|-----------------|
 | forge-init | Project bootstrapper + migrate-from-forge helper | New project → `/plugin install forge-init` → `/forge-init:init` → uninstall |
 | forge-plugin-dev | Plugin development toolkit | Developing plugins → `/plugin install forge-plugin-dev` → build → uninstall |
-| forge-context-mcp | MCP server setup guide (Context7, Serena, XRAY) | Setting up codebase intelligence → configure → uninstall |
 | forge-export | Marketplace export wizard | Forking dev-forge for another org → export → uninstall |
 
 ## Process
@@ -78,7 +77,6 @@ Already installed: [list or "none"]
 ### Not included (configuration plugins — install on demand):
 - forge-init → /plugin install forge-init (New project)
 - forge-plugin-dev → /plugin install forge-plugin-dev (Developing plugins)
-- forge-context-mcp → /plugin install forge-context-mcp (Setting up codebase intelligence)
 - forge-export → /plugin install forge-export (Forking dev-forge for another org)
 
 Want to exclude any working plugins? Otherwise proceed.
@@ -132,7 +130,6 @@ Working:
 Configuration (install when needed):
   forge-init → /plugin install forge-init
   forge-plugin-dev → /plugin install forge-plugin-dev
-  forge-context-mcp → /plugin install forge-context-mcp
   forge-export → /plugin install forge-export
 
 Next: /forge-keeper:status

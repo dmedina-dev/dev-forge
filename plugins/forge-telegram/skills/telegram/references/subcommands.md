@@ -67,7 +67,7 @@ the bot token, OpenAI key, and will see a PIN banner for chat pairing.
 
 ## `status`
 
-Read `~/.claude/channels/telegram/.env`, call `TaskList()`, and run `bash scripts/mode.sh get`. Print a compact block:
+Read `~/.claude/channels/telegram/.env`, call `TaskList()`, and run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/mode.sh get`. Print a compact block:
 
 ```
 🤖 forge-telegram status
@@ -105,7 +105,7 @@ mode is persisted in `~/.claude/channels/telegram/mode` so it survives compact
 
 ### `mode` or `mode show`
 
-Print the current mode by running `bash scripts/mode.sh get`. Example output:
+Print the current mode by running `bash ${CLAUDE_PLUGIN_ROOT}/scripts/mode.sh get`. Example output:
 
 ```
 🎚️ Current Telegram mode: strict
@@ -169,7 +169,7 @@ menu (appended after any custom commands).
 
 **Reaction protocol — applies to every built-in below.** The sender reads
 the bot's reactions as a state machine: `👀` = "received", `👍`/`👎`/`🤔` =
-"done". The opening `👀` is set in step 2.5 of the SKILL.md inbound flow,
+"done". The opening `👀` is set in step 4 of the SKILL.md inbound flow,
 **before** the built-in dispatcher runs. The **closing reaction is
 mandatory** — without it the sender is left guessing whether the work
 finished. Before ending the turn for any built-in, verify a closing
@@ -181,7 +181,7 @@ keeps the full audit trail.
 
 ### `/stop` — stop the listener
 
-1. (`👀` ack already sent in step 2.5 of the inbound flow — do **not** repeat it here.)
+1. (`👀` ack already sent in step 4 of the inbound flow — do **not** repeat it here.)
 2. Call `TaskList()` → find the task whose description contains
    `"Telegram inbound messages"`.
 3. If no such task exists, reply via `send.sh "Main session" "Listener is not running."` and **react `🤔` (closing — nothing to stop)**.
@@ -191,7 +191,7 @@ keeps the full audit trail.
 
 ### `/qa` — validate project state
 
-1. (`👀` ack already sent in step 2.5 — do **not** repeat.)
+1. (`👀` ack already sent in step 4 — do **not** repeat.)
 2. Detect the project's QA pipeline by reading `package.json` scripts,
    `Makefile`, or other convention:
    - **Node/pnpm/npm/yarn**: run available scripts among `lint`, `test`, `build`
@@ -210,10 +210,10 @@ keeps the full audit trail.
 
 ### `/status` — report current activity
 
-1. (`👀` ack already sent in step 2.5 — do **not** repeat.)
+1. (`👀` ack already sent in step 4 — do **not** repeat.)
 2. Gather:
    - `TaskList()` — active/pending tasks and their descriptions.
-   - `bash scripts/mode.sh get` — current response mode.
+   - `bash ${CLAUDE_PLUGIN_ROOT}/scripts/mode.sh get` — current response mode.
    - `git rev-parse --abbrev-ref HEAD` — current branch.
 3. Reply via `send.sh` with a compact block:
    ```

@@ -22,14 +22,14 @@ On success it exits 0 and prints the Telegram message ID; on failure it writes t
 > *(inbound event arrives)*
 > **Assistant**: 📨 Telegram: `hey check the build`
 > **User (terminal)**: "reply: starting now"
-> **Assistant**: *runs* `bash scripts/send.sh "Main session" "📡 Starting the build now"`
+> **Assistant**: *runs* `bash ${CLAUDE_PLUGIN_ROOT}/scripts/send.sh "Main session" "📡 Starting the build now"`
 > **Assistant**: ✓ Replied to Telegram
 
 **Proactive status update** — no inbound, user just wants to push a message:
 
 > **User (terminal)**: "tell me on telegram when the tests pass"
 > **Assistant**: *(runs tests, waits)*
-> **Assistant**: *runs* `bash scripts/send.sh "Main session" "✅ Tests green — 847 passed in 2m14s"`
+> **Assistant**: *runs* `bash ${CLAUDE_PLUGIN_ROOT}/scripts/send.sh "Main session" "✅ Tests green — 847 passed in 2m14s"`
 
 **Threading a conversation** — multiple back-and-forth turns:
 
@@ -37,7 +37,7 @@ On success it exits 0 and prints the Telegram message ID; on failure it writes t
 > **Assistant**: 📨 Telegram: `what's the state of the refactor?`
 > **User (terminal)**: "reply with the current branch and diff summary"
 > **Assistant**: *runs `git status` + `git diff --stat` first, then:*
-> `bash scripts/send.sh "Main session" "Branch: refactor/auth — 12 files changed, +247/-189. Tests still failing on session-token serialization."`
+> `bash ${CLAUDE_PLUGIN_ROOT}/scripts/send.sh "Main session" "Branch: refactor/auth — 12 files changed, +247/-189. Tests still failing on session-token serialization."`
 
 ### Rules for replies
 

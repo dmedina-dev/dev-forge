@@ -5,6 +5,7 @@ globs: plugins/**
 
 - SKILL.md must have YAML frontmatter with `name` and `description` fields
 - Skill `description` must include trigger phrases — words/patterns that cause Claude to activate the skill
+- Skill `description` must be **≤ 1024 characters** — the harness truncates beyond that, and any trigger phrase after the cutoff silently stops working (root cause of forge-ui-forge's broken Spanish triggers, found 2026-06-09). Write multi-line descriptions as a `>-` folded block scalar: an unquoted plain scalar containing `: ` fails strict YAML (`yaml.safe_load`), and critical triggers must always sit inside the first 1024 chars. Validate with `python3 -c "import yaml; d=yaml.safe_load(open('SKILL.md').read().split('---')[1]); assert len(d['description'])<=1024"`
 - Command .md files must have YAML frontmatter with `description` field
 - Reference files are plain markdown without frontmatter
 - All changes to plugin content must be tested with `claude --plugin-dir plugins/<name>`

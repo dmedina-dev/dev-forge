@@ -1,5 +1,6 @@
 CLAUDE.local.md
 .upstream/
+.tmp/
 .claude/worktrees/
 .claude/scheduled_tasks.lock
 .venv-dev/

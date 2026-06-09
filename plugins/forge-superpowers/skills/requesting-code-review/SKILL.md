@@ -2,6 +2,7 @@
 name: requesting-code-review
 description: Dispatch a fresh-context code-reviewer subagent to check completed work. Use when completing tasks, implementing major features, or before merging to verify work meets requirements
 ---
+<!-- Curated from obra/superpowers/skills/requesting-code-review · MIT. Adapted: tracked in customizations.json (custom-30). -->
 
 # Requesting Code Review
 

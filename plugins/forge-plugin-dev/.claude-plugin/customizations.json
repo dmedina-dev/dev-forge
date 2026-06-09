@@ -72,6 +72,13 @@
       "target": "skills/plugin-settings/",
       "summary": "Rewrote Restart Requirement section and its echoes (SKILL.md plus examples/create-settings-command.md and examples/example-settings.md) to distinguish hooks.json structure changes (require restart) from settings-file values (read per hook invocation, apply immediately)",
       "reason": "Skill contradicted itself — blanket 'settings changes require restart' claims versus the hot-toggle pattern it sells; reality is only hooks.json structure changes need a restart"
+    },
+    {
+      "id": "custom-09",
+      "type": "modified",
+      "target": "skills/*/SKILL.md (7 files)",
+      "summary": "Added post-frontmatter origin attribution comments (Curated from anthropics/claude-code/plugins/plugin-dev/skills/<dir> · Anthropic Commercial Terms) to all 7 skills",
+      "reason": "Repo convention (.claude/rules/plugin-authoring.md): externally curated skills note origin at top of SKILL.md; backfill from the 2026-06-09 skill review (Wave 4)"
     }
   ]
 }

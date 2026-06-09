@@ -3,6 +3,7 @@ name: Plugin Structure
 description: This skill should be used when the user asks to "create a plugin", "scaffold a plugin", "understand plugin structure", "organize plugin components", "set up plugin.json", "use ${CLAUDE_PLUGIN_ROOT}", "add commands/agents/skills/hooks", "configure auto-discovery", or needs guidance on plugin directory layout, manifest configuration, component organization, file naming conventions, or Claude Code plugin architecture best practices.
 version: 0.1.0
 ---
+<!-- Curated from anthropics/claude-code/plugins/plugin-dev/skills/plugin-structure · Anthropic Commercial Terms. Adapted: tracked in customizations.json (custom-05). -->
 
 # Plugin Structure for Claude Code
 

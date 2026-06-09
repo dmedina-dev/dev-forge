@@ -2,6 +2,7 @@
 name: subagent-driven-development
 description: Use when executing implementation plans with independent tasks in the current session
 ---
+<!-- Curated from obra/superpowers/skills/subagent-driven-development · MIT. Adapted: tracked in customizations.json (custom-26). -->
 
 # Subagent-Driven Development
 

@@ -2,6 +2,7 @@
 name: systematic-debugging
 description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
 ---
+<!-- Curated from obra/superpowers/skills/systematic-debugging · MIT. Adapted: tracked in customizations.json (custom-26). -->
 
 # Systematic Debugging
 

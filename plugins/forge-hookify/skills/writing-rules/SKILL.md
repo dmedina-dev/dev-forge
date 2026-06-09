@@ -3,6 +3,7 @@ name: Writing Hookify Rules
 description: This skill should be used when the user asks to "create a hookify rule", "write a hook rule", "configure hookify", "add a hookify rule", or needs guidance on hookify rule syntax and patterns.
 version: 0.1.0
 ---
+<!-- Curated from anthropics/claude-code/plugins/hookify/skills/writing-rules · Anthropic Commercial Terms. Adapted: tracked in customizations.json (custom-03). -->
 
 # Writing Hookify Rules
 

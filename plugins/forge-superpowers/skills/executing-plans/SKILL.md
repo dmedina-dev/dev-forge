@@ -2,6 +2,7 @@
 name: executing-plans
 description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
 ---
+<!-- Curated from obra/superpowers/skills/executing-plans · MIT. Adapted: tracked in customizations.json (custom-26). -->
 
 # Executing Plans
 

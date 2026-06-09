@@ -37,6 +37,13 @@
       "target": "skills/writing-rules/SKILL.md",
       "summary": "Fixed stop-event documentation: rewrote the stop Events section to use the conditions form (field: transcript / field: reason) instead of simple pattern:, added Stop fields (reason, transcript) to the Quick Reference field options, and added require-tests-stop.local.md to the examples list",
       "reason": "Upstream docs taught 'event: stop' + 'pattern: .*' as the stop-rule form, but config_loader.py infers field 'content' for simple patterns on non-bash/file events, and rule_engine.py only exposes 'reason' and 'transcript' for Stop events — so the documented form silently never matches. Only bash and file events support simple pattern: rules."
+    },
+    {
+      "id": "custom-04",
+      "type": "modified",
+      "target": "skills/writing-rules/SKILL.md",
+      "summary": "Added post-frontmatter origin attribution comment (Curated from anthropics/claude-code/plugins/hookify · Anthropic Commercial Terms)",
+      "reason": "Repo convention (.claude/rules/plugin-authoring.md): externally curated skills note origin at top of SKILL.md; backfill from the 2026-06-09 skill review (Wave 4)"
     }
   ]
 }

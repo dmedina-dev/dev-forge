@@ -2,6 +2,7 @@
 name: finishing-a-development-branch
 description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
 ---
+<!-- Curated from obra/superpowers/skills/finishing-a-development-branch · MIT. Adapted: tracked in customizations.json (custom-29). -->
 
 # Finishing a Development Branch
 

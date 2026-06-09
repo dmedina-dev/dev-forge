@@ -3,6 +3,7 @@ name: Command Development
 description: This skill should be used when the user asks to "create a slash command", "add a command", "write a custom command", "define command arguments", "use command frontmatter", "organize commands", "create command with file references", "interactive command", "use AskUserQuestion in command", or needs guidance on slash command structure, YAML frontmatter fields, dynamic arguments, bash execution in commands, user interaction patterns, or command development best practices for Claude Code.
 version: 0.2.0
 ---
+<!-- Curated from anthropics/claude-code/plugins/plugin-dev/skills/command-development · Anthropic Commercial Terms. Adapted: tracked in customizations.json (custom-03). -->
 
 # Command Development for Claude Code
 

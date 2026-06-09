@@ -72,7 +72,7 @@ Cada ítem: editar → `claude --plugin-dir plugins/<name>` smoke test.
 
 ## Wave 4 — Backfill de atribución (mecánico)
 
-- [ ] Insertar `<!-- Curated from <repo>/<path> · <license>. Unmodified|Adapted: … -->` tras el
+- [x] Insertar `<!-- Curated from <repo>/<path> · <license>. Unmodified|Adapted: … -->` tras el
       frontmatter en los 21 SKILL.md vendored sin comentario (superpowers ×13, plugin-dev ×7,
       hookify ×1 — frontend-design cae en Wave 3). Origen ya está en cada customizations.json.
       Una entrada `modified` por plugin (o ampliar la existente).

@@ -2,6 +2,7 @@
 name: test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code
 ---
+<!-- Curated from obra/superpowers/skills/test-driven-development · MIT. Unmodified. -->
 
 # Test-Driven Development (TDD)
 

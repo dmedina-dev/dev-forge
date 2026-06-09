@@ -189,7 +189,7 @@
       "id": "custom-25",
       "type": "modified",
       "target": ".claude-plugin/plugin.json",
-      "summary": "Renamed plugin (superpowers \u2192 forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
+      "summary": "Renamed plugin (superpowers → forge-superpowers), reset version to dev-forge's tracking, replaced upstream author/repository fields with dev-forge's",
       "reason": "Each dev-forge plugin is published independently under the forge-* namespace; version is tracked at the dev-forge marketplace level, not aligned to upstream releases"
     },
     {
@@ -247,6 +247,13 @@
       "target": "skills/systematic-debugging/{CREATION-LOG.md,test-academic.md,test-pressure-1.md,test-pressure-2.md,test-pressure-3.md}",
       "summary": "Excluded upstream skill-development test fixtures shipped inside the skill directory",
       "reason": "Like custom-01, these validate the upstream ecosystem (skill creation log and pressure-test scenarios), not relevant to our plugin usage; referenced nowhere in shipped content"
+    },
+    {
+      "id": "custom-34",
+      "type": "modified",
+      "target": "skills/*/SKILL.md (11 files)",
+      "summary": "Added post-frontmatter origin attribution comments (Curated from obra/superpowers/skills/<dir> · MIT, Unmodified/Adapted per pinned-upstream diff) to the 11 vendored skills that lacked one",
+      "reason": "Repo convention (.claude/rules/plugin-authoring.md): externally curated skills note origin at top of SKILL.md; backfill from the 2026-06-09 skill review (Wave 4)"
     }
   ]
 }

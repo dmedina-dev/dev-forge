@@ -59,6 +59,13 @@
       "target": "rules/proactive-qa.md",
       "summary": "Genericized path scope, removed tests/e2e/** reference",
       "reason": "tests/e2e/ is stock-manager-specific. Plugin rule scopes to its own path; projects add their own e2e path rules."
+    },
+    {
+      "id": "modified-09",
+      "type": "modified",
+      "target": "SKILL.md, references/operational.md",
+      "summary": "Consistency batch: reference paths now use ${CLAUDE_PLUGIN_ROOT}/references/, state file corrected to .proactive-qa-cycle in project root, screenshot 'attach' replaced with paths-in-text, 'Both modes' fixed to 'All modes', added $TMPDIR sandbox note plus new references/operational.md with § Sandbox allowWrite list",
+      "reason": "SKILL.md had drifted from the actual layout and scripts: references/ live at plugin root (not skills/proactive-qa/), cycle-state.sh writes .proactive-qa-cycle in the project root, telegram-notify.sh is text-only sendMessage, and on macOS $TMPDIR resolves to /var/folders/... which the Bash sandbox blocks — consumers need the allowlist documented per the plugin-authoring rule."
     }
   ]
 }

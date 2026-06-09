@@ -17,7 +17,7 @@ Autonomous quality assurance skill with three modes. Designed to run via `/loop`
 - **Autofix**: Picks up pending issues, fixes them, validates, commits or rolls back
 - **Cycle**: Alternates between explore and autofix automatically (ideal for `/loop`)
 
-Both modes write to the same bitacora and notify via Telegram.
+All modes write to the same bitacora and notify via Telegram.
 
 ### Quick start
 
@@ -55,6 +55,8 @@ Before using this skill, the project must define these values in its CLAUDE.md o
 ## Temporary Files — ALWAYS use $TMPDIR
 
 Write ALL temp scripts and screenshots to `$TMPDIR` (or `/private/tmp/claude/` as fallback). Never write temporary files inside the project tree.
+
+> **Sandbox note**: on macOS `$TMPDIR` resolves to `/var/folders/…/T/`, which Claude Code's Bash sandbox blocks (writes outside the project root silently fail with `rc=1`). Consumers with the Bash sandbox enabled must add the temp paths to `sandbox.filesystem.allowWrite` — see `${CLAUDE_PLUGIN_ROOT}/references/operational.md` § Sandbox for the exact list — or fall back to a gitignored project-local tmp dir (e.g. `.proactive-qa-tmp/`).
 
 ```bash
 # CORRECT
@@ -108,7 +110,7 @@ The script resolves the chat_id itself (same order as above) and sends via curl.
 Exploración completada. {N} rutas revisadas, {M} problemas nuevos encontrados.
 Categorías: {list}
 ```
-Attach: screenshots from `$TMPDIR/screenshot-*.png`
+Mention the paths of relevant screenshots (`$TMPDIR/screenshot-*.png`) in the message text — attachments are not supported.
 
 **2. Fix success** (`fix-ok`):
 ```
@@ -209,7 +211,7 @@ Use the Edit tool to update specific fields. Always preserve `Historial de inten
 
 **Invocation**: `/loop 15m /proactive-qa cycle`
 
-Automatically alternates between explore and autofix on each invocation. Uses a state file (`.cycle-state` in the plugin root) to track which mode runs next.
+Automatically alternates between explore and autofix on each invocation. Uses a state file (`.proactive-qa-cycle` in the project root) to track which mode runs next.
 
 ### How it works
 
@@ -243,9 +245,9 @@ If autofix finds no pending issues, it skips silently and the next cycle will ex
 
 **Time limit**: 15 minutes max per session.
 
-Read `references/explore.md` for the full flow: loading prior coverage, planning which routes/categories to check, running Playwright scripts, logging findings, and cleanup.
+Read `${CLAUDE_PLUGIN_ROOT}/references/explore.md` for the full flow: loading prior coverage, planning which routes/categories to check, running Playwright scripts, logging findings, and cleanup.
 
-Key reference: `references/explore-checklist.md` has the verification categories and Playwright templates.
+Key reference: `${CLAUDE_PLUGIN_ROOT}/references/explore-checklist.md` has the verification categories and Playwright templates.
 
 **After finishing**: run cleanup + `/clear` to free context for next iteration.
 
@@ -255,7 +257,7 @@ Key reference: `references/explore-checklist.md` has the verification categories
 
 **Invocation**: `/proactive-qa autofix` or `/loop 10m /proactive-qa autofix`
 
-Read `references/autofix.md` for the full flow: loading pending issues, launching fixer/validator agents, processing results (commit or rollback), and the 3-attempt retry cycle.
+Read `${CLAUDE_PLUGIN_ROOT}/references/autofix.md` for the full flow: loading pending issues, launching fixer/validator agents, processing results (commit or rollback), and the 3-attempt retry cycle.
 
 **After finishing**: notify via Telegram + `/clear` to free context for next iteration.
 

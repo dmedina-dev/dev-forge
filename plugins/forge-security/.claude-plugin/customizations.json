@@ -4,16 +4,16 @@
     "repo": "anthropics/claude-code",
     "path": "plugins/security-guidance",
     "ref": "main",
-    "commit": "cc898dc369",
-    "fetched_at": "2026-05-21",
+    "commit": "1c5f951a48",
+    "fetched_at": "2026-06-10",
     "check_url": "https://github.com/anthropics/claude-code/tree/main/plugins/security-guidance"
   },
   "upstream_status": {
-    "last_checked": "2026-05-21",
+    "last_checked": "2026-06-10",
     "latest_ref": "main",
-    "latest_commit": "cc898dc369",
+    "latest_commit": "1c5f951a48",
     "has_updates": false,
-    "summary": "Upstream advanced (anthropics/claude-code) but no commits touched our subpath; tracking refreshed.",
+    "summary": "Reset to upstream at 1c5f951a48: adopted the LLM-assisted review rewrite wholesale; dropped custom-02 (child_process.exec pattern removal) by maintainer decision 2026-06-10",
     "changes": []
   },
   "customizations": [
@@ -23,13 +23,6 @@
       "target": "README.md",
       "summary": "Excluded upstream README",
       "reason": "Not needed in forge marketplace."
-    },
-    {
-      "id": "custom-02",
-      "type": "modified",
-      "target": "hooks/security_reminder_hook.py",
-      "summary": "Removed Anthropic-internal child_process.exec pattern",
-      "reason": "Original references src/utils/execFileNoThrow.ts which is Anthropic-internal. Generalized the reminder to suggest execFile/subprocess without referencing specific internal utilities."
     }
   ]
 }

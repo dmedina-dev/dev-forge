@@ -4,8 +4,8 @@ description: >
   Keeps CLAUDE.md, rules, exemplars, and project documentation in sync.
   Activates explicitly with /forge-keeper:sync, or when the user says "update
   context", "sync docs", "session handoff", or "save progress". Also triggers
-  automatically before /compact or /clear via hook, capturing context before
-  it's lost.
+  automatically before /compact via hook; after /clear, a SessionStart hook
+  injects a best-effort rescue summary.
 ---
 
 # Forge Keeper
@@ -15,7 +15,8 @@ Keeps project context synchronized across Claude Code sessions.
 ## When to run
 
 - When the human explicitly requests sync
-- Automatically before `/compact` or `/clear` (via PreCompact hook)
+- Automatically before `/compact` (via PreCompact hook)
+- After `/clear`, via SessionStart(clear) rescue — context is already gone, so a best-effort recovery summary is injected from durable sources
 - At the end of long sessions
 - After significant architectural decisions
 
